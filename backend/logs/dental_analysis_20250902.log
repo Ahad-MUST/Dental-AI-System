@@ -1,0 +1,779 @@
+2025-09-02 12:20:05 | __main__ | [32mINFO[0m | Starting Dental Call Analysis API...
+2025-09-02 12:20:06 | __main__ | [31mERROR[0m | Failed to initialize API services: name 'logger' is not defined
+2025-09-02 12:20:53 | __main__ | [32mINFO[0m | Shutting down API...
+2025-09-02 12:20:53 | services.file_monitor_service | [33mWARNING[0m | File monitoring not running
+2025-09-02 12:20:53 | __main__ | [31mERROR[0m | Error during shutdown: name 'logger' is not defined
+2025-09-02 12:22:09 | __main__ | [32mINFO[0m | Starting Dental Call Analysis API...
+2025-09-02 12:22:09 | __main__ | [31mERROR[0m | Failed to initialize API services: name 'logger' is not defined
+2025-09-02 12:22:51 | __main__ | [32mINFO[0m | Shutting down API...
+2025-09-02 12:22:51 | services.file_monitor_service | [33mWARNING[0m | File monitoring not running
+2025-09-02 12:22:51 | __main__ | [31mERROR[0m | Error during shutdown: name 'logger' is not defined
+2025-09-02 12:44:52 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 12:44:52 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 12:44:52 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 12:44:53 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 12:44:53 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 12:45:30 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 12:45:30 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 12:45:35 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 12:45:38 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 12:45:46 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 12:45:50 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 12:45:50 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 12:45:50 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 12:45:50 | services.file_queue_service | [32mINFO[0m | Found 12 unprocessed audio files
+2025-09-02 12:45:50 | __main__ | [32mINFO[0m | Found 12 files to process
+2025-09-02 12:45:50 | __main__ | [32mINFO[0m | 
+--- Processing file 1/12: sample_call_1.mp3 ---
+2025-09-02 12:45:55 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 12:45:55 | services.transcription_service | [32mINFO[0m | Transcribing: sample_call_1.mp3
+2025-09-02 12:52:04 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 12:52:04 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 12:52:04 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 12:52:04 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 12:52:04 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 12:52:38 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 12:52:38 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 12:52:49 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 12:52:50 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 12:52:58 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 12:53:04 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 12:53:04 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 12:53:04 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 12:53:04 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 12:53:04 | services.file_queue_service | [32mINFO[0m | Found 33 unprocessed audio files
+2025-09-02 12:53:04 | __main__ | [32mINFO[0m | Found 33 files to process
+2025-09-02 12:53:04 | __main__ | [32mINFO[0m | 
+--- Processing file 1/33: (224)427-0576r.mp3 ---
+2025-09-02 12:53:07 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 12:53:07 | services.transcription_service | [32mINFO[0m | Transcribing: (224)427-0576r.mp3
+2025-09-02 12:54:55 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.95
+2025-09-02 12:54:55 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 12:54:55 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (224)427-0576r.mp3
+2025-09-02 12:55:27 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 3 speakers
+2025-09-02 12:55:27 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 12:55:43 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 12:55:44 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 12:55:44 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 12:56:39 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 12:56:39 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 12:56:40 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 12:56:40 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 12:56:40 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 12:56:42 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 12:56:42 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 12:56:42 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 12:56:48 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (224)427-0576r.mp3
+2025-09-02 12:56:48 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 12:56:48 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(224)427-0576r_transcription.txt
+2025-09-02 12:56:48 | __main__ | [32mINFO[0m | Analysis completed in 216.7s - Google Sheets
+2025-09-02 12:56:48 | services.file_queue_service | [32mINFO[0m | Marked as processed: (224)427-0576r.mp3
+2025-09-02 12:56:48 | __main__ | [32mINFO[0m | Successfully processed: (224)427-0576r.mp3
+2025-09-02 12:56:50 | __main__ | [32mINFO[0m | 
+--- Processing file 2/33: (225)427-0576r.mp3 ---
+2025-09-02 12:56:50 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 12:56:50 | services.transcription_service | [32mINFO[0m | Transcribing: (225)427-0576r.mp3
+2025-09-02 12:59:12 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.83
+2025-09-02 12:59:12 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 12:59:12 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (225)427-0576r.mp3
+2025-09-02 13:00:07 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 4 speakers
+2025-09-02 13:00:07 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 13:00:15 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 13:00:16 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 13:00:16 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 13:01:04 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 13:01:04 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 13:01:06 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 13:01:06 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 13:01:06 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 13:01:09 | services.google_sheets_exporter | [32mINFO[0m | Added row 3 to Google Sheet with transcript
+2025-09-02 13:01:09 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 13:01:09 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 13:01:14 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (225)427-0576r.mp3
+2025-09-02 13:01:14 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 13:01:14 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(225)427-0576r_transcription.txt
+2025-09-02 13:01:14 | __main__ | [32mINFO[0m | Analysis completed in 256.3s - Google Sheets
+2025-09-02 13:01:14 | services.file_queue_service | [32mINFO[0m | Marked as processed: (225)427-0576r.mp3
+2025-09-02 13:01:14 | __main__ | [32mINFO[0m | Successfully processed: (225)427-0576r.mp3
+2025-09-02 13:01:16 | __main__ | [32mINFO[0m | 
+--- Processing file 3/33: (226)427-0576r.mp3 ---
+2025-09-02 13:01:16 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:01:16 | services.transcription_service | [32mINFO[0m | Transcribing: (226)427-0576r.mp3
+2025-09-02 13:04:35 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.89
+2025-09-02 13:04:35 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 13:04:35 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (226)427-0576r.mp3
+2025-09-02 13:05:47 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 13:05:47 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 13:05:58 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 13:06:00 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 13:06:00 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 13:06:52 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 13:06:52 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 13:06:54 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 13:06:54 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 13:06:54 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 13:06:56 | services.google_sheets_exporter | [32mINFO[0m | Added row 4 to Google Sheet with transcript
+2025-09-02 13:06:56 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 13:06:56 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 13:07:06 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (226)427-0576r.mp3
+2025-09-02 13:07:06 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 13:07:06 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(226)427-0576r_transcription.txt
+2025-09-02 13:07:06 | __main__ | [32mINFO[0m | Analysis completed in 337.6s - Google Sheets
+2025-09-02 13:07:06 | services.file_queue_service | [32mINFO[0m | Marked as processed: (226)427-0576r.mp3
+2025-09-02 13:07:06 | __main__ | [32mINFO[0m | Successfully processed: (226)427-0576r.mp3
+2025-09-02 13:07:08 | __main__ | [32mINFO[0m | 
+--- Processing file 4/33: (227)427-0576r.mp3 ---
+2025-09-02 13:07:08 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:07:08 | services.transcription_service | [32mINFO[0m | Transcribing: (227)427-0576r.mp3
+2025-09-02 13:09:02 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.94
+2025-09-02 13:09:02 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 13:09:02 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (227)427-0576r.mp3
+2025-09-02 13:09:58 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 13:09:58 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 13:10:08 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 13:10:10 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 13:10:10 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: emergency_call
+2025-09-02 13:10:56 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 13:10:56 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 13:10:57 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 13:10:57 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 13:10:57 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 13:11:00 | services.google_sheets_exporter | [32mINFO[0m | Added row 5 to Google Sheet with transcript
+2025-09-02 13:11:00 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 13:11:00 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 13:11:05 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (227)427-0576r.mp3
+2025-09-02 13:11:05 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 13:11:05 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(227)427-0576r_transcription.txt
+2025-09-02 13:11:05 | __main__ | [32mINFO[0m | Analysis completed in 229.7s - Google Sheets
+2025-09-02 13:11:05 | services.file_queue_service | [32mINFO[0m | Marked as processed: (227)427-0576r.mp3
+2025-09-02 13:11:05 | __main__ | [32mINFO[0m | Successfully processed: (227)427-0576r.mp3
+2025-09-02 13:11:07 | __main__ | [32mINFO[0m | 
+--- Processing file 5/33: (228)427-0576r.mp3 ---
+2025-09-02 13:11:07 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:11:07 | services.transcription_service | [32mINFO[0m | Transcribing: (228)427-0576r.mp3
+2025-09-02 13:25:48 | services.file_queue_service | [32mINFO[0m | Loaded 4 processed files from database
+2025-09-02 13:25:48 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 13:25:48 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 13:25:49 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 13:25:49 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 13:26:01 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 13:26:01 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 13:26:04 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 13:26:06 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 13:26:10 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 13:26:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 13:26:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 13:26:16 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 13:26:16 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 13:26:16 | services.file_queue_service | [32mINFO[0m | Found 4 unprocessed audio files
+2025-09-02 13:26:16 | __main__ | [32mINFO[0m | Found 4 files to process
+2025-09-02 13:26:16 | __main__ | [32mINFO[0m | 
+--- Processing file 1/4: (312)375-3744GQ.mp3 ---
+2025-09-02 13:26:18 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:26:18 | services.transcription_service | [32mINFO[0m | Transcribing: (312)375-3744GQ.mp3
+2025-09-02 13:29:02 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.80
+2025-09-02 13:29:02 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 13:29:02 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (312)375-3744GQ.mp3
+2025-09-02 13:29:31 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 13:29:31 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 13:29:44 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 13:29:45 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 13:29:45 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: general_inquiry
+2025-09-02 13:30:39 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 13:30:39 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 13:30:41 | services.opportunity_detector | [32mINFO[0m | Final assessment: MISSED OPPORTUNITY
+2025-09-02 13:30:41 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 13:30:41 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 13:30:44 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 13:30:44 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 13:30:44 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 13:30:49 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (312)375-3744GQ.mp3
+2025-09-02 13:30:49 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 13:30:49 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(312)375-3744GQ_transcription.txt
+2025-09-02 13:30:49 | __main__ | [32mINFO[0m | Analysis completed in 265.2s - Google Sheets
+2025-09-02 13:30:49 | services.file_queue_service | [32mINFO[0m | Marked as processed: (312)375-3744GQ.mp3
+2025-09-02 13:30:49 | __main__ | [32mINFO[0m | Successfully processed: (312)375-3744GQ.mp3
+2025-09-02 13:30:51 | __main__ | [32mINFO[0m | 
+--- Processing file 2/4: (313)375-3744GQ.mp3 ---
+2025-09-02 13:30:51 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:30:51 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 13:31:42 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 13:31:42 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 13:31:42 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 13:41:24 | services.file_queue_service | [32mINFO[0m | Loaded 5 processed files from database
+2025-09-02 13:41:24 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 13:41:24 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 13:41:24 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 13:41:24 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 13:42:00 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 13:42:00 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 13:42:02 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 13:42:03 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 13:42:11 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 13:42:15 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 13:42:15 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 13:42:15 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 13:42:15 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 13:42:15 | services.file_queue_service | [32mINFO[0m | Found 3 unprocessed audio files
+2025-09-02 13:42:15 | __main__ | [32mINFO[0m | Found 3 files to process
+2025-09-02 13:42:15 | __main__ | [32mINFO[0m | 
+--- Processing file 1/3: (313)375-3744GQ.mp3 ---
+2025-09-02 13:42:19 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:42:19 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 13:43:53 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 13:43:53 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 13:43:53 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 13:44:18 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 13:44:18 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 13:44:34 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 13:44:35 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 13:44:35 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 13:45:27 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 13:45:27 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 13:45:28 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 13:45:28 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 13:45:28 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 13:45:30 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 13:45:30 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 13:45:30 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 13:45:40 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (313)375-3744GQ.mp3
+2025-09-02 13:45:40 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 13:45:40 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(313)375-3744GQ_transcription.txt
+2025-09-02 13:45:40 | __main__ | [32mINFO[0m | Analysis completed in 193.2s - Google Sheets
+2025-09-02 13:45:40 | services.file_queue_service | [32mINFO[0m | Marked as processed: (313)375-3744GQ.mp3
+2025-09-02 13:45:40 | __main__ | [32mINFO[0m | Successfully processed: (313)375-3744GQ.mp3
+2025-09-02 13:45:42 | __main__ | [32mINFO[0m | 
+--- Processing file 2/3: (270)-320-8767MISSED.mp3 ---
+2025-09-02 13:45:42 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 13:45:42 | services.transcription_service | [32mINFO[0m | Transcribing: (270)-320-8767MISSED.mp3
+2025-09-02 14:03:27 | services.file_queue_service | [32mINFO[0m | Loaded 6 processed files from database
+2025-09-02 14:03:27 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 14:03:27 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 14:03:27 | services.llm_analyzer | [33mWARNING[0m | Model Qwen/Qwen2-14B-Instruct not found. Available models: ['qwen2.5:7b-instruct', 'llama3.2:3b']
+2025-09-02 14:03:27 | services.llm_analyzer | [31mERROR[0m | LLM analyzer initialization failed: Error verifying model: Model Qwen/Qwen2-14B-Instruct not available
+2025-09-02 14:03:27 | __main__ | [31mERROR[0m | Initialization failed: Error verifying model: Model Qwen/Qwen2-14B-Instruct not available
+2025-09-02 14:03:27 | __main__ | [31mERROR[0m | Batch processing failed: Error verifying model: Model Qwen/Qwen2-14B-Instruct not available
+2025-09-02 14:03:27 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 14:05:10 | services.file_queue_service | [32mINFO[0m | Loaded 6 processed files from database
+2025-09-02 14:05:10 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 14:05:10 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 14:05:10 | services.llm_analyzer | [33mWARNING[0m | Model qwen2.5:14b-instruct not found. Available models: ['qwen2.5:7b-instruct', 'llama3.2:3b']
+2025-09-02 14:05:10 | services.llm_analyzer | [31mERROR[0m | LLM analyzer initialization failed: Error verifying model: Model qwen2.5:14b-instruct not available
+2025-09-02 14:05:10 | __main__ | [31mERROR[0m | Initialization failed: Error verifying model: Model qwen2.5:14b-instruct not available
+2025-09-02 14:05:10 | __main__ | [31mERROR[0m | Batch processing failed: Error verifying model: Model qwen2.5:14b-instruct not available
+2025-09-02 14:05:10 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 21:49:28 | services.file_queue_service | [32mINFO[0m | Loaded 6 processed files from database
+2025-09-02 21:49:28 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 21:49:28 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 21:49:28 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:14b-instruct
+2025-09-02 21:49:28 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 21:49:53 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 21:49:53 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 21:49:54 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 21:49:55 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 21:50:00 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 21:50:06 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 21:50:06 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 21:50:06 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 21:50:06 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 21:50:06 | services.file_queue_service | [32mINFO[0m | Found 2 unprocessed audio files
+2025-09-02 21:50:06 | __main__ | [32mINFO[0m | Found 2 files to process
+2025-09-02 21:50:06 | __main__ | [32mINFO[0m | 
+--- Processing file 1/2: (270)-320-8767MISSED.mp3 ---
+2025-09-02 21:50:08 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 21:50:08 | services.transcription_service | [32mINFO[0m | Transcribing: (270)-320-8767MISSED.mp3
+2025-09-02 21:54:13 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.87
+2025-09-02 21:54:13 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 21:54:13 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (270)-320-8767MISSED.mp3
+2025-09-02 21:55:11 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 21:55:11 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 21:56:09 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 21:56:14 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 21:56:14 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: insurance_verification
+2025-09-02 21:57:15 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 21:57:15 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 21:57:15 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 21:57:30 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: NO SIGNIFICANT OPPORTUNITY MISSED
+2025-09-02 21:57:30 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 21:57:30 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 21:57:33 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 21:57:33 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 21:57:33 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 21:57:33 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(270)-320-8767MISSED_transcription.txt
+2025-09-02 21:57:33 | __main__ | [32mINFO[0m | Analysis completed in 444.7s - Google Sheets
+2025-09-02 21:57:33 | services.file_queue_service | [32mINFO[0m | Marked as processed: (270)-320-8767MISSED.mp3
+2025-09-02 21:57:33 | __main__ | [32mINFO[0m | Successfully processed: (270)-320-8767MISSED.mp3
+2025-09-02 21:57:35 | __main__ | [32mINFO[0m | 
+--- Processing file 2/2: (271)-320-8767MISSED.mp3 ---
+2025-09-02 21:57:35 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 21:57:35 | services.transcription_service | [32mINFO[0m | Transcribing: (271)-320-8767MISSED.mp3
+2025-09-02 21:59:13 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 21:59:13 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 21:59:13 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 21:59:13 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 21:59:13 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 22:00:05 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 22:00:05 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 22:00:08 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:00:09 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:00:21 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 22:00:24 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 22:00:24 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 22:00:24 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 22:00:24 | services.file_queue_service | [32mINFO[0m | Found 4 unprocessed audio files
+2025-09-02 22:00:24 | __main__ | [32mINFO[0m | Found 4 files to process
+2025-09-02 22:00:24 | __main__ | [32mINFO[0m | 
+--- Processing file 1/4: (312)375-3744GQ.mp3 ---
+2025-09-02 22:00:28 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:00:28 | services.transcription_service | [32mINFO[0m | Transcribing: (312)375-3744GQ.mp3
+2025-09-02 22:05:00 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.80
+2025-09-02 22:05:00 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:05:00 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (312)375-3744GQ.mp3
+2025-09-02 22:05:33 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:05:33 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:05:46 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:05:48 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:05:48 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: general_inquiry
+2025-09-02 22:06:48 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 22:06:48 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:06:48 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 22:06:50 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:06:50 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:06:50 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:06:52 | services.google_sheets_exporter | [32mINFO[0m | Added row 3 to Google Sheet with transcript
+2025-09-02 22:06:52 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:06:52 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:06:57 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (312)375-3744GQ.mp3
+2025-09-02 22:06:57 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:06:57 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(312)375-3744GQ_transcription.txt
+2025-09-02 22:06:57 | __main__ | [32mINFO[0m | Analysis completed in 385.9s - Google Sheets
+2025-09-02 22:06:57 | services.file_queue_service | [32mINFO[0m | Marked as processed: (312)375-3744GQ.mp3
+2025-09-02 22:06:57 | __main__ | [32mINFO[0m | Successfully processed: (312)375-3744GQ.mp3
+2025-09-02 22:06:59 | __main__ | [32mINFO[0m | 
+--- Processing file 2/4: (313)375-3744GQ.mp3 ---
+2025-09-02 22:06:59 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:06:59 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 22:08:12 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 22:08:12 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:08:12 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 22:08:40 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:08:40 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:08:54 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:08:55 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:08:55 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 22:09:56 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 22:09:56 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:09:56 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 22:09:57 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:09:57 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:09:57 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:09:59 | services.google_sheets_exporter | [32mINFO[0m | Added row 4 to Google Sheet with transcript
+2025-09-02 22:09:59 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:09:59 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:10:08 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (313)375-3744GQ.mp3
+2025-09-02 22:10:08 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:10:08 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(313)375-3744GQ_transcription.txt
+2025-09-02 22:10:08 | __main__ | [32mINFO[0m | Analysis completed in 177.8s - Google Sheets
+2025-09-02 22:10:08 | services.file_queue_service | [32mINFO[0m | Marked as processed: (313)375-3744GQ.mp3
+2025-09-02 22:10:08 | __main__ | [32mINFO[0m | Successfully processed: (313)375-3744GQ.mp3
+2025-09-02 22:10:10 | __main__ | [32mINFO[0m | 
+--- Processing file 3/4: (270)-320-8767MISSED.mp3 ---
+2025-09-02 22:10:10 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:10:10 | services.transcription_service | [32mINFO[0m | Transcribing: (270)-320-8767MISSED.mp3
+2025-09-02 22:17:41 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 22:17:41 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 22:17:41 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 22:17:43 | services.llm_analyzer | [31mERROR[0m | LLM analyzer initialization failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:17:43 | __main__ | [31mERROR[0m | Initialization failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:17:43 | __main__ | [31mERROR[0m | Batch processing failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:17:43 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 22:18:25 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 22:18:25 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 22:18:25 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 22:18:27 | services.llm_analyzer | [31mERROR[0m | LLM analyzer initialization failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:18:27 | __main__ | [31mERROR[0m | Initialization failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:18:27 | __main__ | [31mERROR[0m | Batch processing failed: Cannot connect to Ollama at http://localhost:11434: Cannot connect to host localhost:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:18:27 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 22:20:07 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 22:20:07 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 22:20:07 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 22:20:09 | services.llm_analyzer | [31mERROR[0m | LLM analyzer initialization failed: Cannot connect to Ollama at http://127.0.0.1:11434: Cannot connect to host 127.0.0.1:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:20:09 | __main__ | [31mERROR[0m | Initialization failed: Cannot connect to Ollama at http://127.0.0.1:11434: Cannot connect to host 127.0.0.1:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:20:09 | __main__ | [31mERROR[0m | Batch processing failed: Cannot connect to Ollama at http://127.0.0.1:11434: Cannot connect to host 127.0.0.1:11434 ssl:default [The remote computer refused the network connection]
+2025-09-02 22:20:09 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 22:21:27 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 22:21:27 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 22:21:27 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 22:21:27 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 22:21:27 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 22:22:04 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 22:22:04 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 22:22:06 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:22:07 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:22:16 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 22:22:21 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 22:22:21 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 22:22:21 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 22:22:21 | services.file_queue_service | [32mINFO[0m | Found 4 unprocessed audio files
+2025-09-02 22:22:21 | __main__ | [32mINFO[0m | Found 4 files to process
+2025-09-02 22:22:21 | __main__ | [32mINFO[0m | 
+--- Processing file 1/4: (312)375-3744GQ.mp3 ---
+2025-09-02 22:22:25 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:22:25 | services.transcription_service | [32mINFO[0m | Transcribing: (312)375-3744GQ.mp3
+2025-09-02 22:26:35 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.80
+2025-09-02 22:26:35 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:26:35 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (312)375-3744GQ.mp3
+2025-09-02 22:27:12 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:27:12 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:27:25 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:27:26 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:27:26 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: general_inquiry
+2025-09-02 22:28:07 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:28:07 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 22:28:08 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:28:08 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:28:08 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:28:11 | services.google_sheets_exporter | [32mINFO[0m | Added row 5 to Google Sheet with transcript
+2025-09-02 22:28:11 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:28:11 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:28:20 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (312)375-3744GQ.mp3
+2025-09-02 22:28:20 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:28:20 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(312)375-3744GQ_transcription.txt
+2025-09-02 22:28:20 | __main__ | [32mINFO[0m | Analysis completed in 347.8s - Google Sheets
+2025-09-02 22:28:20 | services.file_queue_service | [32mINFO[0m | Marked as processed: (312)375-3744GQ.mp3
+2025-09-02 22:28:20 | __main__ | [32mINFO[0m | Successfully processed: (312)375-3744GQ.mp3
+2025-09-02 22:28:22 | __main__ | [32mINFO[0m | 
+--- Processing file 2/4: (313)375-3744GQ.mp3 ---
+2025-09-02 22:28:22 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:28:22 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 22:29:33 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 22:29:33 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:29:33 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 22:29:49 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:29:49 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:30:02 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:30:03 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:30:03 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 22:30:43 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:30:43 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities...
+2025-09-02 22:30:44 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:30:44 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:30:44 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:30:45 | services.google_sheets_exporter | [32mINFO[0m | Added row 6 to Google Sheet with transcript
+2025-09-02 22:30:45 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:30:45 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:30:51 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (313)375-3744GQ.mp3
+2025-09-02 22:30:51 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:30:51 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(313)375-3744GQ_transcription.txt
+2025-09-02 22:30:51 | __main__ | [32mINFO[0m | Analysis completed in 142.2s - Google Sheets
+2025-09-02 22:30:51 | services.file_queue_service | [32mINFO[0m | Marked as processed: (313)375-3744GQ.mp3
+2025-09-02 22:30:51 | __main__ | [32mINFO[0m | Successfully processed: (313)375-3744GQ.mp3
+2025-09-02 22:40:18 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 22:40:18 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 22:40:18 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 22:40:18 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 22:40:18 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 22:40:56 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 22:40:56 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 22:40:59 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:41:00 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 22:41:11 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 22:41:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 22:41:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 22:41:16 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 22:41:16 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 22:41:16 | services.file_queue_service | [32mINFO[0m | Found 4 unprocessed audio files
+2025-09-02 22:41:16 | __main__ | [32mINFO[0m | Found 4 files to process
+2025-09-02 22:41:16 | __main__ | [32mINFO[0m | 
+--- Processing file 1/4: (312)375-3744GQ.mp3 ---
+2025-09-02 22:41:22 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:41:22 | services.transcription_service | [32mINFO[0m | Transcribing: (312)375-3744GQ.mp3
+2025-09-02 22:45:34 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.80
+2025-09-02 22:45:34 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:45:34 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (312)375-3744GQ.mp3
+2025-09-02 22:46:10 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:46:10 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:46:22 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:46:23 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:46:23 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: general_inquiry
+2025-09-02 22:47:10 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:47:10 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities (conservative approach)...
+2025-09-02 22:47:20 | services.opportunity_detector | [32mINFO[0m | Conservative opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:47:20 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:47:20 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:47:22 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 22:47:22 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:47:22 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:47:31 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (312)375-3744GQ.mp3
+2025-09-02 22:47:31 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:47:31 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(312)375-3744GQ_transcription.txt
+2025-09-02 22:47:31 | __main__ | [32mINFO[0m | Analysis completed in 363.9s - Google Sheets
+2025-09-02 22:47:31 | services.file_queue_service | [32mINFO[0m | Marked as processed: (312)375-3744GQ.mp3
+2025-09-02 22:47:31 | __main__ | [32mINFO[0m | Successfully processed: (312)375-3744GQ.mp3
+2025-09-02 22:47:33 | __main__ | [32mINFO[0m | 
+--- Processing file 2/4: (313)375-3744GQ.mp3 ---
+2025-09-02 22:47:33 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:47:33 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 22:48:45 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 22:48:45 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:48:45 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 22:49:15 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:49:15 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:49:24 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:49:25 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:49:25 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 22:50:10 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:50:10 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities (conservative approach)...
+2025-09-02 22:50:20 | services.opportunity_detector | [32mINFO[0m | Conservative opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:50:20 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:50:20 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:50:21 | services.google_sheets_exporter | [32mINFO[0m | Added row 3 to Google Sheet with transcript
+2025-09-02 22:50:21 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:50:21 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:50:30 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (313)375-3744GQ.mp3
+2025-09-02 22:50:30 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:50:30 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(313)375-3744GQ_transcription.txt
+2025-09-02 22:50:30 | __main__ | [32mINFO[0m | Analysis completed in 166.5s - Google Sheets
+2025-09-02 22:50:30 | services.file_queue_service | [32mINFO[0m | Marked as processed: (313)375-3744GQ.mp3
+2025-09-02 22:50:30 | __main__ | [32mINFO[0m | Successfully processed: (313)375-3744GQ.mp3
+2025-09-02 22:50:32 | __main__ | [32mINFO[0m | 
+--- Processing file 3/4: (270)-320-8767MISSED.mp3 ---
+2025-09-02 22:50:32 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:50:32 | services.transcription_service | [32mINFO[0m | Transcribing: (270)-320-8767MISSED.mp3
+2025-09-02 22:56:47 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.87
+2025-09-02 22:56:47 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:56:47 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (270)-320-8767MISSED.mp3
+2025-09-02 22:57:29 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:57:29 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:57:44 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:57:46 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:57:46 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: insurance_verification
+2025-09-02 22:58:47 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 22:58:47 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 22:58:47 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities (conservative approach)...
+2025-09-02 22:58:57 | services.opportunity_detector | [32mINFO[0m | Conservative opportunity assessment: HIGH-VALUE MISSED
+2025-09-02 22:58:57 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 22:58:57 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 22:58:59 | services.google_sheets_exporter | [32mINFO[0m | Added row 4 to Google Sheet with transcript
+2025-09-02 22:58:59 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 22:58:59 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 22:59:09 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (270)-320-8767MISSED.mp3
+2025-09-02 22:59:09 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 22:59:09 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(270)-320-8767MISSED_transcription.txt
+2025-09-02 22:59:09 | __main__ | [32mINFO[0m | Analysis completed in 505.5s - Google Sheets
+2025-09-02 22:59:09 | services.file_queue_service | [32mINFO[0m | Marked as processed: (270)-320-8767MISSED.mp3
+2025-09-02 22:59:09 | __main__ | [32mINFO[0m | Successfully processed: (270)-320-8767MISSED.mp3
+2025-09-02 22:59:11 | __main__ | [32mINFO[0m | 
+--- Processing file 4/4: (271)-320-8767MISSED.mp3 ---
+2025-09-02 22:59:11 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 22:59:11 | services.transcription_service | [32mINFO[0m | Transcribing: (271)-320-8767MISSED.mp3
+2025-09-02 22:59:42 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.96
+2025-09-02 22:59:42 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 22:59:42 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (271)-320-8767MISSED.mp3
+2025-09-02 22:59:46 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 22:59:46 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 22:59:52 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 22:59:53 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 22:59:53 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: insurance_verification
+2025-09-02 23:00:54 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 23:00:54 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:00:54 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities (conservative approach)...
+2025-09-02 23:01:04 | services.opportunity_detector | [32mINFO[0m | Conservative opportunity assessment: NO SIGNIFICANT OPPORTUNITY MISSED
+2025-09-02 23:01:04 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:01:04 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 23:01:06 | services.google_sheets_exporter | [32mINFO[0m | Added row 5 to Google Sheet with transcript
+2025-09-02 23:01:06 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:01:06 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 23:01:06 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(271)-320-8767MISSED_transcription.txt
+2025-09-02 23:01:06 | __main__ | [32mINFO[0m | Analysis completed in 112.6s - Google Sheets
+2025-09-02 23:01:06 | services.file_queue_service | [32mINFO[0m | Marked as processed: (271)-320-8767MISSED.mp3
+2025-09-02 23:01:06 | __main__ | [32mINFO[0m | Successfully processed: (271)-320-8767MISSED.mp3
+2025-09-02 23:01:08 | __main__ | [32mINFO[0m | Batch processing completed successfully!
+2025-09-02 23:01:08 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 23:11:40 | services.file_queue_service | [32mINFO[0m | No processed files database found, starting fresh
+2025-09-02 23:11:40 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 23:11:40 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 23:11:40 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 23:11:40 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 23:12:19 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 23:12:19 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 23:12:32 | huggingface_hub.utils._http | [33mWARNING[0m | '(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 87f3bafc-745e-4f9d-aa19-26e9ad63c725)')' thrown while requesting HEAD https://huggingface.co/pyannote/speaker-diarization-3.1/resolve/main/config.yaml
+2025-09-02 23:12:33 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 23:12:34 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 23:12:46 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 23:12:50 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 23:12:50 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 23:12:50 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 23:12:50 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 23:12:50 | services.file_queue_service | [32mINFO[0m | Found 4 unprocessed audio files
+2025-09-02 23:12:50 | __main__ | [32mINFO[0m | Found 4 files to process
+2025-09-02 23:12:50 | __main__ | [32mINFO[0m | 
+--- Processing file 1/4: (312)375-3744GQ.mp3 ---
+2025-09-02 23:12:54 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:12:54 | services.transcription_service | [32mINFO[0m | Transcribing: (312)375-3744GQ.mp3
+2025-09-02 23:17:08 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.80
+2025-09-02 23:17:08 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:17:08 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (312)375-3744GQ.mp3
+2025-09-02 23:17:45 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:17:45 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:17:57 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:17:58 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:17:58 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: general_inquiry
+2025-09-02 23:18:42 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:18:42 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:18:44 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: MISSED OPPORTUNITY
+2025-09-02 23:18:44 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:18:44 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 23:18:46 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 23:18:46 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:18:46 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 23:18:52 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (312)375-3744GQ.mp3
+2025-09-02 23:18:52 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 23:18:52 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(312)375-3744GQ_transcription.txt
+2025-09-02 23:18:52 | __main__ | [32mINFO[0m | Analysis completed in 353.3s - Google Sheets
+2025-09-02 23:18:52 | services.file_queue_service | [32mINFO[0m | Marked as processed: (312)375-3744GQ.mp3
+2025-09-02 23:18:52 | __main__ | [32mINFO[0m | Successfully processed: (312)375-3744GQ.mp3
+2025-09-02 23:18:54 | __main__ | [32mINFO[0m | 
+--- Processing file 2/4: (313)375-3744GQ.mp3 ---
+2025-09-02 23:18:54 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:18:54 | services.transcription_service | [32mINFO[0m | Transcribing: (313)375-3744GQ.mp3
+2025-09-02 23:20:06 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.92
+2025-09-02 23:20:06 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:20:06 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (313)375-3744GQ.mp3
+2025-09-02 23:20:37 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:20:37 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:20:46 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:20:47 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:20:47 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 23:21:35 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:21:35 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:21:35 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity
+2025-09-02 23:21:35 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:21:35 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 23:21:36 | services.google_sheets_exporter | [32mINFO[0m | Added row 3 to Google Sheet with transcript
+2025-09-02 23:21:36 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:21:36 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 23:21:36 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(313)375-3744GQ_transcription.txt
+2025-09-02 23:21:36 | __main__ | [32mINFO[0m | Analysis completed in 160.3s - Google Sheets
+2025-09-02 23:21:36 | services.file_queue_service | [32mINFO[0m | Marked as processed: (313)375-3744GQ.mp3
+2025-09-02 23:21:36 | __main__ | [32mINFO[0m | Successfully processed: (313)375-3744GQ.mp3
+2025-09-02 23:21:38 | __main__ | [32mINFO[0m | 
+--- Processing file 3/4: (270)-320-8767MISSED.mp3 ---
+2025-09-02 23:21:38 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:21:38 | services.transcription_service | [32mINFO[0m | Transcribing: (270)-320-8767MISSED.mp3
+2025-09-02 23:29:26 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.87
+2025-09-02 23:29:26 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:29:26 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (270)-320-8767MISSED.mp3
+2025-09-02 23:30:29 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:30:29 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:30:44 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:30:46 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:30:46 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: insurance_verification
+2025-09-02 23:31:47 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 23:31:47 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:31:47 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:31:47 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity
+2025-09-02 23:31:47 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:31:47 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 23:31:49 | services.google_sheets_exporter | [32mINFO[0m | Added row 4 to Google Sheet with transcript
+2025-09-02 23:31:49 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:31:49 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 23:31:49 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(270)-320-8767MISSED_transcription.txt
+2025-09-02 23:31:49 | __main__ | [32mINFO[0m | Analysis completed in 608.2s - Google Sheets
+2025-09-02 23:31:49 | services.file_queue_service | [32mINFO[0m | Marked as processed: (270)-320-8767MISSED.mp3
+2025-09-02 23:31:49 | __main__ | [32mINFO[0m | Successfully processed: (270)-320-8767MISSED.mp3
+2025-09-02 23:31:51 | __main__ | [32mINFO[0m | 
+--- Processing file 4/4: (271)-320-8767MISSED.mp3 ---
+2025-09-02 23:31:51 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:31:51 | services.transcription_service | [32mINFO[0m | Transcribing: (271)-320-8767MISSED.mp3
+2025-09-02 23:32:22 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.96
+2025-09-02 23:32:22 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:32:22 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (271)-320-8767MISSED.mp3
+2025-09-02 23:32:29 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:32:29 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:32:35 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:32:36 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:32:36 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: insurance_verification
+2025-09-02 23:33:37 | services.llm_analyzer | [31mERROR[0m | LLM generation error: 
+2025-09-02 23:33:37 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:33:37 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:33:38 | services.opportunity_detector | [32mINFO[0m | LLM opportunity assessment: MISSED OPPORTUNITY
+2025-09-02 23:33:38 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:33:38 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: True (type: <class 'bool'>)
+2025-09-02 23:33:40 | services.google_sheets_exporter | [32mINFO[0m | Added row 5 to Google Sheet with transcript
+2025-09-02 23:33:40 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:33:40 | services.google_sheets_exporter | [32mINFO[0m | HIGH-VALUE OPPORTUNITY DETECTED - SENDING EMAIL ALERT...
+2025-09-02 23:33:45 | services.email_alert_service | [32mINFO[0m | High-opportunity alert sent for (271)-320-8767MISSED.mp3
+2025-09-02 23:33:45 | services.google_sheets_exporter | [32mINFO[0m | EMAIL ALERT SENT SUCCESSFULLY!
+2025-09-02 23:33:45 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(271)-320-8767MISSED_transcription.txt
+2025-09-02 23:33:45 | __main__ | [32mINFO[0m | Analysis completed in 106.8s - Google Sheets
+2025-09-02 23:33:45 | services.file_queue_service | [32mINFO[0m | Marked as processed: (271)-320-8767MISSED.mp3
+2025-09-02 23:33:45 | __main__ | [32mINFO[0m | Successfully processed: (271)-320-8767MISSED.mp3
+2025-09-02 23:33:47 | __main__ | [32mINFO[0m | Batch processing completed successfully!
+2025-09-02 23:33:47 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-02 23:34:55 | services.file_queue_service | [32mINFO[0m | Loaded 4 processed files from database
+2025-09-02 23:34:55 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System for batch processing...
+2025-09-02 23:34:55 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-02 23:34:55 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-02 23:34:55 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large-v3
+2025-09-02 23:35:58 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-02 23:35:58 | services.diarization_service | [32mINFO[0m | Loading Pyannote diarization model...
+2025-09-02 23:36:00 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 23:36:02 | speechbrain.utils.torch_audio_backend | [33mWARNING[0m | The torchaudio backend is switched to 'soundfile'. Note that 'sox_io' is not supported on Windows.
+2025-09-02 23:36:13 | services.diarization_service | [32mINFO[0m | Diarization model loaded successfully
+2025-09-02 23:36:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with transcript column
+2025-09-02 23:36:16 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-02 23:36:16 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-02 23:36:16 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-02 23:36:16 | services.file_queue_service | [32mINFO[0m | Found 2 unprocessed audio files
+2025-09-02 23:36:16 | __main__ | [32mINFO[0m | Found 2 files to process
+2025-09-02 23:36:16 | __main__ | [32mINFO[0m | 
+--- Processing file 1/2: (228)427-0576r.mp3 ---
+2025-09-02 23:36:21 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:36:21 | services.transcription_service | [32mINFO[0m | Transcribing: (228)427-0576r.mp3
+2025-09-02 23:42:11 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.78
+2025-09-02 23:42:11 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:42:11 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (228)427-0576r.mp3
+2025-09-02 23:43:33 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:43:33 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:43:43 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:43:44 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:43:44 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: appointment_booking
+2025-09-02 23:44:33 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:44:33 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:44:33 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity
+2025-09-02 23:44:33 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:44:33 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 23:44:36 | services.google_sheets_exporter | [32mINFO[0m | Added row 2 to Google Sheet with transcript
+2025-09-02 23:44:36 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:44:36 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 23:44:36 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(228)427-0576r_transcription.txt
+2025-09-02 23:44:36 | __main__ | [32mINFO[0m | Analysis completed in 497.3s - Google Sheets
+2025-09-02 23:44:36 | services.file_queue_service | [32mINFO[0m | Marked as processed: (228)427-0576r.mp3
+2025-09-02 23:44:36 | __main__ | [32mINFO[0m | Successfully processed: (228)427-0576r.mp3
+2025-09-02 23:44:38 | __main__ | [32mINFO[0m | 
+--- Processing file 2/2: (233)427-0576r.mp3 ---
+2025-09-02 23:44:38 | __main__ | [32mINFO[0m | Transcribing...
+2025-09-02 23:44:38 | services.transcription_service | [32mINFO[0m | Transcribing: (233)427-0576r.mp3
+2025-09-02 23:47:21 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.83
+2025-09-02 23:47:21 | __main__ | [32mINFO[0m | Diarizing speakers...
+2025-09-02 23:47:21 | services.diarization_service | [32mINFO[0m | Performing speaker diarization: (233)427-0576r.mp3
+2025-09-02 23:48:17 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 2 speakers
+2025-09-02 23:48:17 | __main__ | [32mINFO[0m | Generating summary...
+2025-09-02 23:48:22 | __main__ | [32mINFO[0m | Extracting representative name...
+2025-09-02 23:48:23 | __main__ | [32mINFO[0m | Scoring performance...
+2025-09-02 23:48:23 | services.performance_scorer | [32mINFO[0m | Scoring call performance for: service_inquiry
+2025-09-02 23:49:13 | __main__ | [32mINFO[0m | Detecting opportunities...
+2025-09-02 23:49:13 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with improved classification...
+2025-09-02 23:49:13 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity
+2025-09-02 23:49:13 | __main__ | [32mINFO[0m | Exporting...
+2025-09-02 23:49:13 | services.google_sheets_exporter | [32mINFO[0m | DEBUGGING - High value missed: False (type: <class 'bool'>)
+2025-09-02 23:49:15 | services.google_sheets_exporter | [32mINFO[0m | Added row 3 to Google Sheet with transcript
+2025-09-02 23:49:15 | services.google_sheets_exporter | [32mINFO[0m | Results exported to Google Sheets
+2025-09-02 23:49:15 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-02 23:49:15 | services.google_sheets_exporter | [32mINFO[0m | Detailed transcript exported to: D:\Upwork\Sultan Dental Project\backend\outputs\(233)427-0576r_transcription.txt
+2025-09-02 23:49:15 | __main__ | [32mINFO[0m | Analysis completed in 274.9s - Google Sheets
+2025-09-02 23:49:15 | services.file_queue_service | [32mINFO[0m | Marked as processed: (233)427-0576r.mp3
+2025-09-02 23:49:15 | __main__ | [32mINFO[0m | Successfully processed: (233)427-0576r.mp3
+2025-09-02 23:49:17 | __main__ | [32mINFO[0m | Batch processing completed successfully!
+2025-09-02 23:49:17 | __main__ | [32mINFO[0m | Cleanup completed

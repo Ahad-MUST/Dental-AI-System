@@ -1,0 +1,37 @@
+DENTAL CALL TRANSCRIPTION
+==================================================
+
+File: (323)375-3744GQ.mp3
+Date: 2025-09-03 12:17:43
+Duration: 0.0 seconds
+Speakers: 3
+Representative: Tamina
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:03] SPEAKER_00: Thank you for calling.
+[00:03-00:04] SPEAKER_00: This is your call.
+[00:04-00:06] SPEAKER_00: This is on the...
+[00:06-00:08] SPEAKER_00: Hi, I'm calling.
+[00:08-00:12] SPEAKER_02: I received a phone call from your office before I was at work
+[00:12-00:16] SPEAKER_02: to confirm my appointment tomorrow at 10.30.
+[00:17-00:18] SPEAKER_01: What's your name?
+[00:19-00:20] SPEAKER_02: Tamina Sultana.
+[00:22-00:22] SPEAKER_01: Oh, perfect.
+[00:22-00:23] SPEAKER_01: Yeah.
+[00:24-00:25] SPEAKER_01: All right.
+[00:25-00:26] SPEAKER_02: So just wanted to confirm that.
+[00:26-00:26] SPEAKER_02: All right.
+[00:26-00:27] SPEAKER_02: Sounds good.
+[00:27-00:27] SPEAKER_02: Thanks.
+[00:27-00:28] SPEAKER_01: Okay, bye.
+[00:28-00:28] SPEAKER_01: All right, bye.
+
+==================================================
+FULL TRANSCRIPT (No Timestamps):
+-----------------------------------
+This call may be recorded for quality and training purposes. Thank you for calling. This is your call. This is on the... Hi, I'm calling. I received a phone call from your office before I was at work to confirm my appointment tomorrow at 10.30. What's your name? Tamina Sultana. Oh, perfect. Yeah. All right. So just wanted to confirm that. All right. Sounds good. Thanks. Okay, bye. All right, bye.
+
+==================================================
+End of Transcription
