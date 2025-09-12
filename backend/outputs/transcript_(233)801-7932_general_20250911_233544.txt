@@ -1,0 +1,50 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (233)801-7932_general.mp3
+Date: 2025-09-11 23:35:45
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.73/100
+Call Summary: The main purpose of the call was for Omega, a patient experiencing severe pain in their lower right molar, to secure an urgent appointment at Lincolnwood Family Dental. The call resulted in scheduling Omega's visit with Dr. Bates for 3 o'clock that day, ensuring timely medical attention.
+High-Value Missed Opportunity: YES
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: negative (confidence: 0.850)
+Staff Sentiment: positive (confidence: 1.000)
+Overall Sentiment: neutral (confidence: 0.700)
+Summary: The patient expressed significant fear and pain, indicating a negative sentiment. The staff maintained a positive and professional demeanor throughout the call, successfully scheduling an appointment and providing reassurance, which helped de-escalate the situation.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:05] SPEAKER_00: Lincolnwood Family Dental. This is Whitney. How can I help you?
+[00:07-00:11] SPEAKER_00: Yeah. Hi. This is Omega. I'm a patient there.
+[00:13-00:17] SPEAKER_01: I need to be seen today. I'm in a lot of pain.
+[00:18-00:20] SPEAKER_00: Okay. We can see you at 3 o'clock.
+[00:22-00:24] SPEAKER_00: Who can see me? Is Dr. Bates there?
+[00:25-00:26] SPEAKER_01: Yes. 3 o'clock.
+[00:27-00:28] SPEAKER_01: Thank you so much.
+[00:28-00:32] SPEAKER_01: What area is hurting? And I need the last name also.
+[00:33-00:36] SPEAKER_00: Khan. K-H-A-N is the last name.
+[00:38-00:42] SPEAKER_00: And my lower molar.
+[00:43-00:45] SPEAKER_01: Left or right side?
+[00:45-00:46] SPEAKER_01: Right. Right.
+[00:48-00:49] SPEAKER_00: What was the first name again?
+[00:51-00:54] SPEAKER_00: Humira. H-U-M-E-R-A.
+[00:57-00:57] SPEAKER_01: Okay.
+[01:03-01:04] SPEAKER_01: Okay. We'll see you today at 3.
+[01:05-01:07] SPEAKER_00: Okay. Thank you so much.
+[01:07-01:08] SPEAKER_00: No problem. See you soon.
+[01:08-01:09] SPEAKER_00: Okay.
+[01:09-01:09] SPEAKER_00: Bye-bye.
+
+======================================================================
+End of Analysis Report

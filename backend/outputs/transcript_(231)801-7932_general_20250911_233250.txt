@@ -1,0 +1,47 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (231)801-7932_general.mp3
+Date: 2025-09-11 23:32:51
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.90/100
+Call Summary: The main purpose of the call was to obtain dental forms for school requirements. During the conversation, Whitney from Lincolnwood Family Dental collected the necessary information about the two daughters (Zara and Maya Crisan) and agreed to email the completed forms to Ileana Crisan at her provided email address, ensuring that all needed paperwork would be sent promptly.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.700)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was neutral overall with no strong emotional indicators from the patient. The staff maintained a professional and helpful tone, which contributed to a positive sentiment. The primary purpose of the call was to request dental forms for school, and both parties communicated effectively without any reported issues or concerns.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:06] SPEAKER_00: Lincolnwood Family Dental, this is Whitney. How can I help you?
+[00:07-00:11] SPEAKER_00: Hi, I am calling because we need some dental forms for school.
+[00:13-00:14] SPEAKER_01: Okay, can I get your name?
+[00:15-00:20] SPEAKER_01: My name is Ileana Crisan, and I can provide you with my daughter's names.
+[00:21-00:25] SPEAKER_00: I have two daughters. They both need a dental form.
+[00:25-00:30] SPEAKER_01: Zara Crisan, Z-A-R-A, last name Crisan, C-R-I-S-A-N.
+[00:32-00:34] SPEAKER_00: And the other daughter's name?
+[00:35-00:41] SPEAKER_00: Maya Crisan, M-A-Y-A.
+[00:45-00:47] SPEAKER_01: Okay, give me one second.
+[00:48-00:49] SPEAKER_00: Sure.
+[00:59-01:04] SPEAKER_01: I can email them to you after I have the doctor fill them out and sign them.
+[01:04-01:10] SPEAKER_00: I have your email as I-C-R-I-S-A-N-2-7 at gmail.com.
+[01:10-01:11] SPEAKER_00: Yes, that's correct.
+[01:12-01:15] SPEAKER_01: Okay, I will send them there once they are filled out.
+[01:15-01:16] SPEAKER_01: Okay, thank you so much.
+[01:17-01:18] SPEAKER_01: You're welcome. Bye-bye.
+[01:18-01:18] SPEAKER_01: Bye.
+
+======================================================================
+End of Analysis Report

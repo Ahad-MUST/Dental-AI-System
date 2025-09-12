@@ -1,0 +1,142 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (847)529-2911_booked.mp3
+Date: 2025-09-11 22:46:40
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.71/100
+Call Summary: The main purpose of the call was to schedule a dental cleaning appointment for Chelsea Jordan. During the conversation, various dates and times were discussed, but ultimately, an appointment was set for Thursday, September 18th, at 5:00 PM, with a different dentist due to availability constraints. The total cost for the cleaning and exam was confirmed at $109, to be paid out of pocket via credit card.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.850)
+Staff Sentiment: neutral (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.750)
+Summary: The call was generally neutral, with both the patient and staff maintaining a calm demeanor. The primary topic of discussion centered around payment, appointment scheduling, and insurance, without any significant emotional indicators. The patient's speech was brief and focused on practical matters, while the staff maintained a professional tone throughout.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:05] SPEAKER_00: Lincolnwood Family Dental, this is Whitney.
+[00:05-00:05] SPEAKER_00: How can I help you?
+[00:06-00:08] SPEAKER_00: Whitney, this is Chelsea Jordan.
+[00:08-00:11] SPEAKER_01: Can I make an appointment for a cleaning?
+[00:12-00:14] SPEAKER_01: Okay, spell the last name for me.
+[00:15-00:16] SPEAKER_01: Jordan, D-O-R-D-A-N.
+[00:27-00:27] SPEAKER_01: Okay.
+[00:27-00:27] SPEAKER_01: Okay.
+[00:29-00:42] SPEAKER_01: The next opening I would have would be Thursday, September 4th at 1030.
+[00:47-00:53] SPEAKER_01: I'm looking something in the afternoon, kind of the evening.
+[00:55-00:56] SPEAKER_00: Evening.
+[00:57-01:02] SPEAKER_01: I can do a 4.30 or a 5 o'clock Thursday, September 18th.
+[01:03-01:07] SPEAKER_01: Or I can do a 4 o'clock September 11th, 3 or 4.
+[01:08-01:11] SPEAKER_00: The 18 is the 5 o'clock, the last one?
+[01:12-01:12] SPEAKER_01: Yes.
+[01:14-01:14] SPEAKER_01: Okay.
+[01:14-01:17] SPEAKER_01: Can I be there about 5.15 or not, Whitney?
+[01:18-01:18] SPEAKER_01: No.
+[01:18-01:24] SPEAKER_01: 15 minutes is the grace period, and it's typically like a 30 to 35-minute appointment,
+[01:24-01:25] SPEAKER_00: so that would eat up most of your appointment.
+[01:27-01:29] SPEAKER_00: Unless you were okay with seeing a different doctor.
+[01:36-01:41] SPEAKER_00: 5 o'clock on Thursday, the 18th.
+[01:41-01:41] SPEAKER_00: Mm-hmm.
+[01:42-01:44] SPEAKER_00: And what is the hours on Saturday?
+[01:45-01:50] SPEAKER_01: Saturday is 9 to 1, and Dr. Asana is not here on Saturdays either.
+[01:51-01:56] SPEAKER_01: And the next time we had a Saturday opening would be the 4th of October.
+[01:58-01:59] SPEAKER_00: Yeah.
+[01:59-02:02] SPEAKER_00: Yeah, but that time it doesn't work with me either.
+[02:03-02:03] SPEAKER_01: So you know what?
+[02:04-02:10] SPEAKER_01: I'm going for like a 5.15, 5.30, because, you know, I get off from work at 5,
+[02:10-02:12] SPEAKER_00: so it's, you know, seven miles away from you guys.
+[02:15-02:16] SPEAKER_00: But you know what?
+[02:16-02:17] SPEAKER_01: I really need the cleaning.
+[02:19-02:21] SPEAKER_01: Are you okay with seeing a different doctor?
+[02:21-02:24] SPEAKER_01: Because that might open up some opportunity.
+[02:26-02:28] SPEAKER_00: Well, who else isn't there?
+[02:28-02:29] SPEAKER_00: I haven't been there for a while.
+[02:29-02:32] SPEAKER_00: When was the last time that I did the cleaning?
+[02:32-02:32] SPEAKER_01: In 2022.
+[02:34-02:35] SPEAKER_01: Oh, my God.
+[02:35-02:36] SPEAKER_01: That's horrible.
+[02:37-02:39] SPEAKER_01: So you may need to take x-rays and everything.
+[02:41-02:42] SPEAKER_00: Yeah, probably.
+[02:43-02:46] SPEAKER_00: And how much is for the cleaning, regular cleaning?
+[02:47-02:48] SPEAKER_00: Are you using insurance?
+[02:49-02:52] SPEAKER_01: No, I'm paying out of pocket cash.
+[02:53-02:54] SPEAKER_01: Okay.
+[02:54-02:54] SPEAKER_01: One second.
+[03:05-03:07] SPEAKER_01: $109 for the cleaning and the exam.
+[03:08-03:09] SPEAKER_01: Okay.
+[03:09-03:09] SPEAKER_01: $109.
+[03:10-03:10] SPEAKER_01: All right.
+[03:11-03:12] SPEAKER_01: Credit card is fine, right?
+[03:12-03:13] SPEAKER_00: Mm-hmm.
+[03:13-03:14] SPEAKER_00: Okay.
+[03:15-03:19] SPEAKER_00: Okay, let's go back with the date and time.
+[03:20-03:23] SPEAKER_01: If I see somebody else, what will be the time?
+[03:24-03:26] SPEAKER_01: Because I'm looking like a 5.30 one.
+[03:27-03:28] SPEAKER_01: 5.15, 5.30.
+[03:30-03:31] SPEAKER_00: Okay.
+[03:33-03:34] SPEAKER_00: Okay.
+[03:37-03:37] SPEAKER_01: Okay.
+[03:39-03:39] SPEAKER_01: Okay.
+[03:41-03:41] SPEAKER_01: Okay.
+[03:42-03:43] SPEAKER_01: Okay.
+[03:44-03:44] SPEAKER_00: Okay.
+[03:44-03:45] SPEAKER_00: Okay.
+[03:45-03:46] SPEAKER_00: Okay.
+[03:46-03:47] SPEAKER_00: Okay.
+[03:47-03:47] SPEAKER_00: Okay.
+[03:47-03:47] SPEAKER_00: Okay.
+[03:47-03:47] SPEAKER_00: Okay.
+[03:47-03:47] SPEAKER_00: Okay.
+[03:48-03:49] SPEAKER_00: Okay.
+[03:51-03:52] SPEAKER_00: Okay.
+[03:53-03:53] SPEAKER_01: Okay.
+[03:59-04:00] SPEAKER_01: Okay.
+[04:06-04:06] SPEAKER_00: Okay.
+[04:08-04:08] SPEAKER_01: Okay.
+[04:10-04:10] SPEAKER_01: Okay.
+[04:11-04:11] SPEAKER_01: Okay.
+[04:12-04:12] SPEAKER_01: Okay.
+[04:13-04:13] SPEAKER_01: Okay.
+[04:14-04:14] SPEAKER_01: Okay.
+[04:14-04:14] SPEAKER_01: Okay.
+[04:14-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:15] SPEAKER_01: Okay.
+[04:15-04:16] SPEAKER_01: Okay.
+[04:18-04:19] SPEAKER_00: Okay.
+[04:19-04:20] SPEAKER_00: Okay.
+[04:20-04:20] SPEAKER_00: Okay.
+[04:21-04:21] SPEAKER_00: Okay.
+[04:24-04:24] SPEAKER_01: Okay.
+[04:25-04:26] SPEAKER_01: Okay.
+[04:26-04:27] SPEAKER_01: Okay.
+[04:29-04:29] SPEAKER_01: Okay.
+[04:29-04:29] SPEAKER_01: Okay.
+[04:29-04:29] SPEAKER_01: Okay.
+[04:29-04:29] SPEAKER_01: Okay.
+[04:29-04:29] SPEAKER_01: Okay.
+[04:31-04:32] SPEAKER_01: Okay.
+[04:34-04:34] SPEAKER_00: Okay.
+[04:35-04:35] SPEAKER_00: Okay.
+[04:35-04:35] SPEAKER_00: Okay.
+[04:37-04:37] SPEAKER_00: Okay.
+[04:38-04:39] SPEAKER_00: Okay.
+[04:39-04:39] SPEAKER_00: Okay.
+
+======================================================================
+End of Analysis Report

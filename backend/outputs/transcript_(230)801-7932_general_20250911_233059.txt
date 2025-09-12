@@ -1,0 +1,47 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (230)801-7932_general.mp3
+Date: 2025-09-11 23:31:00
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Tamina
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.71/100
+Call Summary: The main purpose of the call was to confirm an appointment for Tamina Sultana at 10:30 AM the following day. The call confirmed the appointment and ended with both parties agreeing on the details.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.700)
+Staff Sentiment: positive (confidence: 1.000)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was neutral overall, with the patient showing no strong emotions and a slight sense of disappointment. The staff maintained a positive and professional tone throughout, confirming an appointment and providing clear information. There were no specific dental-related issues discussed such as pain or anxiety.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:03] SPEAKER_00: Thank you for calling.
+[00:03-00:04] SPEAKER_00: This is your call.
+[00:04-00:06] SPEAKER_00: This is on the...
+[00:06-00:08] SPEAKER_00: Hi, I'm calling.
+[00:08-00:12] SPEAKER_01: I received a phone call from your office before I was at work
+[00:12-00:16] SPEAKER_01: to confirm my appointment tomorrow at 10.30.
+[00:17-00:18] SPEAKER_00: What's your name?
+[00:19-00:20] SPEAKER_00: Tamina Sultana.
+[00:22-00:22] SPEAKER_00: Oh, perfect.
+[00:22-00:23] SPEAKER_00: Yeah.
+[00:24-00:25] SPEAKER_01: All right.
+[00:25-00:26] SPEAKER_01: So just wanted to confirm that.
+[00:26-00:26] SPEAKER_01: All right.
+[00:26-00:27] SPEAKER_01: Sounds good.
+[00:27-00:27] SPEAKER_01: Thanks.
+[00:27-00:28] SPEAKER_01: Okay, bye.
+[00:28-00:28] SPEAKER_01: All right, bye.
+
+======================================================================
+End of Analysis Report

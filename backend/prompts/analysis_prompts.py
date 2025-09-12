@@ -65,12 +65,12 @@ CALL TYPE ANALYSIS:
 
 1. APPOINTMENT BOOKING CALLS:
 - Patient scheduling, confirming, or rescheduling appointments
-- If appointment was managed successfully → NO MISSED OPPORTUNITY
+- If appointment was managed successfully â†’ NO MISSED OPPORTUNITY
 
 2. GENERAL INQUIRY CALLS:
 - Patient asking about hours, location, insurance, services, pricing  
-- If staff provided appropriate information → NO MISSED OPPORTUNITY
-- Even if services aren't available (e.g., no Medicaid) → NO MISSED OPPORTUNITY
+- If staff provided appropriate information â†’ NO MISSED OPPORTUNITY
+- Even if services aren't available (e.g., no Medicaid) â†’ NO MISSED OPPORTUNITY
 
 3. MISSED OPPORTUNITY CALLS:
 Look for these specific missed opportunities:

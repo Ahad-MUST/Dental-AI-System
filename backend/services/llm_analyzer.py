@@ -61,15 +61,15 @@ CALL TYPE CLASSIFICATION:
 - Patient calling to schedule, reschedule, or confirm existing appointments
 - Example: "I want to confirm my appointment tomorrow"
 - Example: "I need to reschedule my cleaning"
-- If appointment successfully managed → NO MISSED OPPORTUNITY
+- If appointment successfully managed â†’ NO MISSED OPPORTUNITY
 
 2. GENERAL INQUIRY CALLS (NOT missed opportunities):
 - Patient asking for information: hours, location, insurance, pricing
 - Patient asking "Do you take [insurance]?" and staff answers appropriately
 - Simple questions that get answered professionally
-- Example: "Do you take Blue Cross?" → "We only take PPO" (appropriate response)
+- Example: "Do you take Blue Cross?" â†’ "We only take PPO" (appropriate response)
 - Example: "How much to glue my crown?" (existing patient asking price)
-- If question was answered → NO MISSED OPPORTUNITY
+- If question was answered â†’ NO MISSED OPPORTUNITY
 
 3. MISSED OPPORTUNITY CALLS (These ARE missed opportunities):
 - NEW patient inquiries about services where no appointment offered AND no follow-up promised
@@ -77,21 +77,21 @@ CALL TYPE CLASSIFICATION:
 - Patient interested in major treatment but no consultation scheduled AND no follow-up
 
 CRITICAL RULES:
-- If staff promised "I'll call you back" or "I'll check and get back to you" → FALSE (follow-up promised)
-- If patient just wanted information and got it → FALSE (inquiry handled)
-- If appointment was confirmed/scheduled → FALSE (successful booking)
-- If office doesn't accept insurance → FALSE (no opportunity exists)
+- If staff promised "I'll call you back" or "I'll check and get back to you" â†’ FALSE (follow-up promised)
+- If patient just wanted information and got it â†’ FALSE (inquiry handled)
+- If appointment was confirmed/scheduled â†’ FALSE (successful booking)
+- If office doesn't accept insurance â†’ FALSE (no opportunity exists)
 
 EXAMPLES OF FALSE (NOT missed opportunities):
-- "Confirm appointment tomorrow" → Staff confirms = SUCCESSFUL
-- "Do you take Medicaid?" → "No, PPO only" = APPROPRIATE RESPONSE  
-- "How much for crown?" → Staff quotes price = INFORMATION PROVIDED
+- "Confirm appointment tomorrow" â†’ Staff confirms = SUCCESSFUL
+- "Do you take Medicaid?" â†’ "No, PPO only" = APPROPRIATE RESPONSE  
+- "How much for crown?" â†’ Staff quotes price = INFORMATION PROVIDED
 - "I'll check your insurance and call back" = FOLLOW-UP PROMISED
 
 EXAMPLES OF TRUE (Real missed opportunities):  
-- Patient: "I need dental work" → Staff: "OK" but no appointment offered, no callback promised
-- Patient: "Tooth hurts" → Staff gives advice but no urgent appointment AND no callback
-- New patient ready to schedule → Staff doesn't attempt booking AND no follow-up
+- Patient: "I need dental work" â†’ Staff: "OK" but no appointment offered, no callback promised
+- Patient: "Tooth hurts" â†’ Staff gives advice but no urgent appointment AND no callback
+- New patient ready to schedule â†’ Staff doesn't attempt booking AND no follow-up
 
 Answer: TRUE or FALSE"""
         

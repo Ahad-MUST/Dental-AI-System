@@ -1,0 +1,92 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (854)529-2911_booked.mp3
+Date: 2025-09-11 17:12:55
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.64/100
+Call Summary: The main purpose of the call was to reschedule an upcoming wisdom teeth removal appointment and cancel an existing appointment for the patient's father. During the conversation, Whitney from Lincoln Wood Family Dental was able to schedule Kayla's wisdom teeth extraction for Wednesday, September 10th at 12 p.m., and confirmed that Kayla's father's appointment would be canceled.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.700)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was generally neutral, with the patient expressing disappointment about appointment availability. The staff maintained a positive and professional tone throughout, successfully managing the scheduling issues without causing further frustration. The patient's primary emotion was disappointment due to limited available times for their wisdom teeth removal and cleaning appointments.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:05] SPEAKER_00: Lincoln Wood Family Dental, this is Whitney.
+[00:05-00:06] SPEAKER_00: How can I help you?
+[00:07-00:09] SPEAKER_00: Hi, this is Kayla.
+[00:09-00:16] SPEAKER_01: I have an appointment like next month for wisdom teeth removal and then also cleaning.
+[00:16-00:22] SPEAKER_00: But I was wondering if you guys can bump it up to sometime this week or next week.
+[00:22-00:24] SPEAKER_00: Can I get your last name?
+[00:25-00:26] SPEAKER_01: M-G-U-Y.
+[00:49-00:50] SPEAKER_00: Thank you.
+[01:00-01:00] SPEAKER_01: One second.
+[01:37-01:42] SPEAKER_00: I would be able to do next Tuesday at 10 a.m.
+[01:43-01:43] SPEAKER_00: Okay.
+[01:45-01:46] SPEAKER_01: Okay, I have you down.
+[01:47-01:48] SPEAKER_01: Actually, you know what?
+[01:48-01:48] SPEAKER_01: I'm wrong.
+[01:48-01:48] SPEAKER_01: I'm wrong.
+[01:48-01:49] SPEAKER_01: I'm sorry.
+[01:50-01:53] SPEAKER_01: Because Dr. Sana is the only one that does wisdom teeth extractions.
+[01:54-01:57] SPEAKER_00: And that is not who has the opening.
+[01:58-01:59] SPEAKER_00: Give me one second.
+[02:01-02:01] SPEAKER_01: Okay.
+[02:03-02:06] SPEAKER_01: I can do next Thursday the 4th at 1030.
+[02:08-02:08] SPEAKER_00: Oh.
+[02:11-02:13] SPEAKER_00: I can't do that.
+[02:13-02:14] SPEAKER_00: What about Friday?
+[02:15-02:17] SPEAKER_00: She's only here Tuesdays, Wednesdays, and Thursdays.
+[02:17-02:19] SPEAKER_01: Tuesdays and Thursdays.
+[02:22-02:27] SPEAKER_01: How about the second she has anything?
+[02:28-02:29] SPEAKER_00: The 10th?
+[02:30-02:34] SPEAKER_00: The 10th I can do 10, 11, or 12.
+[02:36-02:37] SPEAKER_01: 12?
+[02:38-02:39] SPEAKER_01: 12 p.m.
+[02:39-02:39] SPEAKER_01: Okay.
+[02:39-02:43] SPEAKER_01: I have you down Wednesday, September 10th at 12 o'clock.
+[02:44-02:44] SPEAKER_00: Yes.
+[02:44-02:47] SPEAKER_00: And then also I wanted to cancel my dad's appointment.
+[02:48-02:50] SPEAKER_01: I think he has, I don't know.
+[02:50-02:51] SPEAKER_01: I can give you his last name.
+[02:52-02:53] SPEAKER_01: Yes, please.
+[02:53-02:55] SPEAKER_01: P-H-A-N.
+[02:56-02:57] SPEAKER_00: P-H-A-N.
+[02:57-02:58] SPEAKER_00: P-H-A-N.
+[02:59-02:59] SPEAKER_00: P-H-A-N.
+[03:01-03:03] SPEAKER_00: P-H-A-N.
+[03:04-03:05] SPEAKER_01: P-H-A-N.
+[03:05-03:06] SPEAKER_01: P-H-A-N.
+[03:07-03:07] SPEAKER_01: P-H-A-N.
+[03:07-03:08] SPEAKER_01: P-H-A-N.
+[03:08-03:08] SPEAKER_01: P-H-A-N.
+[03:09-03:09] SPEAKER_01: P-H-A-N.
+[03:09-03:09] SPEAKER_01: P-H-A-N.
+[03:09-03:10] SPEAKER_01: P-H-A-N.
+[03:10-03:10] SPEAKER_01: P-H-A-N.
+[03:10-03:11] SPEAKER_01: P-H-A-N.
+[03:11-03:11] SPEAKER_01: P-H-A-N.
+[03:11-03:12] SPEAKER_01: P-H-A-N.
+[03:12-03:12] SPEAKER_00: P-H-A-N.
+[03:12-03:13] SPEAKER_00: P-H-A-N.
+[03:13-03:14] SPEAKER_00: P-H-A-N.
+[03:14-03:15] SPEAKER_00: P-H-A-N.
+[03:15-03:15] SPEAKER_00: P-H-A-N.
+[03:16-03:18] SPEAKER_00: P-H-A-N.
+[03:18-03:19] SPEAKER_00: P-H-A-N.
+
+======================================================================
+End of Analysis Report

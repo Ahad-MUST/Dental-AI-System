@@ -9,7 +9,6 @@ import PerformanceSection from './dashboard/PerformanceSection';
 import Analytics from './dashboard/Analytics';
 import Footer from './dashboard/Footer';
 
-
 const Dashboard = () => {
   const {
     data,
@@ -20,7 +19,11 @@ const Dashboard = () => {
     error,
     analytics,
     dismissAlert,
-    clearAllAlerts
+    clearAllAlerts,
+    getCallsBySentiment,
+    getCallsByEmotion,
+    getCallsByEmotionFlag,
+    getCallsByTag
   } = useDashboardData();
 
   // Loading state
@@ -38,7 +41,7 @@ const Dashboard = () => {
     return <EmptyState connectionStatus={connectionStatus} lastUpdate={lastUpdate} />;
   }
 
-  // Modern minimalistic dashboard design
+  // Modern minimalistic dashboard design with sentiment, emotion, call tag analysis, and download system
   return (
     <div className="min-h-screen bg-slate-50">
       <Header 
@@ -48,6 +51,7 @@ const Dashboard = () => {
         alerts={alerts}
         onClearAllAlerts={clearAllAlerts}
         onDismissAlert={dismissAlert}
+        data={data} // NEW: Pass data for download system
       />
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
@@ -58,14 +62,21 @@ const Dashboard = () => {
 
         {/* Main Dashboard Grid */}
         <div className="space-y-8">
-          {/* Quick Stats Row */}
+          {/* Quick Stats Row - Includes emotion and call tag metrics */}
           <section className="mb-8">
             <StatsCards todayStats={analytics.todayStats} />
           </section>
           
-          {/* Charts Grid */}
+          {/* Charts Grid - Now includes call tag analytics */}
           <section>
-            <ChartsSection analytics={analytics} rawData={data} />
+            <ChartsSection 
+              analytics={analytics} 
+              rawData={data} 
+              getCallsBySentiment={getCallsBySentiment}
+              getCallsByEmotion={getCallsByEmotion}
+              getCallsByEmotionFlag={getCallsByEmotionFlag}
+              getCallsByTag={getCallsByTag}
+            />
           </section>
           
           {/* Performance Section */}
@@ -75,7 +86,6 @@ const Dashboard = () => {
               rawData={data}
             />
           </section>
-
         </div>
       </main>
 

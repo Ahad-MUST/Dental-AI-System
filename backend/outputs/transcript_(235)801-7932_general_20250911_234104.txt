@@ -1,0 +1,89 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (235)801-7932_general.mp3
+Date: 2025-09-11 23:41:05
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.71/100
+Call Summary: The main purpose of the call was to reschedule an existing appointment for Vivica Hedlund from Wednesday to a later date due to a scheduling conflict. Whitney, the receptionist, worked with Vivica to find a new time slot and ultimately moved her appointment to 2:30 PM on the following Wednesday, accommodating both parties' schedules.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.750)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.650)
+Summary: The call was generally neutral, with the patient expressing satisfaction about the appointment time and the staff providing helpful responses. There were no signs of pain or anxiety from the patient, and the overall tone remained professional and cooperative.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:04] SPEAKER_00: Lincolnwood Family Dental.
+[00:04-00:05] SPEAKER_00: This is Whitney.
+[00:05-00:05] SPEAKER_00: How can I help you?
+[00:07-00:07] SPEAKER_00: Hi, Whitney.
+[00:07-00:10] SPEAKER_00: Vicki Hedlund, Vivica Hedlund.
+[00:10-00:12] SPEAKER_01: I have an appointment this Wednesday.
+[00:14-00:15] SPEAKER_01: Okay.
+[00:16-00:20] SPEAKER_00: Now, what I'm wondering, can I make it on Thursday, for this Thursday?
+[00:22-00:24] SPEAKER_00: I don't have any time available Thursday.
+[00:25-00:29] SPEAKER_01: It's kind of a longer appointment, so we can make sure that the crowns are in.
+[00:30-00:30] SPEAKER_01: Right.
+[00:30-00:34] SPEAKER_01: The doctor set aside the time specifically for Wednesday.
+[00:34-00:35] SPEAKER_00: I know.
+[00:35-00:38] SPEAKER_00: I understand, but I have to break it now because something came up.
+[00:39-00:40] SPEAKER_00: Okay.
+[00:40-00:41] SPEAKER_01: So, yeah.
+[00:41-00:43] SPEAKER_01: So, what about next Wednesday or next Thursday?
+[00:45-00:56] SPEAKER_01: I wouldn't have that time open again until Thursday, September 11th.
+[00:59-00:59] SPEAKER_01: All right.
+[01:00-01:00] SPEAKER_01: All right.
+[01:00-01:00] SPEAKER_01: Let me ask you this.
+[01:08-01:09] SPEAKER_00: All right.
+[01:09-01:14] SPEAKER_00: Can you ask her if I can make it at 2 o'clock?
+[01:14-01:15] SPEAKER_01: Come in at 2 o'clock?
+[01:17-01:17] SPEAKER_01: Okay.
+[01:17-01:19] SPEAKER_01: She'll be here tomorrow, so let me find out from her.
+[01:19-01:20] SPEAKER_01: That should be okay, though.
+[01:20-01:21] SPEAKER_00: All right.
+[01:21-01:22] SPEAKER_00: Let me see.
+[01:22-01:22] SPEAKER_00: Yeah.
+[01:22-01:23] SPEAKER_00: Let me just see.
+[01:23-01:23] SPEAKER_00: Okay.
+[01:23-01:23] SPEAKER_00: I'm going to...
+[01:26-01:27] SPEAKER_00: Yeah.
+[01:27-01:29] SPEAKER_00: I'll actually just move you down to 2.
+[01:30-01:30] SPEAKER_01: Okay.
+[01:30-01:31] SPEAKER_01: Hold on.
+[01:31-01:31] SPEAKER_01: Yeah.
+[01:31-01:32] SPEAKER_01: One second.
+[01:32-01:32] SPEAKER_01: Okay.
+[01:32-01:33] SPEAKER_01: I'll be with you.
+[01:36-01:36] SPEAKER_00: Yeah.
+[01:37-01:38] SPEAKER_00: About 2 o'clock.
+[01:38-01:38] SPEAKER_00: Yeah.
+[01:38-01:39] SPEAKER_00: Maybe.
+[01:39-01:42] SPEAKER_00: Well, between 2 and 2.30 because I have another freaking...
+[01:42-01:45] SPEAKER_00: I have a doctor appointment, and I can't miss that.
+[01:48-01:49] SPEAKER_01: So, should I make it 2.30?
+[01:50-01:51] SPEAKER_01: Oh, that would be awesome.
+[01:54-01:55] SPEAKER_00: Okay.
+[01:55-01:55] SPEAKER_00: Okay.
+[01:55-01:57] SPEAKER_00: 2.30 on Wednesday.
+[01:58-01:59] SPEAKER_00: All right.
+[02:00-02:00] SPEAKER_01: I'll see you then.
+[02:01-02:01] SPEAKER_01: We'll see you then.
+[02:01-02:02] SPEAKER_01: Thank you.
+[02:02-02:03] SPEAKER_01: Thank you.
+[02:03-02:03] SPEAKER_01: Bye.
+[02:03-02:03] SPEAKER_01: Bye-bye.
+
+======================================================================
+End of Analysis Report

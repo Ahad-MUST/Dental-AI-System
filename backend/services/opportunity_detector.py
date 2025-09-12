@@ -1,105 +1,476 @@
 """
-Fixed opportunity detection - Accurate classification for all three call types
+Enhanced opportunity detection - Dental keyword-focused classification for high-value opportunities
+Includes intelligent chunking to handle long transcripts without truncation
 """
 import logging
-from typing import Dict
+import asyncio
+import json
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
 class OpportunityDetector:
-    """Detect missed business opportunities with accurate call type classification"""
+    """Detect missed business opportunities with enhanced dental keyword focus and intelligent chunking"""
     
     def __init__(self, llm_analyzer):
         self.llm_analyzer = llm_analyzer
         
-        # Updated opportunity prompt that correctly handles all three call types
-        self.opportunity_prompt = """
-Analyze this dental office call to determine if there was a HIGH-VALUE MISSED OPPORTUNITY.
+        # Chunking parameters for handling long transcripts
+        self.max_single_analysis_length = 3000  # Characters - analyze without chunking
+        self.max_chunk_length = 2500  # Characters per chunk for chunking
+        
+        # High-value dental treatment keywords that should trigger opportunity detection
+        self.high_value_keywords = {
+            'emergency': ['emergency', 'urgent', 'pain', 'toothache', 'tooth hurt', 'swelling', 'broken tooth', 'knocked out', 'bleeding'],
+            'major_treatments': ['implant', 'crown', 'bridge', 'veneer', 'root canal', 'oral surgery', 'extraction', 'wisdom teeth'],
+            'cosmetic': ['whitening', 'braces', 'invisalign', 'straighten', 'cosmetic', 'smile makeover'],
+            'new_patient': ['new patient', 'first time', 'never been', 'looking for dentist', 'need dentist'],
+            'preventive': ['cleaning', 'checkup', 'exam', 'x-ray', 'deep cleaning', 'periodontal']
+        }
+        
+        # Simple opportunity prompt for direct analysis
+        self.simple_opportunity_prompt = """
+Analyze this dental office call to determine if there was a HIGH-VALUE MISSED OPPORTUNITY based on DENTAL KEYWORDS.
 
 PATIENT SAID: {patient_text}
 STAFF RESPONSE: {staff_text}
 
-THREE CALL TYPES:
+DENTAL KEYWORD ANALYSIS:
 
-1. APPOINTMENT BOOKING CALLS:
-- Patient scheduling, rescheduling, or confirming appointments
-- Examples: "confirm my appointment", "reschedule my cleaning", "book appointment"
-- If appointment was successfully managed → FALSE (no opportunity missed)
+HIGH-VALUE DENTAL KEYWORDS that indicate opportunity:
+- EMERGENCY: pain, toothache, urgent, emergency, swelling, broken tooth
+- MAJOR TREATMENTS: implant, crown, bridge, root canal, oral surgery, extraction
+- COSMETIC: whitening, braces, invisalign, cosmetic dentistry, smile makeover  
+- NEW PATIENT: new patient, looking for dentist, need dentist, first time
+- PREVENTIVE: cleaning, checkup, exam, deep cleaning
 
-2. GENERAL INQUIRY CALLS:
-- Patient asking for information: hours, insurance, services, pricing
-- Examples: "Do you take Medicaid?", "What are your hours?", "How much for crown?"
-- If staff provided the requested information appropriately → FALSE (inquiry handled)
-- Even if patient can't use services (no insurance match) → FALSE (no opportunity exists)
+OPPORTUNITY DETECTION RULES:
 
-3. MISSED OPPORTUNITY CALLS:
-These are EXPLICIT or NON-EXPLICIT missed opportunities:
-- EXPLICIT: Patient directly asks about treatment but no appointment offered AND no follow-up
-- NON-EXPLICIT: Patient shows interest/need but staff doesn't recognize opportunity AND no follow-up
+TRUE (MISSED opportunity) if:
+- Patient mentions HIGH-VALUE dental keywords (emergency, implant, crown, etc.)
+- AND no appointment was scheduled
+- AND no specific follow-up was arranged
 
-CRITICAL CLASSIFICATION RULES:
+FALSE (NO missed opportunity) if:
+- Appointment was successfully scheduled/confirmed
+- Staff promised specific follow-up ("I'll call you back", "check insurance and call you")
+- Patient only asked for basic information that was provided (hours, location)
+- Office legitimately cannot serve patient (insurance not accepted)
 
-FALSE (NO missed opportunity) if ANY of these:
-- Appointment was confirmed/scheduled successfully
-- Patient's information request was answered appropriately  
-- Staff promised "I'll call back", "check and get back to you", "follow up"
-- Office legitimately doesn't provide the service (e.g. no Medicaid accepted)
-- Existing patient asking simple pricing question that was answered
+FOCUS ON DENTAL TREATMENT OPPORTUNITIES:
+- Emergency calls without same-day scheduling = TRUE
+- Crown/implant inquiries without consultation booking = TRUE  
+- New patient calls without appointment offered = TRUE
+- Cosmetic treatment interest without consultation = TRUE
+- Pain/toothache calls without urgent appointment = TRUE
 
-TRUE (MISSED opportunity) ONLY if ALL these:
-- Patient showed genuine interest in dental treatment/services
-- No appointment was scheduled
-- No follow-up was promised by staff
-- This represents lost revenue potential
-
-ANALYZE YOUR TEST CASES:
-- Sherwin crown re-glue: Simple pricing question from existing patient → FALSE
-- Alex appointment confirmation: Routine confirmation call → FALSE  
-- Habib insurance check: Staff promised "I will check and give you a call back" → FALSE
-- Blue Cross inquiry: Office doesn't take Medicaid, appropriately answered → FALSE
+EXAMPLES:
+- "My tooth hurts" + no urgent appointment offered = TRUE
+- "Need a crown" + no consultation scheduled = TRUE  
+- "New patient, need cleaning" + no appointment booked = TRUE
+- "Confirm my appointment tomorrow" + confirmed = FALSE
+- "Do you take Medicaid?" + "No, PPO only" = FALSE
 
 Answer with ONLY: TRUE or FALSE
 
 Assessment:"""
+
+        # Chunk analysis prompt for long transcripts
+        self.opportunity_chunk_prompt = """
+Analyze this segment from a dental office call for missed opportunities:
+
+TEXT: "{text}"
+
+This is chunk {chunk_num} of {total_chunks}. {context_info}
+
+Look for:
+- HIGH-VALUE DENTAL KEYWORDS: pain, emergency, implant, crown, bridge, root canal, new patient, cleaning
+- SCHEDULING ATTEMPTS: appointment offered, booking attempted, follow-up promised
+- PATIENT INTEREST: treatment requests, service inquiries, pain mentions
+
+Respond with ONLY this JSON:
+{{
+    "has_dental_keywords": true/false,
+    "dental_keywords_found": ["keyword1", "keyword2"],
+    "scheduling_attempted": true/false,
+    "follow_up_promised": true/false,
+    "patient_interest_level": "high/medium/low/none",
+    "chunk_assessment": "opportunity/no_opportunity/unclear",
+    "key_indicators": ["specific", "phrases", "found"]
+}}
+"""
+
+        # Final aggregation prompt for chunked analysis
+        self.final_opportunity_prompt = """
+You analyzed {chunk_count} chunks from a dental call. Determine final missed opportunity assessment.
+
+CHUNK SUMMARIES: {chunk_results}
+
+PATIENT SPEECH: {patient_length} characters
+STAFF SPEECH: {staff_length} characters
+
+Based on all chunks, determine if there was a HIGH-VALUE MISSED OPPORTUNITY:
+
+RULES:
+- If ANY chunk shows high patient interest in dental treatment AND no scheduling/follow-up = TRUE
+- If appointment was scheduled or specific follow-up promised = FALSE
+- Emergency/pain mentions without urgent care = TRUE
+- Major treatment interest without consultation = TRUE
+
+Provide final analysis as ONLY this JSON:
+{{
+    "high_value_missed": true/false,
+    "reasoning": "Clear explanation of decision",
+    "dental_keywords_detected": ["keyword1", "keyword2"],
+    "opportunity_type": "emergency/major_treatment/new_patient/cosmetic/none",
+    "confidence": [0.1-1.0 based on clarity of indicators]
+}}
+"""
     
     async def detect_opportunities(self, patient_text: str, staff_text: str, 
                                  call_summary: Dict, booking_outcome: Dict) -> Dict:
         """
-        Accurate opportunity detection for all three call types
+        Enhanced opportunity detection with intelligent chunking for long transcripts
         """
         try:
-            logger.info("Analyzing missed opportunities with improved classification...")
+            logger.info("Analyzing missed opportunities with dental keyword focus and intelligent chunking...")
             
-            # Quick rule-based pre-screening for obvious cases
+            # First check for high-value dental keywords
+            has_dental_keywords = self._has_high_value_dental_keywords(patient_text)
+            
+            if not has_dental_keywords:
+                logger.info("No high-value dental keywords found - not a missed opportunity")
+                return {"high_value_missed": False}
+            
+            # Check for definitive exclusions
             if self._is_definitely_not_missed_opportunity(patient_text, staff_text, call_summary):
-                logger.info("Pre-screening: Definitely not a missed opportunity")
+                logger.info("Pre-screening: Definitely not a missed opportunity despite keywords")
                 return {"high_value_missed": False}
             
             if not self.llm_analyzer.is_initialized:
-                # Fallback rule-based detection
-                high_value_missed = self._rule_based_opportunity_check(patient_text, staff_text)
-                logger.info(f"Rule-based assessment: {high_value_missed}")
+                # Enhanced rule-based detection for dental keywords
+                high_value_missed = self._dental_keyword_opportunity_check(patient_text, staff_text)
+                logger.info(f"Dental keyword-based assessment: {high_value_missed}")
                 return {"high_value_missed": high_value_missed}
             
-            # Use LLM for nuanced analysis
-            prompt = self.opportunity_prompt.format(
-                patient_text=patient_text[:2000],
-                staff_text=staff_text[:2000]
-            )
+            # Combine texts to check if chunking is needed
+            combined_text = f"PATIENT: {patient_text}\n\nSTAFF: {staff_text}"
             
-            response = await self.llm_analyzer.generate_response(prompt, max_tokens=50)
-            
-            # Parse LLM response
-            high_value_missed = "TRUE" in response.upper() and "FALSE" not in response.upper()
-            
-            logger.info(f"LLM opportunity assessment: {'MISSED OPPORTUNITY' if high_value_missed else 'NO OPPORTUNITY MISSED'}")
-            
-            return {"high_value_missed": high_value_missed}
+            # Decision: Use chunking for long transcripts
+            if self._should_use_chunking(combined_text):
+                logger.info(f"Text is long ({len(combined_text)} chars), using chunking approach")
+                return await self._analyze_with_chunking(patient_text, staff_text, combined_text)
+            else:
+                logger.info(f"Text is short ({len(combined_text)} chars), using direct analysis")
+                return await self._analyze_directly(patient_text, staff_text)
             
         except Exception as e:
             logger.error(f"Opportunity detection failed: {str(e)}")
             # Conservative fallback
             return {"high_value_missed": False}
+    
+    def _should_use_chunking(self, combined_text: str) -> bool:
+        """Determine if text needs chunking based on length"""
+        return len(combined_text) > self.max_single_analysis_length
+    
+    async def _analyze_directly(self, patient_text: str, staff_text: str) -> Dict:
+        """Analyze short texts directly without chunking"""
+        try:
+            prompt = self.simple_opportunity_prompt.format(
+                patient_text=patient_text,
+                staff_text=staff_text
+            )
+            
+            logger.debug("Sending prompt to LLM for direct opportunity analysis")
+            response = await self.llm_analyzer.generate_response(prompt, max_tokens=100)
+            
+            if response:
+                logger.debug(f"Received LLM response: {response}")
+                # Parse LLM response
+                high_value_missed = "TRUE" in response.upper() and "FALSE" not in response.upper()
+                logger.info(f"Direct LLM opportunity assessment: {'MISSED OPPORTUNITY' if high_value_missed else 'NO OPPORTUNITY MISSED'}")
+                return {"high_value_missed": high_value_missed}
+            else:
+                logger.warning("Empty response from LLM")
+            
+            # If LLM failed, use enhanced rule-based
+            logger.info("LLM failed, using enhanced rule-based analysis")
+            high_value_missed = self._dental_keyword_opportunity_check(patient_text, staff_text)
+            return {"high_value_missed": high_value_missed}
+            
+        except Exception as e:
+            logger.error(f"Direct analysis error: {str(e)}")
+            high_value_missed = self._dental_keyword_opportunity_check(patient_text, staff_text)
+            return {"high_value_missed": high_value_missed}
+    
+    async def _analyze_with_chunking(self, patient_text: str, staff_text: str, combined_text: str) -> Dict:
+        """Analyze long texts using chunking approach"""
+        try:
+            # Split into chunks
+            chunks = self._split_text_into_chunks(combined_text)
+            logger.info(f"Split text into {len(chunks)} chunks for opportunity analysis")
+            
+            # Analyze each chunk
+            chunk_results = []
+            for i, chunk in enumerate(chunks, 1):
+                context_info = f"Previous {i-1} chunks analyzed" if i > 1 else "First chunk"
+                chunk_result = await self._analyze_opportunity_chunk(chunk, i, len(chunks), context_info)
+                chunk_results.append(chunk_result)
+                
+                # Brief pause between chunks
+                await asyncio.sleep(0.2)
+            
+            # Generate final aggregated analysis
+            final_result = await self._generate_final_opportunity_analysis(
+                chunk_results, patient_text, staff_text
+            )
+            
+            logger.info("LLM chunked opportunity analysis completed successfully")
+            return final_result
+            
+        except Exception as e:
+            logger.error(f"Chunked opportunity analysis error: {str(e)}")
+            high_value_missed = self._dental_keyword_opportunity_check(patient_text, staff_text)
+            return {"high_value_missed": high_value_missed}
+    
+    def _split_text_into_chunks(self, text: str) -> List[str]:
+        """Split text into chunks for LLM processing"""
+        if not text or len(text) <= self.max_chunk_length:
+            return [text] if text else []
+        
+        # Split by sentences first to maintain context
+        sentences = text.replace('!', '.').replace('?', '.').split('.')
+        chunks = []
+        current_chunk = ""
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+                
+            # If adding this sentence would exceed chunk limit
+            if len(current_chunk) + len(sentence) + 2 > self.max_chunk_length:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                current_chunk = sentence + ". "
+            else:
+                current_chunk += sentence + ". "
+        
+        # Add the last chunk
+        if current_chunk.strip():
+            chunks.append(current_chunk.strip())
+        
+        return chunks
+    
+    async def _analyze_opportunity_chunk(self, chunk_text: str, chunk_num: int, total_chunks: int, context_info: str = "") -> Dict:
+        """Analyze opportunity indicators for a single chunk"""
+        try:
+            prompt = self.opportunity_chunk_prompt.format(
+                text=chunk_text,
+                chunk_num=chunk_num,
+                total_chunks=total_chunks,
+                context_info=context_info
+            )
+            
+            response = await self.llm_analyzer.generate_response(prompt, max_tokens=400)
+            
+            if response:
+                parsed_result = self._extract_json_from_response(response)
+                if parsed_result and isinstance(parsed_result, dict):
+                    return parsed_result
+            
+            # Fallback chunk analysis
+            return self._create_fallback_chunk_analysis(chunk_text)
+            
+        except Exception as e:
+            logger.warning(f"Error analyzing opportunity chunk {chunk_num}: {str(e)}")
+            return self._create_fallback_chunk_analysis(chunk_text)
+    
+    def _extract_json_from_response(self, response: str) -> Dict:
+        """Extract JSON from LLM response"""
+        if not response:
+            return {}
+        
+        try:
+            # Clean and parse directly
+            cleaned = response.strip()
+            
+            # Remove common prefixes/suffixes
+            for prefix in ['```json', '```', 'json', 'JSON']:
+                if cleaned.startswith(prefix):
+                    cleaned = cleaned[len(prefix):].strip()
+            
+            for suffix in ['```', '`']:
+                if cleaned.endswith(suffix):
+                    cleaned = cleaned[:-len(suffix)].strip()
+            
+            # Find JSON boundaries
+            start_idx = cleaned.find('{')
+            if start_idx == -1:
+                return {}
+            
+            # Find matching closing brace
+            brace_count = 0
+            end_idx = start_idx
+            for i in range(start_idx, len(cleaned)):
+                if cleaned[i] == '{':
+                    brace_count += 1
+                elif cleaned[i] == '}':
+                    brace_count -= 1
+                    if brace_count == 0:
+                        end_idx = i
+                        break
+            
+            if brace_count == 0:
+                json_str = cleaned[start_idx:end_idx + 1]
+                parsed = json.loads(json_str)
+                if isinstance(parsed, dict):
+                    logger.debug("Successfully extracted JSON from opportunity analysis response")
+                    return parsed
+        
+        except Exception as e:
+            logger.warning(f"JSON extraction error in opportunity analysis: {str(e)}")
+        
+        return {}
+    
+    def _create_fallback_chunk_analysis(self, text: str) -> Dict:
+        """Create fallback analysis for chunk with dental keyword focus"""
+        text_lower = text.lower()
+        
+        # Check for dental keywords
+        dental_keywords_found = []
+        for category, keywords in self.high_value_keywords.items():
+            for keyword in keywords:
+                if keyword in text_lower:
+                    dental_keywords_found.append(keyword)
+        
+        # Check for scheduling indicators
+        scheduling_phrases = ["schedule", "appointment", "book", "come in", "see you", "available", "when can"]
+        scheduling_attempted = any(phrase in text_lower for phrase in scheduling_phrases)
+        
+        # Check for follow-up promises
+        followup_phrases = ["call you back", "get back to you", "follow up", "check and call"]
+        follow_up_promised = any(phrase in text_lower for phrase in followup_phrases)
+        
+        # Determine patient interest level
+        if any(keyword in text_lower for keyword in self.high_value_keywords['emergency']):
+            interest_level = "high"
+        elif any(keyword in text_lower for keyword in self.high_value_keywords['major_treatments']):
+            interest_level = "high"
+        elif any(keyword in text_lower for keyword in self.high_value_keywords['new_patient']):
+            interest_level = "medium"
+        elif dental_keywords_found:
+            interest_level = "medium"
+        else:
+            interest_level = "low"
+        
+        # Chunk assessment
+        if dental_keywords_found and not scheduling_attempted and not follow_up_promised:
+            chunk_assessment = "opportunity"
+        elif dental_keywords_found and (scheduling_attempted or follow_up_promised):
+            chunk_assessment = "no_opportunity"
+        else:
+            chunk_assessment = "unclear"
+        
+        return {
+            "has_dental_keywords": len(dental_keywords_found) > 0,
+            "dental_keywords_found": dental_keywords_found,
+            "scheduling_attempted": scheduling_attempted,
+            "follow_up_promised": follow_up_promised,
+            "patient_interest_level": interest_level,
+            "chunk_assessment": chunk_assessment,
+            "key_indicators": dental_keywords_found[:3]  # Top 3 indicators
+        }
+    
+    async def _generate_final_opportunity_analysis(self, chunk_results: List[Dict], patient_text: str, staff_text: str) -> Dict:
+        """Generate final opportunity assessment from all chunks"""
+        try:
+            # Create simplified summary for LLM
+            simplified_results = []
+            for i, result in enumerate(chunk_results, 1):
+                simplified = {
+                    "chunk": i,
+                    "has_keywords": result.get("has_dental_keywords", False),
+                    "keywords": result.get("dental_keywords_found", []),
+                    "scheduling": result.get("scheduling_attempted", False),
+                    "followup": result.get("follow_up_promised", False),
+                    "assessment": result.get("chunk_assessment", "unclear")
+                }
+                simplified_results.append(simplified)
+            
+            prompt = self.final_opportunity_prompt.format(
+                chunk_count=len(chunk_results),
+                chunk_results=json.dumps(simplified_results, indent=2),
+                patient_length=len(patient_text),
+                staff_length=len(staff_text)
+            )
+            
+            response = await self.llm_analyzer.generate_response(prompt, max_tokens=300)
+            
+            if response:
+                parsed_result = self._extract_json_from_response(response)
+                if parsed_result and "high_value_missed" in parsed_result:
+                    high_value_missed = parsed_result["high_value_missed"]
+                    logger.info(f"Final LLM opportunity assessment: {'MISSED OPPORTUNITY' if high_value_missed else 'NO OPPORTUNITY MISSED'}")
+                    return {"high_value_missed": high_value_missed}
+            
+            # Fallback to manual aggregation
+            return self._manual_opportunity_aggregation(chunk_results)
+            
+        except Exception as e:
+            logger.warning(f"Error generating final opportunity analysis: {str(e)}")
+            return self._manual_opportunity_aggregation(chunk_results)
+    
+    def _manual_opportunity_aggregation(self, chunk_results: List[Dict]) -> Dict:
+        """Manually aggregate chunk results for opportunity detection"""
+        if not chunk_results:
+            return {"high_value_missed": False}
+        
+        # Check if any chunk indicates a clear opportunity
+        has_opportunity = False
+        has_dental_keywords = False
+        has_scheduling_attempt = False
+        has_followup_promise = False
+        
+        for chunk in chunk_results:
+            if chunk.get("has_dental_keywords", False):
+                has_dental_keywords = True
+            
+            if chunk.get("scheduling_attempted", False):
+                has_scheduling_attempt = True
+            
+            if chunk.get("follow_up_promised", False):
+                has_followup_promise = True
+            
+            if chunk.get("chunk_assessment") == "opportunity":
+                has_opportunity = True
+        
+        # Final decision logic
+        if has_dental_keywords and not has_scheduling_attempt and not has_followup_promise:
+            final_decision = True
+            logger.info("Manual aggregation: Dental keywords present, no scheduling/followup - MISSED OPPORTUNITY")
+        elif has_opportunity and not (has_scheduling_attempt or has_followup_promise):
+            final_decision = True
+            logger.info("Manual aggregation: Opportunity detected in chunks, no resolution - MISSED OPPORTUNITY")
+        else:
+            final_decision = False
+            logger.info("Manual aggregation: No clear missed opportunity detected")
+        
+        return {"high_value_missed": final_decision}
+    
+    def _has_high_value_dental_keywords(self, patient_text: str) -> bool:
+        """Check if patient text contains high-value dental keywords"""
+        
+        patient_lower = patient_text.lower()
+        
+        # Check each category of high-value keywords
+        for category, keywords in self.high_value_keywords.items():
+            for keyword in keywords:
+                if keyword in patient_lower:
+                    logger.info(f"High-value dental keyword found: '{keyword}' in category '{category}'")
+                    return True
+        
+        return False
     
     def _is_definitely_not_missed_opportunity(self, patient_text: str, staff_text: str, call_summary: Dict) -> bool:
         """Pre-screening to identify calls that are definitely not missed opportunities"""
@@ -110,69 +481,105 @@ Assessment:"""
         
         # Definitive indicators of non-missed opportunities
         definitive_non_opportunities = [
-            # Appointment confirmations/bookings
+            # Successful appointment management
             ("confirm" in patient_lower and "appointment" in patient_lower),
-            ("tomorrow" in patient_lower and "appointment" in staff_lower),
-            ("scheduled" in staff_lower or "see you" in staff_lower),
+            ("tomorrow" in patient_lower and ("appointment" in staff_lower or "see you" in staff_lower)),
+            ("scheduled" in staff_lower or "booked" in staff_lower),
+            ("appointment" in staff_lower and ("confirmed" in staff_lower or "set" in staff_lower)),
             
-            # Staff committed to follow-up
-            ("call you back" in staff_lower),
-            ("get back to you" in staff_lower), 
-            ("call back" in staff_lower),
-            ("follow up" in staff_lower),
-            ("check and" in staff_lower and "let you know" in staff_lower),
+            # Staff committed to specific follow-up
+            ("call you back" in staff_lower and ("today" in staff_lower or "tomorrow" in staff_lower)),
+            ("check your insurance and call you" in staff_lower),
+            ("get back to you" in staff_lower and ("today" in staff_lower or "shortly" in staff_lower)),
+            ("follow up with you" in staff_lower),
             
-            # Insurance inquiries where office doesn't participate
-            ("medicaid" in patient_lower and "don't" in staff_lower),
-            ("we only take ppo" in staff_lower),
-            ("not familiar with that" in staff_lower and "insurance" in patient_lower),
+            # Insurance/service limitations appropriately handled
+            ("we don't accept" in staff_lower and "medicaid" in patient_lower),
+            ("we only take ppo" in staff_lower and "medicaid" in patient_lower),
+            ("not in network" in staff_lower),
             
-            # Simple pricing questions answered
-            ("how much" in patient_lower and len(patient_text) < 300 and ("$" in staff_lower or "cost" in staff_lower)),
-            
-            # Confirmation calls mentioned in summary
+            # Confirmation calls in summary
             ("confirm" in summary and "appointment" in summary),
-            ("confirmation" in summary)
+            ("confirmation call" in summary)
         ]
         
         return any(definitive_non_opportunities)
     
-    def _rule_based_opportunity_check(self, patient_text: str, staff_text: str) -> bool:
-        """Rule-based fallback for opportunity detection"""
+    def _dental_keyword_opportunity_check(self, patient_text: str, staff_text: str) -> bool:
+        """Enhanced rule-based opportunity detection focused on dental keywords"""
         
         patient_lower = patient_text.lower()
         staff_lower = staff_text.lower()
         
-        # Step 1: Check for definitive exclusions (same as above)
+        # Step 1: Must have high-value dental keywords (already checked)
+        
+        # Step 2: Check for definitive exclusions
         exclusions = [
-            ("call you back" in staff_lower),
-            ("get back to you" in staff_lower),
-            ("follow up" in staff_lower),
-            ("check and" in staff_lower),
-            ("we don't" in staff_lower and "insurance" in patient_lower),
-            ("we only take" in staff_lower),
-            ("appointment" in patient_lower and ("confirm" in patient_lower or "tomorrow" in patient_lower)),
-            ("scheduled" in staff_lower or "see you" in staff_lower)
+            # Successful appointment management
+            ("appointment" in staff_lower and ("scheduled" in staff_lower or "booked" in staff_lower or "confirmed" in staff_lower)),
+            ("see you" in staff_lower and ("tomorrow" in staff_lower or "today" in staff_lower)),
+            
+            # Specific follow-up promises
+            ("call you back today" in staff_lower),
+            ("call you back tomorrow" in staff_lower),
+            ("check your insurance and call" in staff_lower),
+            ("get back to you today" in staff_lower),
+            ("follow up" in staff_lower and ("today" in staff_lower or "tomorrow" in staff_lower)),
+            
+            # Legitimate service limitations
+            ("we don't accept" in staff_lower and "insurance" in patient_lower),
+            ("we only take" in staff_lower and "ppo" in staff_lower),
+            ("not covered" in staff_lower and "insurance" in patient_lower)
         ]
         
         if any(exclusions):
             return False
         
-        # Step 2: Look for genuine treatment interest
-        treatment_interest_indicators = [
-            "tooth hurt", "toothache", "pain", "broken", "emergency",
-            "need dental", "need treatment", "implant", "crown", "root canal",
-            "cleaning", "checkup", "wisdom teeth", "braces"
-        ]
+        # Step 3: Check for high-value dental treatment interest
+        emergency_keywords = any(keyword in patient_lower for keyword in self.high_value_keywords['emergency'])
+        major_treatment_keywords = any(keyword in patient_lower for keyword in self.high_value_keywords['major_treatments'])
+        cosmetic_keywords = any(keyword in patient_lower for keyword in self.high_value_keywords['cosmetic'])
+        new_patient_keywords = any(keyword in patient_lower for keyword in self.high_value_keywords['new_patient'])
         
-        has_treatment_interest = any(indicator in patient_lower for indicator in treatment_interest_indicators)
-        
-        # Step 3: Check if staff made scheduling effort
+        # Step 4: Check if staff made appropriate scheduling effort
         staff_scheduling_effort = any(phrase in staff_lower for phrase in [
-            "schedule", "appointment", "come in", "see you", "available",
-            "book", "when can", "what time"
+            "schedule", "book", "appointment", "come in", "see you", "available",
+            "when can", "what time", "today", "tomorrow", "this week"
         ])
         
-        # Only mark as missed opportunity if patient showed treatment interest 
-        # but staff made no scheduling effort AND no follow-up promised
-        return has_treatment_interest and not staff_scheduling_effort
+        # Emergency calls should have urgent scheduling
+        if emergency_keywords:
+            urgent_response = any(phrase in staff_lower for phrase in [
+                "today", "right away", "emergency", "urgent", "same day", "asap"
+            ])
+            if not urgent_response and not staff_scheduling_effort:
+                logger.info("Emergency keywords found but no urgent scheduling offered")
+                return True
+        
+        # Major treatments should have consultation offered
+        if major_treatment_keywords or cosmetic_keywords:
+            consultation_offered = any(phrase in staff_lower for phrase in [
+                "consultation", "exam", "evaluation", "assessment", "come in", "schedule"
+            ])
+            if not consultation_offered and not staff_scheduling_effort:
+                logger.info("Major treatment interest but no consultation offered")
+                return True
+        
+        # New patients should be actively scheduled
+        if new_patient_keywords:
+            if not staff_scheduling_effort:
+                logger.info("New patient inquiry but no appointment scheduling attempted")
+                return True
+        
+        # Default: if high-value keywords present but no scheduling effort, it's a missed opportunity
+        has_high_value_keywords = any([emergency_keywords, major_treatment_keywords, cosmetic_keywords, new_patient_keywords])
+        
+        if has_high_value_keywords and not staff_scheduling_effort:
+            logger.info("High-value dental keywords present but no scheduling effort made")
+            return True
+        
+        return False
+    
+    def _rule_based_opportunity_check(self, patient_text: str, staff_text: str) -> bool:
+        """Legacy rule-based fallback - now uses dental keyword focus"""
+        return self._dental_keyword_opportunity_check(patient_text, staff_text)

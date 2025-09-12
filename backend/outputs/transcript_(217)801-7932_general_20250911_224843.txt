@@ -1,0 +1,60 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (217)801-7932_general.mp3
+Date: 2025-09-11 22:48:45
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.79/100
+Call Summary: The main purpose of the call was for Autumn Smith to reschedule her dental appointment due to a family emergency. During the conversation, Whitney, the representative from Lincolnwood Family Dental, helped reschedule the appointment to Friday, September 12th at 10 a.m., and the new time was confirmed and recorded.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.750)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was relatively neutral in sentiment, with the patient expressing a mix of gratitude and mild disappointment about rescheduling their appointment. The staff maintained a professional tone throughout, showing understanding and flexibility. There were no specific dental-related issues discussed, such as pain or anxiety, but there was an indication of some dissatisfaction due to the need for rescheduling.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:05] SPEAKER_00: Lincolnwood Family Dental, please hold.
+[00:41-00:42] SPEAKER_01: Thank you so much for holding.
+[00:43-00:43] SPEAKER_01: This is Whitney.
+[00:43-00:44] SPEAKER_01: How can I help you?
+[00:45-00:47] SPEAKER_01: Hi, my name is Autumn Smith.
+[00:47-00:51] SPEAKER_01: I have an appointment today at 5 o'clock, and I have a family emergency come up.
+[00:52-00:53] SPEAKER_00: I was wondering if I could reschedule that.
+[00:54-00:59] SPEAKER_00: Yeah, let me look at what the next opening would be.
+[01:00-01:00] SPEAKER_01: Okay.
+[01:04-01:08] SPEAKER_00: First one would be Tuesday, September 2nd at 10 a.m.
+[01:09-01:09] SPEAKER_00: Okay.
+[01:10-01:12] SPEAKER_00: Do you have anything on a Friday, maybe?
+[01:13-01:16] SPEAKER_01: Friday would be September 12th.
+[01:16-01:17] SPEAKER_01: Yeah.
+[01:17-01:19] SPEAKER_01: Do you have anything available?
+[01:19-01:20] SPEAKER_01: 10 o'clock?
+[01:20-01:21] SPEAKER_00: Mm-hmm.
+[01:22-01:23] SPEAKER_00: Okay, great.
+[01:23-01:24] SPEAKER_00: I will take that.
+[01:25-01:25] SPEAKER_00: Okay.
+[01:25-01:28] SPEAKER_00: I have you down now Friday, September 12th, 10 a.m.
+[01:29-01:29] SPEAKER_01: Okay.
+[01:29-01:29] SPEAKER_01: Great.
+[01:29-01:30] SPEAKER_01: Perfect.
+[01:30-01:31] SPEAKER_01: Thank you so much.
+[01:31-01:31] SPEAKER_01: You're welcome.
+[01:31-01:32] SPEAKER_01: Have a good day.
+[01:32-01:33] SPEAKER_01: You too.
+[01:33-01:33] SPEAKER_01: Bye-bye.
+[01:33-01:33] SPEAKER_01: Bye-bye.
+
+======================================================================
+End of Analysis Report

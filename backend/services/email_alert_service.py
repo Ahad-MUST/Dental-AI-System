@@ -55,7 +55,7 @@ class EmailAlertService:
             transcription = analysis_result.get("transcription", {})
             
             # Create email content
-            subject = f"🚨 HIGH-VALUE OPPORTUNITY MISSED - {audio_file}"
+            subject = f"ðŸš¨ HIGH-VALUE OPPORTUNITY MISSED - {audio_file}"
             
             html_content = self._create_email_html(
                 audio_file=audio_file,
@@ -109,13 +109,13 @@ class EmailAlertService:
 </head>
 <body>
     <div class="header">
-        <h1>🚨 HIGH-VALUE OPPORTUNITY MISSED</h1>
+        <h1>ðŸš¨ HIGH-VALUE OPPORTUNITY MISSED</h1>
         <p>Immediate Follow-up Required</p>
     </div>
     
     <div class="content">
         <div class="alert-box">
-            <h3>⚠️ URGENT: Revenue Opportunity Not Captured</h3>
+            <h3>âš ï¸ URGENT: Revenue Opportunity Not Captured</h3>
             <p>A patient inquiry with high revenue potential was not properly converted to an appointment. 
             Immediate follow-up is recommended to capture this opportunity.</p>
         </div>
@@ -143,18 +143,18 @@ class EmailAlertService:
             </tr>
         </table>
         
-        <h3>📋 Call Summary</h3>
+        <h3>ðŸ“‹ Call Summary</h3>
         <div class="transcript-box">
             <p>{call_summary}</p>
         </div>
         
-        <h3>📞 Call Transcript</h3>
+        <h3>ðŸ“ž Call Transcript</h3>
         <div class="transcript-box">
             <pre style="white-space: pre-wrap; font-family: Arial, sans-serif;">{display_transcript}</pre>
         </div>
         
         <div class="action-required">
-            <h3>🎯 Recommended Actions</h3>
+            <h3>ðŸŽ¯ Recommended Actions</h3>
             <ul>
                 <li><strong>Immediate Follow-up:</strong> Contact the patient within 24 hours</li>
                 <li><strong>Staff Coaching:</strong> Review call with {representative_name} for improvement</li>

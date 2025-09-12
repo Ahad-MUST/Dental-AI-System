@@ -1,0 +1,45 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (227)801-7932_general.mp3
+Date: 2025-09-11 23:20:45
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.81/100
+Call Summary: The main purpose of the call was to schedule an appointment for tooth pain for an existing patient, Aviva Tazin. During the conversation, Whitney confirmed the appointment at 2:30 PM and gathered necessary details such as the area affected (upper right). The outcome was a scheduled appointment for the same day.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.700)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was generally neutral with a positive staff response. The patient appeared satisfied about the appointment and did not express any pain or anxiety. Staff maintained a professional tone throughout, ensuring clear communication.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:06] SPEAKER_00: Lincoln Wood Family Dental, this is Whitney. How can I help you?
+[00:07-00:09] SPEAKER_00: Hi, I was wondering if you have any openings today?
+[00:11-00:11] SPEAKER_01: For?
+[00:12-00:17] SPEAKER_01: For me, patient's name is Aviva Tazin. I'm an existing patient.
+[00:18-00:20] SPEAKER_00: And what would you need this appointment for?
+[00:20-00:21] SPEAKER_00: It's a tooth pain.
+[00:22-00:24] SPEAKER_00: Did you want to come at 2.30?
+[00:25-00:27] SPEAKER_01: 2.30? Yeah, sure, I can come.
+[00:27-00:29] SPEAKER_01: And then spell the last name for me.
+[00:30-00:36] SPEAKER_01: T as in Tom, A as in Alpha, Z as in Zebra, E as in Echo, E as in Echo, N as in Nancy.
+[00:37-00:40] SPEAKER_00: And what area of the mouth is it? Upper, lower, left, or right?
+[00:40-00:42] SPEAKER_01: Upper. Upper right.
+[00:45-00:48] SPEAKER_01: Okay, we'll see you today at 2.30.
+[00:48-00:49] SPEAKER_00: Okay, all right, thank you.
+[00:50-00:51] SPEAKER_00: You're welcome. Bye-bye.
+
+======================================================================
+End of Analysis Report

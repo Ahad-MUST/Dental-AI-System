@@ -25,7 +25,12 @@ class Settings:
     WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
     WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "auto")
     
-    # Pyannote Configuration
+    # SpeechBrain Configuration (replacing Pyannote)
+    SPEECHBRAIN_SPEAKER_MODEL = os.getenv("SPEECHBRAIN_SPEAKER_MODEL", "speechbrain/spkrec-ecapa-voxceleb")
+    SPEECHBRAIN_VAD_MODEL = os.getenv("SPEECHBRAIN_VAD_MODEL", "speechbrain/vad-crdnn-libriparty")
+    SPEECHBRAIN_DEVICE = os.getenv("SPEECHBRAIN_DEVICE", "auto")
+    
+    # Legacy Pyannote Configuration (kept for backwards compatibility)
     HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
     PYANNOTE_MODEL = os.getenv("PYANNOTE_MODEL", "pyannote/speaker-diarization-3.1")
     

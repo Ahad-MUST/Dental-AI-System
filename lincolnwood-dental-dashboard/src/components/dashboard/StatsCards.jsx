@@ -1,102 +1,131 @@
 import React from 'react';
-import { Phone, TrendingUp, Users, AlertTriangle, Calendar } from 'lucide-react';
-import AnimatedCounter from '../common/AnimatedCounter';
-import { getGrade, getScoreColor } from '../../utils/helpers';
+import { Phone, TrendingUp, AlertTriangle, Heart, Brain } from 'lucide-react';
+import Card from '../common/Card';
 
 const StatsCards = ({ todayStats }) => {
-  const stats = [
+  const {
+    totalCalls = 0,
+    avgScore = 0,
+    highValueOpps = 0,
+    avgSentimentScore = 0.5,
+    negativeCallsCount = 0,
+    // Emotion metrics
+    painDetected = 0,
+    anxietyDetected = 0
+  } = todayStats;
+
+  // Helper function to get score color
+  const getScoreColor = (score, thresholds = { good: 0.8, fair: 0.6 }) => {
+    if (score >= thresholds.good) return 'text-emerald-600';
+    if (score >= thresholds.fair) return 'text-amber-600';
+    return 'text-red-600';
+  };
+
+  // Helper function to get sentiment color
+  const getSentimentColor = (score) => {
+    if (score >= 0.7) return 'text-emerald-600';
+    if (score >= 0.4) return 'text-amber-600';
+    return 'text-red-600';
+  };
+
+  // Calculate emotion health percentage
+  const emotionHealthScore = totalCalls > 0 ? 
+    ((totalCalls - painDetected - anxietyDetected) / totalCalls) : 1;
+
+  const statsData = [
     {
+      title: 'Total Calls',
+      value: totalCalls,
       icon: Phone,
-      title: "Today's Calls",
-      value: todayStats.totalCalls,
-      iconColor: "text-blue-600",
-      iconBg: "bg-blue-50",
-      bgGradient: "from-blue-50 to-blue-100/50"
+      iconColor: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      borderColor: 'border-blue-200',
+      description: 'Calls analyzed today',
+      trend: null
     },
     {
+      title: 'Avg Performance',
+      value: `${(avgScore * 100).toFixed(1)}%`,
       icon: TrendingUp,
-      title: "Average Score",
-      value: Math.round(todayStats.avgScore * 100),
-      suffix: "%",
-      iconColor: "text-emerald-600",
-      iconBg: "bg-emerald-50",
-      bgGradient: "from-emerald-50 to-emerald-100/50",
-      grade: getGrade(todayStats.avgScore)
+      iconColor: getScoreColor(avgScore),
+      bgColor: avgScore >= 0.8 ? 'bg-emerald-50' : avgScore >= 0.6 ? 'bg-amber-50' : 'bg-red-50',
+      borderColor: avgScore >= 0.8 ? 'border-emerald-200' : avgScore >= 0.6 ? 'border-amber-200' : 'border-red-200',
+      description: 'Representative performance',
+      trend: avgScore >= 0.8 ? '+' : avgScore >= 0.6 ? '~' : '-'
     },
     {
-      icon: Users,
-      title: "Active Reps",
-      value: todayStats.uniqueReps,
-      iconColor: "text-violet-600",
-      iconBg: "bg-violet-50",
-      bgGradient: "from-violet-50 to-violet-100/50"
-    },
-    {
+      title: 'Missed Opportunities',
+      value: highValueOpps,
       icon: AlertTriangle,
-      title: "Opportunities",
-      value: todayStats.highValueMissed,
-      iconColor: "text-amber-600",
-      iconBg: "bg-amber-50",
-      bgGradient: "from-amber-50 to-amber-100/50"
+      iconColor: highValueOpps > 0 ? 'text-red-600' : 'text-emerald-600',
+      bgColor: highValueOpps > 0 ? 'bg-red-50' : 'bg-emerald-50',
+      borderColor: highValueOpps > 0 ? 'border-red-200' : 'border-emerald-200',
+      description: 'High-value opportunities',
+      trend: highValueOpps > 0 ? '⚠️' : '✅'
+    },
+    {
+      title: 'Sentiment Health',
+      value: `${(avgSentimentScore * 100).toFixed(0)}%`,
+      icon: Heart,
+      iconColor: getSentimentColor(avgSentimentScore),
+      bgColor: avgSentimentScore >= 0.7 ? 'bg-emerald-50' : avgSentimentScore >= 0.4 ? 'bg-amber-50' : 'bg-red-50',
+      borderColor: avgSentimentScore >= 0.7 ? 'border-emerald-200' : avgSentimentScore >= 0.4 ? 'border-amber-200' : 'border-red-200',
+      description: 'Overall sentiment score',
+      trend: avgSentimentScore >= 0.7 ? '😊' : avgSentimentScore >= 0.4 ? '😐' : '😟',
+      subtitle: negativeCallsCount > 0 ? `${negativeCallsCount} negative calls` : 'No negative calls'
+    },
+    {
+      title: 'Emotion Health',
+      value: `${(emotionHealthScore * 100).toFixed(0)}%`,
+      icon: Brain,
+      iconColor: emotionHealthScore >= 0.8 ? 'text-emerald-600' : emotionHealthScore >= 0.6 ? 'text-amber-600' : 'text-red-600',
+      bgColor: emotionHealthScore >= 0.8 ? 'bg-emerald-50' : emotionHealthScore >= 0.6 ? 'bg-amber-50' : 'bg-red-50',
+      borderColor: emotionHealthScore >= 0.8 ? 'border-emerald-200' : emotionHealthScore >= 0.6 ? 'border-amber-200' : 'border-red-200',
+      description: 'Emotional wellness score',
+      trend: emotionHealthScore >= 0.8 ? '💚' : emotionHealthScore >= 0.6 ? '💛' : '❤️',
+      subtitle: `${painDetected + anxietyDetected} distress signals`
     }
   ];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-8">
-      {/* Section Header */}
-      <div className="flex items-center space-x-4 mb-8">
-        <div className="bg-blue-50 rounded-xl p-3">
-          <Calendar className="h-6 w-6 text-blue-600" strokeWidth={2} />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900">Daily Analytics</h2>
-          <p className="text-sm text-slate-600">
-            Real-time performance metrics for {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
-            })}
-          </p>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <div key={index} className="group">
-            <div className={`bg-gradient-to-br ${stat.bgGradient} border border-white/60 rounded-xl p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-300`}>
-              <div className="flex items-center justify-between mb-4">
-                <div className={`${stat.iconBg} rounded-lg p-3 shadow-sm group-hover:shadow-md transition-all duration-200`}>
-                  <stat.icon className={`h-6 w-6 ${stat.iconColor}`} strokeWidth={2} />
-                </div>
-                {stat.grade && (
-                  <div className="text-right">
-                    <span 
-                      className="text-xs font-bold px-2 py-1 rounded-md"
-                      style={{ 
-                        backgroundColor: getScoreColor(todayStats.avgScore) + '20',
-                        color: getScoreColor(todayStats.avgScore)
-                      }}
-                    >
-                      Grade {stat.grade}
-                    </span>
+    <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+      {statsData.map((stat, index) => {
+        const Icon = stat.icon;
+        
+        return (
+          <Card key={index} className="p-4 hover:shadow-md transition-shadow duration-200">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`p-2 rounded-lg ${stat.bgColor} border ${stat.borderColor}`}>
+                    <Icon className={`w-4 h-4 ${stat.iconColor}`} />
                   </div>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium text-slate-600 uppercase tracking-wide">
-                  {stat.title}
-                </h3>
-                <div className="text-3xl font-bold text-slate-900">
-                  <AnimatedCounter target={stat.value} suffix={stat.suffix || ""} />
+                  {stat.trend && (
+                    <span className="text-xs">{stat.trend}</span>
+                  )}
+                </div>
+                
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-slate-600 leading-tight">
+                    {stat.title}
+                  </p>
+                  <p className={`text-lg font-bold ${stat.iconColor} leading-tight`}>
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-slate-500 leading-tight">
+                    {stat.description}
+                  </p>
+                  {stat.subtitle && (
+                    <p className="text-xs text-slate-400 leading-tight">
+                      {stat.subtitle}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          </Card>
+        );
+      })}
     </div>
   );
 };

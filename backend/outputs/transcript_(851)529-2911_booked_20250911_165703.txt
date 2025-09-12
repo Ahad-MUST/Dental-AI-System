@@ -1,0 +1,81 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (851)529-2911_booked.mp3
+Date: 2025-09-11 16:57:06
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.66/100
+Call Summary: The main purpose of the call was to schedule an appointment for a seven-year-old patient who is experiencing pain and swelling in his mouth, likely due to a tooth coming in. The call resulted in scheduling the child's appointment for 2:30 PM on the same day, with the parent providing the necessary details including the child's first name (Yusef) and the affected area (lower left).
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.800)
+Staff Sentiment: neutral (confidence: 0.750)
+Overall Sentiment: neutral (confidence: 0.850)
+Summary: The call was characterized by a neutral sentiment from both the patient and staff. The patient expressed mild complaints about pain and discomfort, while the staff maintained a neutral and supportive tone throughout the conversation.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:04] SPEAKER_00: Lincolnwood Family Dental.
+[00:04-00:05] SPEAKER_00: This is Whitney.
+[00:05-00:05] SPEAKER_00: How can I help you?
+[00:06-00:07] SPEAKER_00: Hi, Whitney.
+[00:09-00:17] SPEAKER_01: So I have, like, new patient appointments for my kids on Monday, September 8th.
+[00:17-00:20] SPEAKER_00: The last name is Baig, B as in boy, A-I-G.
+[00:22-00:22] SPEAKER_00: Okay.
+[00:23-00:32] SPEAKER_00: And I'm calling because my son, who's seven, he's complaining of pain in his mouth, like in his back gum.
+[00:33-00:39] SPEAKER_00: And his cheek does look swollen in that space, like in that area around his jaw.
+[00:40-00:43] SPEAKER_01: And I think it's a tooth coming in.
+[00:43-00:46] SPEAKER_01: Like, it looks like a tooth trying to break through.
+[00:46-00:49] SPEAKER_01: I don't know when kids get back molars.
+[00:49-00:52] SPEAKER_00: But I wanted to see if I could bring him in sooner to get it checked out.
+[00:52-00:53] SPEAKER_00: Because I'm given a Motrin.
+[00:54-00:54] SPEAKER_00: I just don't know.
+[00:54-00:58] SPEAKER_00: I mean, you can't really take them to urgent care for, like, mouth stuff, really, if it's teeth related.
+[01:00-01:04] SPEAKER_01: I'm just wondering, like, what your guys' availability is to try to bring them in.
+[01:14-01:18] SPEAKER_01: I can do this Thursday at 1230.
+[01:21-01:21] SPEAKER_00: Okay.
+[01:21-01:22] SPEAKER_00: Wednesday.
+[01:22-01:22] SPEAKER_00: I'm sorry.
+[01:22-01:23] SPEAKER_00: Wednesday.
+[01:24-01:24] SPEAKER_00: Wednesday.
+[01:24-01:25] SPEAKER_00: Wednesday at 1230.
+[01:26-01:28] SPEAKER_00: You don't have anything, like, this afternoon or anything like that?
+[01:32-01:33] SPEAKER_01: He's in school, but I could pull him out.
+[01:34-01:35] SPEAKER_01: Because I would have to pull him at 1230.
+[01:35-01:36] SPEAKER_01: I would have to pull him out, too.
+[01:36-01:39] SPEAKER_00: But, like, ideally sooner would be better.
+[01:39-01:45] SPEAKER_00: We're traveling Friday morning, and I just want to give some time to figure out what this is.
+[01:47-01:47] SPEAKER_01: I can do 2.30 today.
+[01:47-01:48] SPEAKER_01: 2.30 today.
+[01:48-01:51] SPEAKER_01: That would be awesome, actually.
+[01:51-01:52] SPEAKER_01: And then what is...
+[01:52-01:52] SPEAKER_00: What's his first name?
+[01:52-01:54] SPEAKER_00: You gave me the last name, but not the first name.
+[01:55-01:55] SPEAKER_00: Yusef.
+[01:55-01:57] SPEAKER_00: Y-U-S-U-F.
+[01:58-02:03] SPEAKER_00: And then you said it's upper or lower left or right that's causing the concern.
+[02:07-02:08] SPEAKER_01: Lower left.
+[02:13-02:13] SPEAKER_00: Got it.
+[02:15-02:15] SPEAKER_00: Okay.
+[02:15-02:16] SPEAKER_00: Okay.
+[02:16-02:17] SPEAKER_01: I have him down today at 2.30.
+[02:19-02:19] SPEAKER_01: That would be awesome.
+[02:20-02:20] SPEAKER_01: Thank you so much.
+[02:21-02:21] SPEAKER_01: No problem.
+[02:21-02:22] SPEAKER_01: We'll see you then.
+[02:23-02:23] SPEAKER_01: Okay.
+[02:23-02:23] SPEAKER_01: All right.
+[02:23-02:24] SPEAKER_01: Bye.
+
+======================================================================
+End of Analysis Report

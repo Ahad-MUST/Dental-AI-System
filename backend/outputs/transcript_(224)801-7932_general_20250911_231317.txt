@@ -1,0 +1,55 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (224)801-7932_general.mp3
+Date: 2025-09-11 23:13:19
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.85/100
+Call Summary: The main purpose of the call was to reschedule an existing appointment from October. During the conversation, Whitney at Lincoln Wood Family Dental confirmed a new appointment for Marlene Gonzalez on October 31st at 10 a.m., replacing the original slot. The call ended with the appointment successfully rescheduled and both parties satisfied.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.800)
+Staff Sentiment: positive (confidence: 1.000)
+Overall Sentiment: neutral (confidence: 0.750)
+Summary: The call was neutral overall, with the patient expressing a simple request to reschedule an appointment and the staff providing assistance in a positive and professional manner. There were no clear indicators of pain, anxiety, satisfaction, or insurance concerns. The conversation flowed smoothly without any emotional tension.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:03-00:05] SPEAKER_00: Lincoln Wood Family Dental, this is Whitney.
+[00:05-00:05] SPEAKER_00: How can I help you?
+[00:07-00:07] SPEAKER_00: Hi there.
+[00:07-00:08] SPEAKER_00: My name is Marlene Gonzalez.
+[00:09-00:14] SPEAKER_01: I have an appointment scheduled in October that I just need to adjust a little bit.
+[00:14-00:15] SPEAKER_01: All right.
+[00:15-00:16] SPEAKER_01: Give me one second.
+[00:26-00:27] SPEAKER_01: All right.
+[00:27-00:31] SPEAKER_01: Yes, you're scheduled 1028 at 10 a.m.
+[00:31-00:33] SPEAKER_01: And did you want to change the day or time?
+[00:34-00:35] SPEAKER_00: The date.
+[00:35-00:37] SPEAKER_00: Do you have anything for October 31st?
+[00:39-00:43] SPEAKER_00: Yes, I can do the entire day basically with the exception of 10 o'clock.
+[00:44-00:44] SPEAKER_01: I mean 12 o'clock.
+[00:45-00:45] SPEAKER_01: Okay.
+[00:46-00:48] SPEAKER_01: I can do this at like 10 a.m.
+[00:48-00:49] SPEAKER_00: If you have that.
+[00:50-00:53] SPEAKER_00: I have you down then Friday, October 31st, 10 a.m.
+[00:54-00:54] SPEAKER_00: Perfect.
+[00:54-00:55] SPEAKER_00: Thank you so much.
+[00:55-00:56] SPEAKER_00: You're welcome.
+[00:56-00:56] SPEAKER_01: Have a good day.
+[00:57-00:58] SPEAKER_01: You too.
+[00:58-00:58] SPEAKER_01: Bye.
+[00:58-00:58] SPEAKER_01: Bye-bye.
+
+======================================================================
+End of Analysis Report

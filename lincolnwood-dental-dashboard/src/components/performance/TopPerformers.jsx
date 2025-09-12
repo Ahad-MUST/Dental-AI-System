@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Medal, Award, X, Phone, TrendingUp, Calendar, Clock, BarChart3, Target } from 'lucide-react';
+import { Trophy, Medal, Award, X, Phone, TrendingUp, Calendar, Clock, BarChart3, Target, Tag } from 'lucide-react';
 import Card from '../common/Card';
 import { getGrade, getScoreColor } from '../../utils/helpers';
 
@@ -29,6 +29,21 @@ const TopPerformers = ({ data, rawData = [] }) => {
     'text-emerald-600',
     'text-violet-600'
   ];
+
+  // Tag display names mapping
+  const tagDisplayNames = {
+    'new_patient': 'New Patient',
+    'emergency': 'Emergency',
+    'insurance': 'Insurance Inquiry',
+    'appointment_booking': 'Appointment Booking',
+    'appointment_confirm': 'Appointment Confirmation',
+    'appointment_cancel': 'Cancel/Reschedule',
+    'general_inquiry': 'General Inquiry',
+    'cleaning': 'Cleaning/Checkup',
+    'cosmetic': 'Cosmetic Treatment',
+    'major_treatment': 'Major Treatment',
+    'billing': 'Billing Question'
+  };
 
   const toggleSummary = (callIndex) => {
     const newExpanded = new Set(expandedSummaries);
@@ -68,7 +83,7 @@ const TopPerformers = ({ data, rawData = [] }) => {
         callsThisWeek: 0,
         callsToday: 0,
         highValueMissed: 0,
-        callTypes: [],
+        callTags: [], // CHANGED: From callTypes to callTags
         dailyBreakdown: [],
         recentCalls: [],
         performanceTrend: 'stable'
@@ -122,21 +137,16 @@ const TopPerformers = ({ data, rawData = [] }) => {
       return missed === true || missed === 'true' || missed === 'TRUE';
     }).length;
 
-    // Call types analysis - handle different field names
-    const callTypesCount = performerCalls.reduce((acc, call) => {
-      const summary = (call.Call_Summary || call.call_summary || call.CallSummary || "").toLowerCase();
-      let type = "General Inquiry";
-      if (/appointment|booking|schedule/.test(summary)) type = "Appointment Booking";
-      else if (/emergency|pain|urgent|swollen|tooth.*coming|hurt/i.test(summary)) type = "Emergency";
-      else if (/insurance|verification|coverage/.test(summary)) type = "Insurance Inquiry";
-      else if (/reschedule|confirm/.test(summary)) type = "Appointment Management";
-      
-      acc[type] = (acc[type] || 0) + 1;
+    // CHANGED: Call tags analysis instead of call types
+    const callTagsCount = performerCalls.reduce((acc, call) => {
+      const tag = call.Call_Tag || call.call_tag || call.CallTag || 'general_inquiry';
+      const displayName = tagDisplayNames[tag] || tag.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      acc[displayName] = (acc[displayName] || 0) + 1;
       return acc;
     }, {});
 
-    const callTypes = Object.entries(callTypesCount).map(([type, count]) => ({
-      type,
+    const callTags = Object.entries(callTagsCount).map(([tag, count]) => ({
+      tag, // CHANGED: From 'type' to 'tag'
       count,
       percentage: totalCalls > 0 ? ((count / totalCalls) * 100).toFixed(1) : '0.0'
     }));
@@ -215,7 +225,7 @@ const TopPerformers = ({ data, rawData = [] }) => {
       callsThisWeek,
       callsToday,
       highValueMissed,
-      callTypes,
+      callTags, // CHANGED: From callTypes to callTags
       dailyBreakdown,
       recentCalls
     };
@@ -429,22 +439,25 @@ const TopPerformers = ({ data, rawData = [] }) => {
                 </div>
               </div>
 
-              {/* Call Types */}
+              {/* CHANGED: Call Tags Distribution instead of Call Types */}
               <div className="bg-slate-50 rounded-xl p-6">
-                <h3 className="text-lg font-semibold text-slate-900 mb-4">Call Types Distribution</h3>
+                <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
+                  <Tag className="h-5 w-5 text-emerald-600 mr-2" />
+                  Call Tags Distribution
+                </h3>
                 <div className="space-y-3">
-                  {selectedPerformer.callTypes.map((callType, index) => (
+                  {selectedPerformer.callTags.map((callTag, index) => (
                     <div key={index} className="flex items-center justify-between">
-                      <span className="text-sm text-slate-700">{callType.type}</span>
+                      <span className="text-sm text-slate-700">{callTag.tag}</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-24 bg-slate-200 rounded-full h-2">
                           <div 
-                            className="bg-blue-500 h-2 rounded-full" 
-                            style={{ width: `${callType.percentage}%` }}
+                            className="bg-emerald-500 h-2 rounded-full" 
+                            style={{ width: `${callTag.percentage}%` }}
                           ></div>
                         </div>
                         <span className="text-xs text-slate-600 w-12 text-right">
-                          {callType.count} ({callType.percentage}%)
+                          {callTag.count} ({callTag.percentage}%)
                         </span>
                       </div>
                     </div>

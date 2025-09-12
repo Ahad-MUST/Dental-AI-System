@@ -1,0 +1,42 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: (271)-320-8767_missed.mp3
+Date: 2025-09-12 08:14:14
+Duration: 0.0 seconds
+Speakers: 2
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.62/100
+Call Summary: The main purpose of the call was to inquire about the acceptance of Blue Cross Blue Shield Community Insurance (Medicaid) at Lincoln Wood Family Dental. During the conversation, it was clarified that the office only accepts PPO insurances, leading to the conclusion that Medicaid is not accepted, and this information was confirmed by both parties.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.700)
+Staff Sentiment: positive (confidence: 0.900)
+Overall Sentiment: neutral (confidence: 0.600)
+Summary: The call was generally neutral with the patient seeking clarification about insurance coverage. The staff maintained a positive and professional tone, ensuring clear communication despite the insurance-related inquiry. There were no signs of pain or anxiety from the patient, but there was an insurance concern that needed to be addressed.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_00: This call may be recorded for quality and training purposes.
+[00:04-00:05] SPEAKER_00: Lincoln Wood Family Dental, this is Whitney.
+[00:06-00:06] SPEAKER_00: How can I help you?
+[00:07-00:10] SPEAKER_00: Hey, Whitney, just wondering, do you guys take Blue Cross Blue Shield Community Insurance?
+[00:11-00:13] SPEAKER_01: I'm sorry, say that for me one more time.
+[00:13-00:13] SPEAKER_01: I couldn't hear you.
+[00:14-00:17] SPEAKER_01: Blue Cross Blue Shield Community Insurance, public age.
+[00:18-00:19] SPEAKER_00: Is that Medicaid insurance?
+[00:20-00:21] SPEAKER_00: Yeah, Medicaid, yeah.
+[00:21-00:24] SPEAKER_00: We only take PPO insurances.
+[00:24-00:25] SPEAKER_01: Oh, okay.
+[00:25-00:26] SPEAKER_01: All right, thank you.
+[00:26-00:27] SPEAKER_01: You're welcome.
+
+======================================================================
+End of Analysis Report

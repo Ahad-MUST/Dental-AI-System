@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { BarChart3, Wifi, WifiOff, Bell, Clock, X, AlertTriangle } from 'lucide-react';
 import { formatTime } from '../../utils/helpers';
 import Card from '../common/Card';
+import DownloadButton from './DownloadButton';
 
-const Header = ({ connectionStatus, lastUpdate, alertsCount, alerts = [], onClearAllAlerts, onDismissAlert }) => {
+const Header = ({ connectionStatus, lastUpdate, alertsCount, alerts = [], onClearAllAlerts, onDismissAlert, data = [] }) => {
   const [showAlertsDropdown, setShowAlertsDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -68,6 +69,11 @@ const Header = ({ connectionStatus, lastUpdate, alertsCount, alerts = [], onClea
           
           {/* Status Section */}
           <div className="flex items-center space-x-6">
+            {/* Download Button with PDF Support */}
+            {data.length > 0 && (
+              <DownloadButton data={data} />
+            )}
+
             {/* Connection Status */}
             <div className="hidden sm:flex items-center space-x-3 bg-gray-50 rounded-full px-4 py-2 border border-gray-200">
               {connectionStatus === 'connected' ? (
