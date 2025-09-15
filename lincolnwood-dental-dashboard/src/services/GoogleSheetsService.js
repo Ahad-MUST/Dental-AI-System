@@ -1,10 +1,10 @@
-// Google Sheets Service with robust error handling and retry logic
+// Google Sheets Service with robust error handling and TODAY-ONLY alerts
 class GoogleSheetsService {
   constructor() {
     this.sheetId = process.env.REACT_APP_GOOGLE_SHEET_ID;
     this.apiKey = process.env.REACT_APP_GOOGLE_API_KEY;
     this.baseUrl = 'https://sheets.googleapis.com/v4/spreadsheets';
-    this.range = 'Sheet1!A:X'; // UPDATED: Extended range to include new columns W and X
+    this.range = 'Sheet1!A:X'; // Extended range to include new columns W and X
     this.cache = null;
     this.lastFetch = null;
     this.subscribers = [];
@@ -16,14 +16,20 @@ class GoogleSheetsService {
     // Listen for online/offline events
     window.addEventListener('online', () => {
       this.isOnline = true;
-      console.log('Connection restored - resuming data fetching');
+      console.log('🔌 Connection restored - resuming data fetching');
       this.fetchData(); // Immediately fetch when back online
     });
     
     window.addEventListener('offline', () => {
       this.isOnline = false;
-      console.log('Connection lost - using cached data');
+      console.log('📴 Connection lost - using cached data');
     });
+  }
+
+  // Get today's date in MM/DD/YYYY format (consistent with data format)
+  getTodayString() {
+    const today = new Date();
+    return `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
   }
 
   // Subscribe to real-time updates
@@ -40,7 +46,7 @@ class GoogleSheetsService {
       try {
         callback(data);
       } catch (error) {
-        console.error('Error in subscriber callback:', error);
+        console.error('❌ Error in subscriber callback:', error);
       }
     });
   }
@@ -49,7 +55,7 @@ class GoogleSheetsService {
   async fetchData() {
     // Don't fetch if offline
     if (!this.isOnline) {
-      console.log('Offline - using cached data');
+      console.log('📱 Offline - using cached data');
       if (this.cache) {
         this.notifySubscribers(this.cache);
       }
@@ -59,7 +65,7 @@ class GoogleSheetsService {
     try {
       const url = `${this.baseUrl}/${this.sheetId}/values/${this.range}?key=${this.apiKey}`;
       
-      console.log('Fetching data from Google Sheets...');
+      console.log('📊 Fetching data from Google Sheets...');
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -81,7 +87,7 @@ class GoogleSheetsService {
       const result = await response.json();
       
       if (!result.values || result.values.length === 0) {
-        console.warn('No data found in sheet');
+        console.warn('⚠️ No data found in sheet');
         return this.cache || [];
       }
 
@@ -89,7 +95,7 @@ class GoogleSheetsService {
       const headers = result.values[0];
       const rows = result.values.slice(1);
       
-      console.log(`Successfully fetched ${rows.length} rows of data`);
+      console.log(`✅ Successfully fetched ${rows.length} rows of data`);
       
       const data = rows.map((row, index) => {
         const obj = {};
@@ -116,14 +122,14 @@ class GoogleSheetsService {
         obj.Overall_Sentiment = obj.Overall_Sentiment && obj.Overall_Sentiment !== '' ? obj.Overall_Sentiment.toLowerCase() : 'unknown';
         obj.Sentiment_Summary = obj.Sentiment_Summary || 'No sentiment analysis available';
         
-        // NEW: Clean call tag field
+        // Clean call tag field
         if (obj.Call_Tag) {
           obj.Call_Tag = obj.Call_Tag.toLowerCase();
         } else {
           obj.Call_Tag = 'general_inquiry';
         }
         
-        // NEW: Clean coaching candidate field
+        // Clean coaching candidate field
         if (obj.Coaching_Candidate) {
           obj.Coaching_Candidate = obj.Coaching_Candidate.toString().toLowerCase() === 'yes';
         } else {
@@ -133,16 +139,27 @@ class GoogleSheetsService {
         return obj;
       });
 
-      // Check for new high-value opportunities
+      // ENHANCED: Check for NEW TODAY's high-value opportunities only
+      const todayStr = this.getTodayString();
+      
       if (this.cache) {
-        const newHighValueOpps = data.filter(item => 
+        const previousTodayOpps = this.cache.filter(item => 
           item.High_Value_Missed_Opportunity && 
-          !this.cache.some(cached => cached.Call_File_Name === item.Call_File_Name)
+          item.Analysis_Date === todayStr
+        ).map(item => item.Call_File_Name);
+
+        const currentTodayOpps = data.filter(item => 
+          item.High_Value_Missed_Opportunity && 
+          item.Analysis_Date === todayStr
+        );
+
+        const newTodayOpps = currentTodayOpps.filter(item =>
+          !previousTodayOpps.includes(item.Call_File_Name)
         );
         
-        if (newHighValueOpps.length > 0) {
-          console.log('New high-value opportunities detected:', newHighValueOpps);
-          this.notifyNewAlerts(newHighValueOpps);
+        if (newTodayOpps.length > 0) {
+          console.log('🚨 NEW TODAY\'S high-value opportunities detected:', newTodayOpps);
+          this.notifyNewTodayAlerts(newTodayOpps);
         }
       }
 
@@ -162,7 +179,7 @@ class GoogleSheetsService {
 
   // Handle fetch errors with retry logic
   async handleFetchError(error) {
-    console.error('Error fetching Google Sheets data:', error);
+    console.error('❌ Error fetching Google Sheets data:', error);
     
     // Check if it's a network error
     const isNetworkError = error.name === 'TypeError' || 
@@ -172,7 +189,7 @@ class GoogleSheetsService {
     
     if (isNetworkError && this.retryAttempts < this.maxRetries) {
       this.retryAttempts++;
-      console.log(`Network error detected. Retry attempt ${this.retryAttempts}/${this.maxRetries} in ${this.retryDelay}ms`);
+      console.log(`🔄 Network error detected. Retry attempt ${this.retryAttempts}/${this.maxRetries} in ${this.retryDelay}ms`);
       
       // Wait before retrying
       await new Promise(resolve => setTimeout(resolve, this.retryDelay));
@@ -185,35 +202,40 @@ class GoogleSheetsService {
     
     // If we've exhausted retries or it's not a network error, use cached data
     if (this.cache) {
-      console.log('Using cached data due to fetch error');
+      console.log('💾 Using cached data due to fetch error');
       this.notifySubscribers(this.cache);
       return this.cache;
     }
     
     // If no cache available, return empty array and let UI handle it
-    console.warn('No cached data available, returning empty array');
+    console.warn('⚠️ No cached data available, returning empty array');
     return [];
   }
 
-  // Notify about new alerts
-  notifyNewAlerts(alerts) {
+  // ENHANCED: Notify about new TODAY's alerts only
+  notifyNewTodayAlerts(alerts) {
+    const todayStr = this.getTodayString();
+    
     alerts.forEach(alert => {
-      console.log(`🚨 HIGH VALUE OPPORTUNITY MISSED: ${alert.Call_File_Name}`);
+      console.log(`🚨 TODAY'S HIGH VALUE OPPORTUNITY MISSED: ${alert.Call_File_Name} (Date: ${alert.Analysis_Date})`);
       
       if (Notification.permission === 'granted') {
         try {
-          new Notification('High Value Opportunity Missed!', {
-            body: `Call: ${alert.Call_File_Name} - Representative: ${alert.Representative_Name}`,
-            icon: '/favicon.ico'
+          new Notification(`Today's Alert: High Value Opportunity Missed!`, {
+            body: `Call: ${alert.Call_File_Name} - Rep: ${alert.Representative_Name}`,
+            icon: '/favicon.ico',
+            tag: `today-alert-${alert.Call_File_Name}`, // Prevent duplicate notifications
+            requireInteraction: true, // Keep notification visible until dismissed
+            timestamp: Date.now()
           });
         } catch (error) {
-          console.warn('Failed to show notification:', error);
+          console.warn('⚠️ Failed to show notification:', error);
         }
       }
     });
   }
 
-  // NEW: Get calls filtered by tag
+  // Get calls filtered by tag
   getCallsByTag(tagType) {
     if (!this.cache) return [];
     
@@ -224,7 +246,7 @@ class GoogleSheetsService {
     );
   }
 
-  // NEW: Get call tag analytics
+  // Get call tag analytics
   getCallTagAnalytics() {
     if (!this.cache) return { overall: {}, trends: [] };
     
@@ -411,6 +433,19 @@ class GoogleSheetsService {
     return correlation;
   }
 
+  // ENHANCED: Get TODAY's high-value opportunities specifically
+  getTodayHighValueOpportunities() {
+    if (!this.cache) return [];
+    
+    const todayStr = this.getTodayString();
+    
+    return this.cache.filter(item => 
+      item.High_Value_Missed_Opportunity && 
+      item.Analysis_Date === todayStr &&
+      item.Call_File_Name // Must have a valid call file name
+    );
+  }
+
   // Start polling with error handling
   startPolling(interval = 30000) {
     // Initial fetch
@@ -426,15 +461,15 @@ class GoogleSheetsService {
       // Only poll if online
       if (this.isOnline) {
         this.fetchData().catch(error => {
-          console.warn('Polling fetch failed:', error);
+          console.warn('⚠️ Polling fetch failed:', error);
           // Don't stop polling, just log the error
         });
       } else {
-        console.log('Skipping poll - offline');
+        console.log('📱 Skipping poll - offline');
       }
     }, interval);
     
-    console.log(`Started polling Google Sheets every ${interval}ms`);
+    console.log(`🔄 Started polling Google Sheets every ${interval}ms`);
   }
 
   // Stop polling
@@ -442,7 +477,7 @@ class GoogleSheetsService {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
       this.pollInterval = null;
-      console.log('Stopped polling Google Sheets');
+      console.log('⏹️ Stopped polling Google Sheets');
     }
   }
 
@@ -463,15 +498,18 @@ class GoogleSheetsService {
     return 'connected';
   }
 
-  // Request notification permission
+  // Request notification permission for TODAY's alerts
   async requestNotificationPermission() {
     if ('Notification' in window && Notification.permission === 'default') {
       try {
         const permission = await Notification.requestPermission();
-        console.log('Notification permission:', permission);
+        console.log('🔔 Notification permission:', permission);
+        if (permission === 'granted') {
+          console.log('✅ Notifications enabled for today\'s alerts');
+        }
         return permission === 'granted';
       } catch (error) {
-        console.warn('Failed to request notification permission:', error);
+        console.warn('⚠️ Failed to request notification permission:', error);
         return false;
       }
     }

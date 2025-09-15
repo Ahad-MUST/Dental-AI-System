@@ -1,6 +1,15 @@
-// useDashboardData.js - COMPLETE PRESERVED VERSION with FIXED Top Performers
+// useDashboardData.js - FINAL VERSION with AlertsManager Integration
 import { useState, useEffect, useMemo } from 'react';
 import googleSheetsService from '../services/GoogleSheetsService';
+import { 
+  alertsManager, 
+  loadDismissedAlerts, 
+  filterTodayAlerts, 
+  createAlertObjects, 
+  dismissAlert as dismissAlertUtil, 
+  dismissAllAlerts as dismissAllAlertsUtil,
+  checkAndResetForNewDay
+} from '../utils/AlertsManager';
 
 export const useDashboardData = () => {
   const [data, setData] = useState([]);
@@ -9,7 +18,18 @@ export const useDashboardData = () => {
   const [loading, setLoading] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const [error, setError] = useState(null);
-  const [processedCallIds, setProcessedCallIds] = useState(new Set());
+  const [dismissedAlerts, setDismissedAlerts] = useState(new Set());
+
+  // Load dismissed alerts and check for new day on component mount
+  useEffect(() => {
+    const hasReset = checkAndResetForNewDay();
+    const dismissed = loadDismissedAlerts();
+    setDismissedAlerts(dismissed);
+    
+    if (hasReset) {
+      console.log('🌅 New day detected - alerts reset');
+    }
+  }, []);
 
   // MOVED: Complete emotion analytics helper function BEFORE useMemo
   const getEmotionAnalyticsData = (data) => {
@@ -40,7 +60,7 @@ export const useDashboardData = () => {
 
     console.log('🎭 Patient emotions distribution:', patientEmotions);
 
-    // FIXED: Emotion intensity distribution - handle all values properly
+    // Emotion intensity distribution - handle all values properly
     const emotionIntensity = data.reduce((acc, item) => {
       if (item.Patient_Emotion_Intensity && 
           item.Patient_Emotion_Intensity !== '' && 
@@ -53,7 +73,7 @@ export const useDashboardData = () => {
 
     console.log('📈 Emotion intensity distribution:', emotionIntensity);
 
-    // FIXED: Emotion flags analysis - handle 'None' properly
+    // Emotion flags analysis - handle 'None' properly
     const emotionFlags = data.reduce((acc, item) => {
       if (item.Emotion_Flags && 
           item.Emotion_Flags !== 'None' && 
@@ -74,7 +94,7 @@ export const useDashboardData = () => {
 
     console.log('🚨 Emotion flags distribution:', emotionFlags);
 
-    // FIXED: Call emotional health distribution
+    // Call emotional health distribution
     const callHealth = data.reduce((acc, item) => {
       if (item.Call_Emotional_Health && 
           item.Call_Emotional_Health !== '' && 
@@ -157,17 +177,19 @@ export const useDashboardData = () => {
           setLastUpdate(new Date());
           console.log(`✅ Loaded ${sheetsData.length} calls from Google Sheets`);
           
-          // Debug: Log sample emotion data
-          const emotionSample = sheetsData.slice(0, 3).map(item => ({
+          // Debug: Log sample data
+          const sampleData = sheetsData.slice(0, 3).map(item => ({
             call: item.Call_File_Name,
+            date: item.Analysis_Date,
             emotion: item.Patient_Primary_Emotion,
             intensity: item.Patient_Emotion_Intensity,
             flags: item.Emotion_Flags,
             health: item.Call_Emotional_Health,
-            callTag: item.Call_Tag, // NEW
-            coachingCandidate: item.Coaching_Candidate // NEW
+            callTag: item.Call_Tag,
+            coachingCandidate: item.Coaching_Candidate,
+            highValueMissed: item.High_Value_Missed_Opportunity
           }));
-          console.log('📊 Emotion data sample:', emotionSample);
+          console.log('📊 Sample data loaded:', sampleData);
           
         } else {
           setConnectionStatus('disconnected');
@@ -184,50 +206,56 @@ export const useDashboardData = () => {
 
     loadData();
     
-    // PRESERVED: Refresh data every 30 seconds
-    const interval = setInterval(loadData, 30000000);
+    // Refresh data every 5 minutes
+    const interval = setInterval(loadData, process.env.REACT_APP_REFRESH_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
-  // PRESERVED: Alert monitoring effect
+  // ENHANCED: Alert monitoring effect - Only show TODAY's alerts using AlertsManager
   useEffect(() => {
-    const newHighValueMissed = data.filter(item => 
-      item.High_Value_Missed_Opportunity && 
-      item.Call_File_Name &&
-      !processedCallIds.has(item.Call_File_Name)
-    );
-
-    if (newHighValueMissed.length > 0) {
-      const newAlerts = newHighValueMissed.map(alert => ({
-        ...alert,
-        timestamp: new Date(),
-        id: `alert-${alert.Call_File_Name}-${Date.now()}`
-      }));
-
-      setAlerts(prev => [...prev, ...newAlerts]);
-      
-      setProcessedCallIds(prev => {
-        const newSet = new Set(prev);
-        newHighValueMissed.forEach(item => {
-          if (item.Call_File_Name) {
-            newSet.add(item.Call_File_Name);
-          }
-        });
-        return newSet;
-      });
+    // Check for new day first
+    const hasReset = checkAndResetForNewDay();
+    if (hasReset) {
+      setDismissedAlerts(new Set());
     }
-  }, [data, processedCallIds]);
+    
+    // Filter for today's undismissed alerts
+    const todayFilteredAlerts = filterTodayAlerts(data, dismissedAlerts);
+    
+    console.log(`🔔 Alert update: ${todayFilteredAlerts.length} active today's alerts (${dismissedAlerts.size} dismissed)`);
+    
+    if (todayFilteredAlerts.length > 0) {
+      const alertObjects = createAlertObjects(todayFilteredAlerts);
+      setAlerts(alertObjects);
+      console.log('🚨 Updated alerts with today\'s undismissed high-value opportunities:', alertObjects);
+    } else {
+      setAlerts([]); // Clear alerts if none for today or all dismissed
+    }
+  }, [data, dismissedAlerts]);
 
-  // Alert management functions
+  // ENHANCED: Alert management functions using AlertsManager
   const dismissAlert = (alertId) => {
+    const newDismissedSet = dismissAlertUtil(alertId, alerts, dismissedAlerts);
+    setDismissedAlerts(newDismissedSet);
+    
+    // Remove from current alerts display
     setAlerts(prev => prev.filter(alert => alert.id !== alertId));
   };
 
   const clearAllAlerts = () => {
+    const newDismissedSet = dismissAllAlertsUtil(alerts, dismissedAlerts);
+    setDismissedAlerts(newDismissedSet);
+    
+    // Clear current alerts display
     setAlerts([]);
   };
 
-  // PRESERVED: Complete analytics calculation
+  // Get today's date string
+  const getTodayString = () => {
+    return alertsManager.getTodayString();
+  };
+
+  // Complete analytics calculation
   const analytics = useMemo(() => {
     if (!data.length) {
       return {
@@ -236,10 +264,10 @@ export const useDashboardData = () => {
           avgScore: 0, 
           highValueOpps: 0, 
           sentimentPositive: 0,
-          highEmotionCalls: 0, // PRESERVED
-          painDetected: 0, // PRESERVED
-          anxietyDetected: 0, // PRESERVED
-          satisfactionDetected: 0 // PRESERVED
+          highEmotionCalls: 0,
+          painDetected: 0,
+          anxietyDetected: 0,
+          satisfactionDetected: 0
         },
         repCallCounts: [],
         repAverages: [],
@@ -247,21 +275,22 @@ export const useDashboardData = () => {
         callTypes: {},
         sentimentAnalytics: { overall: {}, patient: {}, staff: {}, trends: [] },
         emotionAnalytics: { patientEmotions: {}, emotionIntensity: {}, emotionFlags: {}, callHealth: {}, trends: [] },
-        callTagAnalytics: { overall: {}, trends: [] }, // NEW
+        callTagAnalytics: { overall: {}, trends: [] },
         sentimentOpportunityCorrelation: {},
-        topPerformers: [], // FIXED: Ensure this is included
-        bottomPerformers: [] // FIXED: Ensure this is included
+        topPerformers: [],
+        bottomPerformers: []
       };
     }
 
     console.log('🔄 Calculating complete analytics...');
 
-    // PRESERVED: Today's comprehensive stats calculation
-    const today = new Date();
-    const todayStr = `${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getDate().toString().padStart(2, '0')}/${today.getFullYear()}`;
+    // TODAY'S comprehensive stats calculation
+    const todayStr = getTodayString();
     const todayData = data.filter(item => item.Analysis_Date === todayStr);
 
-    // PRESERVED: Calculate sentiment scores for today
+    console.log(`📅 Today (${todayStr}): ${todayData.length} calls`);
+
+    // Calculate sentiment scores for today
     const sentimentScores = todayData
       .filter(item => item.Representative_Score && !isNaN(parseFloat(item.Representative_Score)))
       .map(item => parseFloat(item.Representative_Score));
@@ -269,7 +298,7 @@ export const useDashboardData = () => {
     const avgSentimentScore = sentimentScores.length > 0 ? 
       sentimentScores.reduce((sum, score) => sum + score, 0) / sentimentScores.length : 0.5;
 
-    // PRESERVED: Calculate emotion metrics for today
+    // Calculate emotion metrics for today
     const highEmotionCalls = todayData.filter(item => 
       item.Patient_Emotion_Intensity === 'high'
     ).length;
@@ -292,12 +321,14 @@ export const useDashboardData = () => {
         todayData.reduce((sum, item) => sum + (parseFloat(item.Representative_Score) || 0), 0) / todayData.length : 0,
       highValueOpps: todayData.filter(item => item.High_Value_Missed_Opportunity).length,
       sentimentPositive: todayData.filter(item => item.Overall_Sentiment === 'positive').length,
-      avgSentimentScore: avgSentimentScore, // PRESERVED
-      highEmotionCalls: highEmotionCalls, // PRESERVED
-      painDetected: painDetected, // PRESERVED
-      anxietyDetected: anxietyDetected, // PRESERVED
-      satisfactionDetected: satisfactionDetected // PRESERVED
+      avgSentimentScore: avgSentimentScore,
+      highEmotionCalls: highEmotionCalls,
+      painDetected: painDetected,
+      anxietyDetected: anxietyDetected,
+      satisfactionDetected: satisfactionDetected
     };
+
+    console.log('📊 Today\'s stats calculated:', todayStats);
 
     // Representative call counts
     const repCallCounts = data.reduce((acc, item) => {
@@ -311,7 +342,7 @@ export const useDashboardData = () => {
       calls
     }));
 
-    // FIXED: Representative averages with proper grade calculation
+    // Representative averages with proper grade calculation
     const getGrade = (score) => {
       if (score >= 0.9) return "A";
       if (score >= 0.75) return "B";
@@ -342,12 +373,12 @@ export const useDashboardData = () => {
         data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length : 0,
       totalCalls: data.total,
       validScores: data.scores.length,
-      callCount: data.total, // FIXED: Add callCount for compatibility
+      callCount: data.total,
       grade: getGrade(data.scores.length > 0 ? 
-        data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length : 0) // FIXED: Add grade
+        data.scores.reduce((sum, score) => sum + score, 0) / data.scores.length : 0)
     }));
 
-    // FIXED: Create top and bottom performers from repAverages
+    // Create top and bottom performers from repAverages
     const validPerformers = repAverages.filter(rep => 
       rep.name !== 'Not Specified' && 
       rep.validScores > 0 && 
@@ -360,7 +391,7 @@ export const useDashboardData = () => {
     console.log('🏆 Top performers:', topPerformers);
     console.log('📈 Bottom performers for coaching:', bottomPerformers);
 
-    // PRESERVED: Complete daily performance trends calculation
+    // Complete daily performance trends calculation
     const dailyPerformance = data.reduce((acc, item) => {
       const date = item.Analysis_Date;
       if (!acc[date]) {
@@ -372,7 +403,7 @@ export const useDashboardData = () => {
           emotions: [], 
           emotionIntensities: [], 
           emotionFlags: [],
-          callTags: [] // NEW: Added call tags tracking
+          callTags: []
         };
       }
       
@@ -387,7 +418,7 @@ export const useDashboardData = () => {
         acc[date].sentiments.push(item.Overall_Sentiment);
       }
       
-      // PRESERVED: Collect daily emotion data properly
+      // Collect daily emotion data properly
       if (item.Patient_Primary_Emotion && 
           item.Patient_Primary_Emotion !== 'unknown' && 
           item.Patient_Primary_Emotion !== 'neutral' && 
@@ -406,7 +437,7 @@ export const useDashboardData = () => {
         acc[date].emotionFlags.push(...item.Emotion_Flags.split(', ').filter(f => f.trim()));
       }
       
-      // NEW: Collect daily call tag data
+      // Collect daily call tag data
       if (item.Call_Tag && 
           item.Call_Tag !== '' && 
           item.Call_Tag !== 'unknown') {
@@ -431,7 +462,7 @@ export const useDashboardData = () => {
         const positiveSentimentRatio = totalSentiments > 0 ? 
           (sentimentCounts.positive / totalSentiments) * 100 : 0;
 
-        // PRESERVED: Calculate emotion ratios
+        // Calculate emotion ratios
         const highIntensityCount = day.emotionIntensities.filter(i => i === 'high').length;
         const emotionIntensityRatio = day.emotionIntensities.length > 0 ?
           (highIntensityCount / day.emotionIntensities.length) * 100 : 0;
@@ -449,7 +480,7 @@ export const useDashboardData = () => {
       .filter(day => day.callCount > 0)
       .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // PRESERVED: Call types analysis (keeping original logic)
+    // Call types analysis (keeping original logic)
     const callTypes = data.reduce((acc, item) => {
       const summary = (item.Call_Summary || "").toLowerCase();
       let type = "General Inquiry";
@@ -461,20 +492,13 @@ export const useDashboardData = () => {
       return acc;
     }, {});
 
-    // PRESERVED: Sentiment analytics (via Google Sheets service)
+    // Get analytics from Google Sheets service
     const sentimentAnalytics = googleSheetsService.getSentimentAnalytics();
-
-    // PRESERVED: Emotion analytics (using function defined above)
     const emotionAnalytics = getEmotionAnalyticsData(data);
-
-    // NEW: Call tag analytics
     const callTagAnalytics = googleSheetsService.getCallTagAnalytics();
-
-    // PRESERVED: Sentiment opportunity correlation
     const sentimentOpportunityCorrelation = googleSheetsService.getSentimentOpportunityCorrelation();
 
     console.log('📊 Complete analytics calculated successfully');
-    console.log('🏷️ Call tag analytics:', callTagAnalytics);
 
     return {
       todayStats,
@@ -484,14 +508,14 @@ export const useDashboardData = () => {
       callTypes,
       sentimentAnalytics,
       emotionAnalytics,
-      callTagAnalytics, // NEW
+      callTagAnalytics,
       sentimentOpportunityCorrelation,
-      topPerformers, // FIXED: Now properly calculated
-      bottomPerformers // FIXED: Now properly calculated
+      topPerformers,
+      bottomPerformers
     };
-  }, [data, getEmotionAnalyticsData]); // Added function to dependency array
+  }, [data, getEmotionAnalyticsData, getTodayString]);
 
-  // PRESERVED: All data access functions
+  // All data access functions
   const getCallsBySentiment = (sentimentType, speakerType = 'overall') => {
     return googleSheetsService.getCallsBySentiment(sentimentType, speakerType);
   };
@@ -514,25 +538,27 @@ export const useDashboardData = () => {
     );
   };
 
-  // NEW: Get calls by tag
   const getCallsByTag = (tagType) => {
     return googleSheetsService.getCallsByTag(tagType);
   };
 
-  // PRESERVED: Return all existing functionality plus new call tag functionality
+  // Return all functionality with enhanced today-only alerts
   return {
     data,
-    alerts,
+    alerts, // TODAY-ONLY alerts with proper session persistence
     lastUpdate,
     loading,
     connectionStatus,
     error,
     analytics,
-    dismissAlert,
-    clearAllAlerts,
+    dismissAlert, // Enhanced with AlertsManager
+    clearAllAlerts, // Enhanced with AlertsManager
     getCallsBySentiment,
-    getCallsByEmotion, // PRESERVED: Function to get calls by emotion
-    getCallsByEmotionFlag, // PRESERVED: Function to get calls by emotion flags
-    getCallsByTag // NEW: Function to get calls by tag
+    getCallsByEmotion,
+    getCallsByEmotionFlag,
+    getCallsByTag,
+    // Additional utility functions
+    getTodayString,
+    dismissedAlertsCount: dismissedAlerts.size
   };
 };

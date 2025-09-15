@@ -188,7 +188,7 @@ const AdvancedDownloadSystem = ({ data, onClose }) => {
     return count;
   };
 
-  // Download handler
+  // Download handler - REMOVED SUCCESS ALERT
   const handleDownload = async () => {
     if (filteredData.length === 0) {
       alert('No data to download with current filters');
@@ -247,7 +247,8 @@ const AdvancedDownloadSystem = ({ data, onClose }) => {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      alert(`Successfully downloaded ${filteredData.length} records with ${selectedColumns.length} columns as ${downloadFormat.toUpperCase()}`);
+      // REMOVED: Success alert message
+      // The download will proceed silently without the popup alert
 
     } catch (error) {
       console.error('Download error:', error);
