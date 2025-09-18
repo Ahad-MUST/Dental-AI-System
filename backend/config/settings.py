@@ -1,5 +1,6 @@
 """
 Configuration settings for Dental Call Analysis System
+Updated with API server and employee management configuration
 """
 import os
 from pathlib import Path
@@ -64,6 +65,20 @@ class Settings:
     API_ENDPOINT = os.getenv("API_ENDPOINT")
     API_KEY = os.getenv("API_KEY")
     API_POLLING_INTERVAL = int(os.getenv("API_POLLING_INTERVAL", "300"))  # 5 minutes default
+    
+    # API Server Configuration (NEW)
+    API_HOST = os.getenv("API_HOST", "0.0.0.0")
+    API_PORT = int(os.getenv("API_PORT", "8000"))
+    API_CORS_ORIGINS = os.getenv("API_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",")
+    
+    # Employee Management Configuration (NEW)
+    DEFAULT_EMPLOYEES = [
+        "Aminah Jafri",
+        "Jovana Vanegas", 
+        "Melina Rodriguez",
+        "Whitney Minor",
+        "Yuseli Saldana"
+    ]
     
     def __init__(self):
         """Create necessary directories"""

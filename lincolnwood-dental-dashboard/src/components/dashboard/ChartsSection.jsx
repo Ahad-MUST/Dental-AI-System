@@ -43,9 +43,12 @@ const ChartsSection = ({ analytics, rawData, getCallsBySentiment, getCallsByEmot
           />
         </div>
         
-        {/* Performance Trends */}
+        {/* Performance Trends - Now with rawData and enhanced functionality */}
         <div>
-          <PerformanceTrendsChart data={analytics.performanceTrends} />
+          <PerformanceTrendsChart 
+            data={analytics.performanceTrends} 
+            rawData={rawData}
+          />
         </div>
       </div>
 

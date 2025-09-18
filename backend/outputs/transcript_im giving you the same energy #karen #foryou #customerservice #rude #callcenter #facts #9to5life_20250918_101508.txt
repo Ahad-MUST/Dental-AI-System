@@ -1,0 +1,37 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: D:\Upwork\Sultan Dental Project\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+Date: 2025-09-18 10:15:10
+Duration: 0.0 seconds
+Speakers: 0
+Representative: Veronica
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.66/100
+Call Summary: The main purpose of the call was for the customer to request account access and assistance from the dental office. Despite the unprofessional tone, Veronica acknowledged the request but noted significant communication issues, indicating that no specific action was taken during this interaction due to the customer's disruptive behavior.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: negative (confidence: 0.850)
+Staff Sentiment: neutral (confidence: 0.700)
+Overall Sentiment: negative (confidence: 0.800)
+Summary: The patient expressed frustration and anger towards the staff, primarily due to insurance issues. The patient's tone was confrontational and dismissive throughout the call, indicating a high level of negative sentiment. The staff maintained a professional demeanor but struggled to effectively communicate with the upset patient, leading to an overall poor emotional state in the conversation.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:02] SPEAKER_01: Thank you for calling customer service. My name is Veronica. How can I help you?
+[00:04-00:08] SPEAKER_03: Yeah, yeah, yeah, whatever. Just pull up my account. Don't even say thank you for calling.
+[00:08-00:13] SPEAKER_06: Just pull up my account and do what you need to do. Do your job because I don't understand.
+[00:13-00:16] SPEAKER_04: Hello? Are you still there? Yes, ma'am. I'm still listening.
+[00:17-00:21] SPEAKER_01: Did you hear what I just said? Nah, you're going to have to repeat all that because you started
+[00:21-00:24] SPEAKER_01: yelling and I thought you was talking to one of your kids because I know you're not talking to
+[00:24-00:30] SPEAKER_07: me like that. Not on this chipper Tuesday morning. Did you really just say that to me?
+[00:30-00:32] SPEAKER_02: Yes, I did say that. Yes, I did.
+
+======================================================================
+End of Analysis Report

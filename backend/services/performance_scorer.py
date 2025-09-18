@@ -1,125 +1,100 @@
 """
-Enhanced Performance scoring service for dental call quality evaluation
-Provides more differentiated and accurate scoring
+Enhanced Performance scoring service - NOW WITH CHUNKING SUPPORT FOR LONG CALLS
 """
 import logging
 import re
 import json
 import asyncio
 from typing import Dict, List
+from prompts.performance_scorer_prompts import PerformanceScorerPrompts
 
 logger = logging.getLogger(__name__)
 
 class PerformanceScorer:
-    """Evaluate call performance using enhanced LLM analysis with better differentiation"""
+    """Evaluate call performance with chunking support for long calls"""
     
     def __init__(self, llm_analyzer):
         self.llm_analyzer = llm_analyzer
+        self.prompts = PerformanceScorerPrompts()
         
-        # Enhanced call type definitions with more specific criteria
+        # Chunking configuration
+        self.max_single_analysis_length = 4000  # Analyze without chunking
+        self.chunk_size = 2500  # Chunk size for long calls
+        
+        # Call types configuration
         self.call_types = {
             "appointment_booking": {
                 "keywords": ["schedule", "appointment", "book", "reschedule", "available", "confirm"],
                 "weights": {"greeting": 0.15, "patient_needs": 0.20, "scheduling_effectiveness": 0.50, "communication_clarity": 0.15},
                 "success_criteria": "appointment scheduled successfully",
-                "baseline_score": 70  # If basic requirements met
+                "baseline_score": 70
             },
             "emergency_call": {
                 "keywords": ["pain", "emergency", "urgent", "hurt", "swelling", "broken", "bleeding"],
                 "weights": {"urgency_recognition": 0.35, "empathy": 0.25, "immediate_scheduling": 0.30, "communication": 0.10},
                 "success_criteria": "same-day appointment offered",
-                "baseline_score": 65  # Emergency calls are more critical
+                "baseline_score": 65
             },
             "service_inquiry": {
                 "keywords": ["cost", "price", "services", "treatment", "procedure", "whitening", "implant", "crown"],
                 "weights": {"greeting": 0.15, "information_quality": 0.30, "consultation_booking": 0.40, "relationship_building": 0.15},
                 "success_criteria": "information provided and consultation offered",
-                "baseline_score": 75  # Sales opportunity baseline
+                "baseline_score": 75
             },
             "insurance_verification": {
                 "keywords": ["insurance", "coverage", "benefits", "network", "accept", "medicaid", "ppo"],
                 "weights": {"greeting": 0.20, "research_thoroughness": 0.35, "information_accuracy": 0.30, "helpfulness": 0.15},
                 "success_criteria": "accurate insurance information provided",
-                "baseline_score": 72  # Information accuracy critical
+                "baseline_score": 72
             },
             "general_inquiry": {
                 "keywords": ["location", "hours", "contact", "directions", "address"],
                 "weights": {"greeting": 0.25, "information_helpfulness": 0.50, "relationship_building": 0.25},
                 "success_criteria": "information provided clearly",
-                "baseline_score": 78  # Simple calls should score higher when done well
+                "baseline_score": 78
             }
         }
-        
-        # Enhanced scoring prompt with clearer differentiation
-        self.performance_scoring_prompt = """
-You are evaluating a dental office staff member's call performance. Provide REALISTIC and DIFFERENTIATED scores based on actual performance quality.
-
-CALL TYPE: {call_type}
-PATIENT: {patient_text}
-STAFF: {staff_text}
-
-SCORING PHILOSOPHY:
-- Be HONEST and DIFFERENTIATE between good and poor performance
-- REWARD excellent customer service with high scores (85-95)
-- PENALIZE poor service appropriately (50-70)
-- Use the FULL scoring range, not just 70-80
-
-PERFORMANCE EXPECTATIONS BY CALL TYPE:
-{evaluation_criteria}
-
-DETAILED SCORING CRITERIA:
-{scoring_components}
-
-CRITICAL PERFORMANCE INDICATORS:
-✅ EXCELLENT (85-95): Professional, empathetic, solves patient's problem, exceeds expectations
-✅ GOOD (75-84): Professional, addresses needs well, meets expectations  
-✅ SATISFACTORY (65-74): Basic professionalism, gets job done with minor issues
-⚠️ NEEDS IMPROVEMENT (55-64): Unprofessional tone, doesn't fully address needs, confused responses
-❌ POOR (45-54): Rude, unhelpful, fails to address patient needs, unprofessional
-
-RESPOND WITH THIS EXACT JSON FORMAT:
-{{
-    "component_scores": {{
-        {component_structure}
-    }},
-    "overall_assessment": "Your detailed assessment of the call quality and staff performance",
-    "strengths": ["Specific strength 1", "Specific strength 2", "Specific strength 3"],
-    "weaknesses": ["Specific weakness 1", "Specific weakness 2"],
-    "coaching_focus": ["Specific coaching point 1", "Specific coaching point 2"],
-    "success_achieved": true/false,
-    "performance_highlights": "What made this call stand out (positive or negative)",
-    "customer_experience_rating": [1-10 from patient's perspective]
-}}
-
-IMPORTANT GUIDELINES:
-- If staff was rude or unprofessional → Score components 50-65
-- If staff was professional but basic → Score components 70-80  
-- If staff was exceptional and went above/beyond → Score components 85-95
-- Consider the patient's likely satisfaction with the interaction
-- Reward genuine empathy, problem-solving, and professionalism
-- Penalize confusion, rudeness, or failure to help
-"""
 
     async def score_call_performance(self, combined_transcript: Dict, patient_text: str, staff_text: str) -> Dict:
         """
-        Enhanced call performance scoring with better differentiation
+        Score call performance with chunking support for long calls
         """
         try:
             # Identify call type
             call_type = self._identify_call_type(patient_text, staff_text)
             
-            # Get call type configuration
-            call_config = self.call_types.get(call_type, self.call_types["general_inquiry"])
-            
             # Pre-analyze call quality indicators
             quality_indicators = self._analyze_call_quality_indicators(patient_text, staff_text, call_type)
             
-            # Generate enhanced performance scoring prompt
-            evaluation_criteria = self._get_evaluation_criteria(call_type)
-            scoring_components = self._get_scoring_components(call_type)
-            component_structure = self._get_component_json_structure(call_type)
+            # Check if chunking is needed for long calls
+            combined_text = f"PATIENT: {patient_text}\n\nSTAFF: {staff_text}"
             
-            prompt = self.performance_scoring_prompt.format(
+            if self._should_use_chunking(combined_text):
+                logger.info(f"Long call detected ({len(combined_text)} chars), using chunking for performance scoring")
+                return await self._score_with_chunking(patient_text, staff_text, call_type, quality_indicators)
+            else:
+                logger.info(f"Standard call length ({len(combined_text)} chars), using direct scoring")
+                return await self._score_directly(patient_text, staff_text, call_type, quality_indicators)
+                
+        except Exception as e:
+            logger.error(f"Performance scoring failed: {str(e)}")
+            return self._create_enhanced_fallback_score(call_type, {})
+    
+    def _should_use_chunking(self, combined_text: str) -> bool:
+        """Determine if chunking is needed based on text length"""
+        return len(combined_text) > self.max_single_analysis_length
+    
+    async def _score_directly(self, patient_text: str, staff_text: str, call_type: str, quality_indicators: Dict) -> Dict:
+        """Score short calls directly without chunking"""
+        try:
+            call_config = self.call_types.get(call_type, self.call_types["general_inquiry"])
+            
+            # Generate scoring prompt
+            evaluation_criteria = self.prompts.EVALUATION_CRITERIA.get(call_type, self.prompts.EVALUATION_CRITERIA["general_inquiry"])
+            scoring_components = self.prompts.SCORING_COMPONENTS.get(call_type, self.prompts.SCORING_COMPONENTS["general_inquiry"])
+            component_structure = self.prompts.COMPONENT_JSON_STRUCTURE.get(call_type, self.prompts.COMPONENT_JSON_STRUCTURE["general_inquiry"])
+            
+            prompt = self.prompts.PERFORMANCE_SCORING_PROMPT.format(
                 call_type=call_type.replace('_', ' ').title(),
                 patient_text=patient_text[:2000],
                 staff_text=staff_text[:2000],
@@ -128,41 +103,251 @@ IMPORTANT GUIDELINES:
                 component_structure=component_structure
             )
             
-            # Get LLM analysis
-            logger.info(f"Scoring call performance for: {call_type}")
             llm_response = await self.llm_analyzer.generate_response(prompt, max_tokens=1000)
             
             if llm_response:
-                # Parse enhanced LLM response
                 parsed_scores = self._parse_enhanced_performance_response(llm_response, call_type, quality_indicators)
-                
-                # Calculate overall score with quality adjustments
                 overall_score = self._calculate_enhanced_overall_score(parsed_scores, call_config, quality_indicators)
                 
-                return {
-                    "overall_score": round(overall_score, 3),
-                    "overall_grade": self._score_to_grade(overall_score),
-                    "call_type": call_type,
-                    "component_scores": parsed_scores.get("component_scores", {}),
-                    "strengths": parsed_scores.get("strengths", []),
-                    "weaknesses": parsed_scores.get("weaknesses", []),
-                    "coaching_focus": parsed_scores.get("coaching_focus", []),
-                    "overall_assessment": parsed_scores.get("overall_assessment", ""),
-                    "meets_expectations": overall_score >= 70,
-                    "performance_level": self._get_performance_level(overall_score),
-                    "success_achieved": parsed_scores.get("success_achieved", False),
-                    "customer_experience_rating": parsed_scores.get("customer_experience_rating", 5),
-                    "performance_highlights": parsed_scores.get("performance_highlights", ""),
-                    "quality_indicators": quality_indicators,
-                    "raw_llm_response": llm_response
-                }
+                return self._build_final_result(overall_score, parsed_scores, call_type, quality_indicators, llm_response)
             else:
                 return self._create_enhanced_fallback_score(call_type, quality_indicators)
                 
         except Exception as e:
-            logger.error(f"Performance scoring failed: {str(e)}")
-            return self._create_enhanced_fallback_score(call_type, {})
+            logger.error(f"Direct scoring error: {str(e)}")
+            return self._create_enhanced_fallback_score(call_type, quality_indicators)
     
+    async def _score_with_chunking(self, patient_text: str, staff_text: str, call_type: str, quality_indicators: Dict) -> Dict:
+        """Score long calls using chunking approach"""
+        try:
+            # Split into chunks
+            patient_chunks = self._split_text_into_chunks(patient_text)
+            staff_chunks = self._split_text_into_chunks(staff_text)
+            
+            logger.info(f"Split into {len(patient_chunks)} patient chunks and {len(staff_chunks)} staff chunks")
+            
+            # Score each chunk pair
+            chunk_scores = []
+            max_chunks = max(len(patient_chunks), len(staff_chunks))
+            
+            for i in range(max_chunks):
+                patient_chunk = patient_chunks[i] if i < len(patient_chunks) else ""
+                staff_chunk = staff_chunks[i] if i < len(staff_chunks) else ""
+                
+                if patient_chunk or staff_chunk:  # Only process if at least one chunk has content
+                    chunk_result = await self._score_chunk(patient_chunk, staff_chunk, call_type, i + 1, max_chunks)
+                    chunk_scores.append(chunk_result)
+                    
+                    # Brief pause between chunks
+                    await asyncio.sleep(0.2)
+            
+            # Aggregate chunk scores
+            final_result = self._aggregate_chunk_scores(chunk_scores, call_type, quality_indicators)
+            
+            logger.info("Chunked performance scoring completed successfully")
+            return final_result
+            
+        except Exception as e:
+            logger.error(f"Chunked scoring error: {str(e)}")
+            return self._create_enhanced_fallback_score(call_type, quality_indicators)
+    
+    def _split_text_into_chunks(self, text: str) -> List[str]:
+        """Split text into chunks for processing"""
+        if not text or len(text) <= self.chunk_size:
+            return [text] if text else []
+        
+        # Split by sentences first to maintain context
+        sentences = text.replace('!', '.').replace('?', '.').split('.')
+        chunks = []
+        current_chunk = ""
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+                
+            # If adding this sentence would exceed chunk limit
+            if len(current_chunk) + len(sentence) + 2 > self.chunk_size:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                current_chunk = sentence + ". "
+            else:
+                current_chunk += sentence + ". "
+        
+        # Add the last chunk
+        if current_chunk.strip():
+            chunks.append(current_chunk.strip())
+        
+        return chunks
+    
+    async def _score_chunk(self, patient_chunk: str, staff_chunk: str, call_type: str, chunk_num: int, total_chunks: int) -> Dict:
+        """Score a single chunk of the conversation"""
+        try:
+            # Create a simplified scoring prompt for chunk
+            chunk_prompt = f"""
+Analyze this segment from a {call_type.replace('_', ' ')} call for performance indicators.
+
+This is chunk {chunk_num} of {total_chunks}.
+
+PATIENT SEGMENT: {patient_chunk}
+STAFF SEGMENT: {staff_chunk}
+
+Rate the staff performance in this segment on a scale of 1-10 for:
+1. Professionalism
+2. Helpfulness  
+3. Communication Quality
+4. Problem Solving
+
+Respond with ONLY this JSON:
+{{
+    "professionalism": [1-10],
+    "helpfulness": [1-10], 
+    "communication": [1-10],
+    "problem_solving": [1-10],
+    "key_observations": ["observation1", "observation2"]
+}}
+"""
+            
+            response = await self.llm_analyzer.generate_response(chunk_prompt, max_tokens=300)
+            
+            if response:
+                parsed_result = self._extract_json_from_response(response)
+                if parsed_result and isinstance(parsed_result, dict):
+                    return parsed_result
+            
+            # Fallback scoring for chunk
+            return self._create_fallback_chunk_score(patient_chunk, staff_chunk)
+            
+        except Exception as e:
+            logger.warning(f"Error scoring chunk {chunk_num}: {str(e)}")
+            return self._create_fallback_chunk_score(patient_chunk, staff_chunk)
+    
+    def _create_fallback_chunk_score(self, patient_chunk: str, staff_chunk: str) -> Dict:
+        """Create fallback score for a chunk"""
+        # Simple keyword-based scoring
+        staff_lower = staff_chunk.lower()
+        
+        professionalism = 6  # Default
+        if any(word in staff_lower for word in ["thank you", "please", "welcome"]):
+            professionalism += 1
+        if any(word in staff_lower for word in ["sorry", "apologize"]):
+            professionalism += 1
+            
+        helpfulness = 6  # Default  
+        if any(word in staff_lower for word in ["help", "assist", "can do"]):
+            helpfulness += 1
+        if any(word in staff_lower for word in ["let me", "I'll check"]):
+            helpfulness += 1
+            
+        communication = 6  # Default
+        if len(staff_chunk) > 50:  # Sufficient response length
+            communication += 1
+            
+        problem_solving = 6  # Default
+        if any(word in staff_lower for word in ["schedule", "appointment", "available"]):
+            problem_solving += 1
+        
+        return {
+            "professionalism": min(10, professionalism),
+            "helpfulness": min(10, helpfulness),
+            "communication": min(10, communication), 
+            "problem_solving": min(10, problem_solving),
+            "key_observations": ["Chunk analyzed with fallback method"]
+        }
+    
+    def _aggregate_chunk_scores(self, chunk_scores: List[Dict], call_type: str, quality_indicators: Dict) -> Dict:
+        """Aggregate scores from all chunks into final result"""
+        if not chunk_scores:
+            return self._create_enhanced_fallback_score(call_type, quality_indicators)
+        
+        # Calculate average scores
+        total_scores = {
+            "professionalism": 0,
+            "helpfulness": 0,
+            "communication": 0,
+            "problem_solving": 0
+        }
+        
+        valid_chunks = 0
+        all_observations = []
+        
+        for chunk_score in chunk_scores:
+            if isinstance(chunk_score, dict):
+                for key in total_scores.keys():
+                    if key in chunk_score and isinstance(chunk_score[key], (int, float)):
+                        total_scores[key] += chunk_score[key]
+                        
+                if "key_observations" in chunk_score:
+                    all_observations.extend(chunk_score["key_observations"])
+                valid_chunks += 1
+        
+        if valid_chunks == 0:
+            return self._create_enhanced_fallback_score(call_type, quality_indicators)
+        
+        # Calculate averages and convert to 0-1 scale
+        avg_scores = {key: (total / valid_chunks) / 10 for key, total in total_scores.items()}
+        
+        # Map to call type specific components
+        call_config = self.call_types.get(call_type, self.call_types["general_inquiry"])
+        component_scores = {}
+        
+        for component in call_config["weights"].keys():
+            # Map generic scores to specific components
+            if "greeting" in component or "professionalism" in component:
+                component_scores[component] = avg_scores["professionalism"]
+            elif "helpfulness" in component or "assistance" in component:
+                component_scores[component] = avg_scores["helpfulness"]
+            elif "communication" in component or "clarity" in component:
+                component_scores[component] = avg_scores["communication"]
+            else:
+                component_scores[component] = avg_scores["problem_solving"]
+        
+        # Calculate overall score
+        overall_score = self._calculate_enhanced_overall_score(
+            {"component_scores": component_scores}, call_config, quality_indicators
+        )
+        
+        # Generate summary from observations
+        unique_observations = list(set(all_observations))[:5]  # Top 5 unique observations
+        
+        return self._build_final_result(
+            overall_score,
+            {
+                "component_scores": component_scores,
+                "strengths": unique_observations[:3] if unique_observations else ["Professional interaction"],
+                "weaknesses": [],
+                "coaching_focus": [],
+                "overall_assessment": f"Aggregated analysis from {valid_chunks} chunks",
+                "success_achieved": overall_score >= 0.70,
+                "customer_experience_rating": max(1, min(10, int(overall_score * 10))),
+                "performance_highlights": f"Analysis based on {valid_chunks} conversation chunks"
+            },
+            call_type,
+            quality_indicators,
+            f"Chunked analysis of {valid_chunks} segments"
+        )
+    
+    def _build_final_result(self, overall_score: float, parsed_scores: Dict, call_type: str, quality_indicators: Dict, raw_response: str) -> Dict:
+        """Build final result dictionary"""
+        return {
+            "overall_score": round(overall_score, 3),
+            "overall_grade": self._score_to_grade(overall_score),
+            "call_type": call_type,
+            "component_scores": parsed_scores.get("component_scores", {}),
+            "strengths": parsed_scores.get("strengths", []),
+            "weaknesses": parsed_scores.get("weaknesses", []),
+            "coaching_focus": parsed_scores.get("coaching_focus", []),
+            "overall_assessment": parsed_scores.get("overall_assessment", ""),
+            "meets_expectations": overall_score >= 0.70,
+            "performance_level": self._get_performance_level(overall_score),
+            "success_achieved": parsed_scores.get("success_achieved", False),
+            "customer_experience_rating": parsed_scores.get("customer_experience_rating", 5),
+            "performance_highlights": parsed_scores.get("performance_highlights", ""),
+            "quality_indicators": quality_indicators,
+            "raw_llm_response": raw_response[:500] + "..." if len(raw_response) > 500 else raw_response
+        }
+    
+    # Include all the existing helper methods from the original file
     def _analyze_call_quality_indicators(self, patient_text: str, staff_text: str, call_type: str) -> Dict:
         """Analyze specific quality indicators to guide scoring"""
         
@@ -223,197 +408,6 @@ IMPORTANT GUIDELINES:
         indicators["staff_knowledgeable"] = any(phrase in staff_lower for phrase in knowledge_phrases)
         
         return indicators
-    
-    def _get_evaluation_criteria(self, call_type: str) -> str:
-        """Get enhanced evaluation criteria specific to call type"""
-        
-        criteria_map = {
-            "appointment_booking": """
-APPOINTMENT BOOKING EXPECTATIONS:
-- EXCELLENT: Warm greeting, understands needs quickly, offers multiple options, confirms details clearly, professional close
-- GOOD: Professional greeting, books appointment efficiently, confirms basic details  
-- POOR: Confused about availability, doesn't confirm details, unprofessional tone
-KEY SUCCESS METRIC: Appointment successfully scheduled with clear confirmation
-""",
-            
-            "emergency_call": """
-EMERGENCY CALL EXPECTATIONS:
-- EXCELLENT: Immediate urgency recognition, empathetic response, same-day appointment offered, clear instructions
-- GOOD: Recognizes urgency, shows concern, offers prompt appointment
-- POOR: Doesn't recognize urgency, no empathy for pain, delays scheduling
-KEY SUCCESS METRIC: Same-day or urgent appointment offered for patient in pain
-""",
-            
-            "service_inquiry": """
-SERVICE INQUIRY EXPECTATIONS:
-- EXCELLENT: Thorough information provided, consultation offered, builds relationship, captures interest
-- GOOD: Answers questions clearly, mentions consultation option
-- POOR: Vague information, no attempt to schedule consultation, missed sales opportunity
-KEY SUCCESS METRIC: Clear information + consultation appointment offered
-""",
-            
-            "insurance_verification": """
-INSURANCE VERIFICATION EXPECTATIONS:
-- EXCELLENT: Thorough verification process, accurate information, helpful alternatives if not covered
-- GOOD: Checks insurance properly, provides clear answer, professional throughout
-- POOR: Quick dismissal, inaccurate information, unhelpful attitude
-KEY SUCCESS METRIC: Accurate insurance information + helpful guidance
-""",
-            
-            "general_inquiry": """
-GENERAL INQUIRY EXPECTATIONS:
-- EXCELLENT: Friendly greeting, comprehensive information, offers additional help, professional close
-- GOOD: Answers questions clearly, professional manner
-- POOR: Rushed responses, incomplete information, unfriendly tone
-KEY SUCCESS METRIC: Patient's questions answered clearly and completely
-"""
-        }
-        
-        return criteria_map.get(call_type, criteria_map["general_inquiry"])
-    
-    def _get_scoring_components(self, call_type: str) -> str:
-        """Get detailed scoring components for specific call type"""
-        
-        components_map = {
-            "appointment_booking": """
-GREETING (15%): Professional introduction and tone
-- 90-100: Warm, professional greeting with name and offer to help
-- 70-89: Basic professional greeting
-- 50-69: Minimal or rushed greeting
-- Below 50: No proper greeting or rude
-
-PATIENT_NEEDS (20%): Understanding and addressing scheduling needs  
-- 90-100: Asks clarifying questions, shows flexibility, understands urgency
-- 70-89: Understands basic needs, some flexibility shown
-- 50-69: Basic understanding, limited flexibility
-- Below 50: Doesn't understand or address needs
-
-SCHEDULING_EFFECTIVENESS (50%): Success in booking appointment
-- 90-100: Multiple options offered, confirms all details, handles obstacles well
-- 70-89: Successfully schedules with basic confirmation
-- 50-69: Schedules but misses details or shows confusion
-- Below 50: Fails to schedule or very unprofessional process
-
-COMMUNICATION_CLARITY (15%): Clear communication throughout
-- 90-100: Crystal clear instructions, professional language, good pace
-- 70-89: Generally clear communication
-- 50-69: Some unclear moments but adequate
-- Below 50: Confusing or unprofessional communication
-""",
-            
-            "emergency_call": """
-URGENCY_RECOGNITION (35%): Immediately recognizing this is urgent
-- 90-100: Immediate recognition, prioritizes urgency, expedites process
-- 70-89: Recognizes urgency, responds appropriately
-- 50-69: Eventually recognizes urgency but delayed response
-- Below 50: Fails to recognize urgency or treats as routine
-
-EMPATHY (25%): Showing concern and understanding for patient's pain
-- 90-100: Genuine empathy, comforting words, acknowledges pain
-- 70-89: Shows appropriate concern and understanding
-- 50-69: Minimal empathy but professional
-- Below 50: No empathy or dismissive of patient's pain
-
-IMMEDIATE_SCHEDULING (30%): Offering urgent/same-day appointment
-- 90-100: Same-day appointment offered, works around schedule
-- 70-89: Urgent appointment within 24 hours offered
-- 50-69: Next available appointment (not urgent) offered
-- Below 50: No urgent scheduling attempt made
-
-COMMUNICATION (10%): Clear, calming communication
-- 90-100: Calm, clear, reassuring communication style
-- 70-89: Professional and clear communication
-- 50-69: Adequate communication with some issues
-- Below 50: Poor or confusing communication
-""",
-            
-            "service_inquiry": """
-GREETING (15%): Professional introduction
-- 90-100: Warm, welcoming greeting that builds rapport
-- 70-89: Professional standard greeting
-- 50-69: Basic greeting with minimal warmth
-- Below 50: Poor or no proper greeting
-
-INFORMATION_QUALITY (30%): Providing accurate, helpful service information
-- 90-100: Comprehensive, accurate information with details and benefits
-- 70-89: Good information covering main questions
-- 50-69: Basic information but lacking detail
-- Below 50: Vague, inaccurate, or unhelpful information
-
-CONSULTATION_BOOKING (40%): Attempting to schedule consultation
-- 90-100: Actively promotes consultation, makes it easy to book, shows value
-- 70-89: Offers consultation and provides booking option
-- 50-69: Mentions consultation but doesn't actively pursue
-- Below 50: No consultation offered or discourages booking
-
-RELATIONSHIP_BUILDING (15%): Building rapport with potential patient
-- 90-100: Friendly, engaging, makes patient feel valued and comfortable
-- 70-89: Professional and friendly interaction
-- 50-69: Professional but minimal relationship building
-- Below 50: Cold, transactional, or unfriendly
-""",
-            
-            "insurance_verification": """
-GREETING (20%): Professional introduction
-- 90-100: Warm, professional greeting with clear identification
-- 70-89: Standard professional greeting
-- 50-69: Basic greeting, adequate professionalism
-- Below 50: Poor greeting or unprofessional start
-
-RESEARCH_THOROUGHNESS (35%): Taking time to properly verify insurance
-- 90-100: Thorough verification process, asks for details, double-checks
-- 70-89: Proper verification with standard questions
-- 50-69: Basic verification but may miss details
-- Below 50: Rushed or inadequate verification process
-
-INFORMATION_ACCURACY (30%): Providing correct coverage information
-- 90-100: Completely accurate information with clear explanations
-- 70-89: Accurate information with good explanation
-- 50-69: Generally accurate but may lack clarity
-- Below 50: Inaccurate or confusing information provided
-
-HELPFULNESS (15%): Being patient and helpful throughout
-- 90-100: Extremely helpful, offers alternatives if not covered, patient with questions
-- 70-89: Helpful and patient during the process
-- 50-69: Adequately helpful but minimal extra effort
-- Below 50: Unhelpful attitude or impatient
-""",
-            
-            "general_inquiry": """
-GREETING (25%): Professional, friendly introduction
-- 90-100: Warm, welcoming greeting that sets positive tone
-- 70-89: Professional and friendly greeting
-- 50-69: Adequate greeting but lacks warmth
-- Below 50: Poor or unfriendly greeting
-
-INFORMATION_HELPFULNESS (50%): Providing clear, complete information
-- 90-100: Comprehensive answers, anticipates additional questions, very helpful
-- 70-89: Clear answers to all questions asked
-- 50-69: Basic answers but may lack completeness
-- Below 50: Incomplete, unclear, or unhelpful information
-
-RELATIONSHIP_BUILDING (25%): Professional interaction and rapport
-- 90-100: Engaging, builds rapport, makes positive impression, offers additional help
-- 70-89: Professional and pleasant interaction
-- 50-69: Professional but minimal rapport building
-- Below 50: Cold, rushed, or unfriendly interaction
-"""
-        }
-        
-        return components_map.get(call_type, components_map["general_inquiry"])
-    
-    def _get_component_json_structure(self, call_type: str) -> str:
-        """Get JSON structure for component scores"""
-        
-        structure_map = {
-            "appointment_booking": '"greeting": [score 0-100], "patient_needs": [score 0-100], "scheduling_effectiveness": [score 0-100], "communication_clarity": [score 0-100]',
-            "emergency_call": '"urgency_recognition": [score 0-100], "empathy": [score 0-100], "immediate_scheduling": [score 0-100], "communication": [score 0-100]',
-            "service_inquiry": '"greeting": [score 0-100], "information_quality": [score 0-100], "consultation_booking": [score 0-100], "relationship_building": [score 0-100]',
-            "insurance_verification": '"greeting": [score 0-100], "research_thoroughness": [score 0-100], "information_accuracy": [score 0-100], "helpfulness": [score 0-100]',
-            "general_inquiry": '"greeting": [score 0-100], "information_helpfulness": [score 0-100], "relationship_building": [score 0-100]'
-        }
-        
-        return structure_map.get(call_type, structure_map["general_inquiry"])
     
     def _parse_enhanced_performance_response(self, response: str, call_type: str, quality_indicators: Dict) -> Dict:
         """Parse enhanced LLM performance response with JSON extraction"""

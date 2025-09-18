@@ -43,20 +43,20 @@ const Footer = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="h-4 w-4 text-teal-400 mt-0.5 flex-shrink-0" />
                 <div className="text-sm">
-                  <p className="text-gray-100">6900 N Lincoln Ave</p>
+                  <p className="text-gray-100">4368 W Touhy Ave.</p>
                   <p className="text-gray-200">Lincolnwood, IL 60712</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-teal-400 flex-shrink-0" />
-                <a href="tel:+1-847-675-3744" className="text-sm text-gray-300 hover:text-teal-400 transition-colors">
-                  (847) 675-3744
+                <a href="tel:+1-847-610-9272" className="text-sm text-gray-300 hover:text-teal-400 transition-colors">
+                  (847) 610-9272
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-teal-400 flex-shrink-0" />
-                <a href="mailto:info@lincolnwoodfamilydental.com" className="text-sm text-gray-300 hover:text-teal-400 transition-colors">
-                  info@lincolnwoodfamilydental.com
+                <a href="mailto:Info@lincolnwoodfamilydental.com" className="text-sm text-gray-300 hover:text-teal-400 transition-colors">
+                  Info@lincolnwoodfamilydental.com
                 </a>
               </div>
               <div className="flex items-center space-x-3">

@@ -172,7 +172,7 @@ class GoogleSheetsExporter:
                 
                 if high_value_missed and self.email_alert_service.is_configured():
                     try:
-                        email_success = await self.email_alert_service.send_opportunity_alert(analysis_result)
+                        email_success = await self.email_alert_service.send_high_opportunity_alert(analysis_result)
                         if email_success:
                             logger.info("HIGH-VALUE OPPORTUNITY EMAIL ALERT SENT!")
                         else:
@@ -416,7 +416,7 @@ class GoogleSheetsExporter:
             # Send email alert even in CSV fallback mode
             if high_value_missed and self.email_alert_service.is_configured():
                 logger.info("High-value opportunity detected - sending email alert...")
-                email_sent = await self.email_alert_service.send_opportunity_alert(analysis_result)
+                email_sent = await self.email_alert_service.send_high_opportunity_alert(analysis_result)
                 if email_sent:
                     logger.info("Email alert sent successfully")
                 else:

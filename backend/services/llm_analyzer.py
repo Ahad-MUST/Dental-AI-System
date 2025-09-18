@@ -1,15 +1,19 @@
 """
-LLM Analysis Service - Fixed with Accurate Call Classification
+LLM Analysis Service - WITH CHUNKING SUPPORT FOR LONG CALLS AND EMPLOYEE LIST INTEGRATION
 """
 import logging
 import aiohttp
-from typing import Dict
+import asyncio
+import json
+from typing import Dict, List
 from config.settings import settings
+from prompts.llm_analyzer_prompts import LLMAnalyzerPrompts
+from services.employee_list_service import EmployeeListService
 
 logger = logging.getLogger(__name__)
 
 class LLMAnalyzer:
-    """LLM-based call analysis using Ollama"""
+    """LLM-based call analysis with chunking support for long calls and employee list integration"""
     
     def __init__(self):
         self.ollama_url = settings.OLLAMA_URL
@@ -17,83 +21,11 @@ class LLMAnalyzer:
         self.session = None
         self.is_initialized = False
         
-        # Updated prompts for accurate classification
-        self.call_summary_prompt = """
-Analyze this dental office call and provide a brief, professional summary.
-
-TRANSCRIPT:
-{transcript}
-
-Provide a concise 2-3 sentence summary covering:
-- What was the main purpose of the call
-- What was discussed or accomplished
-- The outcome
-
-Summary:"""
-
-        self.name_extraction_prompt = """
-Extract the dental office representative's name from this call transcript.
-
-TRANSCRIPT:
-{transcript}
-
-Look for phrases like:
-- "This is [Name]"
-- "My name is [Name]"
-- "[Name] calling from"
-- "I'm [Name]"
-
-If you find the representative's name, respond with just the name (first name only).
-If no name is mentioned, respond with "Unknown".
-
-Representative name:"""
-
-        # CRITICAL: Fixed opportunity assessment prompt
-        self.opportunity_assessment_prompt = """
-Analyze this dental call to determine if there was a HIGH-VALUE MISSED OPPORTUNITY.
-
-PATIENT: {patient_text}
-STAFF: {staff_text}
-
-CALL TYPE CLASSIFICATION:
-
-1. APPOINTMENT BOOKING CALLS (NOT missed opportunities):
-- Patient calling to schedule, reschedule, or confirm existing appointments
-- Example: "I want to confirm my appointment tomorrow"
-- Example: "I need to reschedule my cleaning"
-- If appointment successfully managed â†’ NO MISSED OPPORTUNITY
-
-2. GENERAL INQUIRY CALLS (NOT missed opportunities):
-- Patient asking for information: hours, location, insurance, pricing
-- Patient asking "Do you take [insurance]?" and staff answers appropriately
-- Simple questions that get answered professionally
-- Example: "Do you take Blue Cross?" â†’ "We only take PPO" (appropriate response)
-- Example: "How much to glue my crown?" (existing patient asking price)
-- If question was answered â†’ NO MISSED OPPORTUNITY
-
-3. MISSED OPPORTUNITY CALLS (These ARE missed opportunities):
-- NEW patient inquiries about services where no appointment offered AND no follow-up promised
-- Patient with pain/emergency but no urgent appointment offered AND no callback promised
-- Patient interested in major treatment but no consultation scheduled AND no follow-up
-
-CRITICAL RULES:
-- If staff promised "I'll call you back" or "I'll check and get back to you" â†’ FALSE (follow-up promised)
-- If patient just wanted information and got it â†’ FALSE (inquiry handled)
-- If appointment was confirmed/scheduled â†’ FALSE (successful booking)
-- If office doesn't accept insurance â†’ FALSE (no opportunity exists)
-
-EXAMPLES OF FALSE (NOT missed opportunities):
-- "Confirm appointment tomorrow" â†’ Staff confirms = SUCCESSFUL
-- "Do you take Medicaid?" â†’ "No, PPO only" = APPROPRIATE RESPONSE  
-- "How much for crown?" â†’ Staff quotes price = INFORMATION PROVIDED
-- "I'll check your insurance and call back" = FOLLOW-UP PROMISED
-
-EXAMPLES OF TRUE (Real missed opportunities):  
-- Patient: "I need dental work" â†’ Staff: "OK" but no appointment offered, no callback promised
-- Patient: "Tooth hurts" â†’ Staff gives advice but no urgent appointment AND no callback
-- New patient ready to schedule â†’ Staff doesn't attempt booking AND no follow-up
-
-Answer: TRUE or FALSE"""
+        # Initialize prompts from separate file
+        self.prompts = LLMAnalyzerPrompts()
+        
+        # Initialize employee list service
+        self.employee_service = EmployeeListService()
         
     async def initialize(self) -> None:
         """Initialize LLM analyzer"""
@@ -156,7 +88,7 @@ Answer: TRUE or FALSE"""
                 "prompt": prompt,
                 "stream": False,
                 "options": {
-                    "temperature": 0.1,  # Lower temperature for more consistent results
+                    "temperature": 0.1,
                     "top_p": 0.9,
                     "num_predict": max_tokens
                 }
@@ -179,41 +111,104 @@ Answer: TRUE or FALSE"""
             return ""
     
     async def analyze_call_summary(self, full_transcript: str) -> Dict:
-        """Generate clean call summary"""
+        """Generate clean call summary with chunking support for long transcripts"""
         
         if not self.is_initialized:
             return {"call_summary": "LLM analysis unavailable"}
         
         try:
-            prompt = self.call_summary_prompt.format(
-                transcript=full_transcript[:3000]  # Limit context
-            )
-            
-            response = await self.generate_response(prompt, max_tokens=200)
-            
-            if response:
-                # Clean up the response
-                summary = response.replace("Summary:", "").strip()
-                if not summary:
-                    summary = "Call processed successfully"
-                    
-                return {"call_summary": summary}
+            # Check if we need chunking
+            if self._should_chunk_for_analysis(full_transcript):
+                return await self._analyze_summary_with_chunking(full_transcript)
             else:
-                return {"call_summary": "Summary generation failed"}
+                return await self._analyze_summary_directly(full_transcript)
                 
         except Exception as e:
-            logger.error(f"Call summary generation failed: {str(e)}")
+            logger.error(f"Call summary analysis failed: {str(e)}")
             return {"call_summary": "Summary generation failed"}
     
+    def _should_chunk_for_analysis(self, text: str) -> bool:
+        """Determine if chunking is needed for summary analysis"""
+        return len(text) > 4000  # Characters
+    
+    async def _analyze_summary_directly(self, transcript: str) -> Dict:
+        """Analyze short transcripts directly"""
+        prompt = self.prompts.CALL_SUMMARY_PROMPT.format(
+            transcript=transcript[:4000]  # Limit to prevent token overflow
+        )
+        
+        response = await self.generate_response(prompt, max_tokens=200)
+        
+        if response:
+            summary = response.replace("Summary:", "").strip()
+            return {"call_summary": summary if summary else "Call summary generated"}
+        else:
+            return {"call_summary": "Summary generation failed"}
+    
+    async def _analyze_summary_with_chunking(self, full_transcript: str) -> str:
+        """Analyze long transcripts with chunking"""
+        try:
+            # Split into chunks
+            chunk_size = 3000
+            chunks = [full_transcript[i:i+chunk_size] for i in range(0, len(full_transcript), chunk_size)]
+            
+            # Generate summary for each chunk
+            chunk_summaries = []
+            for i, chunk in enumerate(chunks, 1):
+                logger.debug(f"Processing summary chunk {i}/{len(chunks)}")
+                
+                prompt = self.prompts.CALL_SUMMARY_PROMPT.format(transcript=chunk)
+                response = await self.generate_response(prompt, max_tokens=150)
+                
+                if response:
+                    summary = response.replace("Summary:", "").strip()
+                    chunk_summaries.append(f"Segment {i}: {summary}")
+            
+            # Combine chunk summaries into final summary
+            if chunk_summaries:
+                combined_summaries = "\n".join(chunk_summaries)
+                
+                final_prompt = f"""
+SEGMENT SUMMARIES:
+{combined_summaries}
+
+Create a cohesive summary that covers:
+- The main purpose of the call
+- Key topics discussed throughout
+- The overall outcome
+
+Final Call Summary:"""
+                
+                response = await self.generate_response(final_prompt, max_tokens=200)
+                
+                if response:
+                    final_summary = response.replace("Final Call Summary:", "").strip()
+                    return final_summary if final_summary else "Call summary generated from multiple segments"
+                else:
+                    # Fallback: combine chunk summaries directly
+                    return "Call covered multiple topics: " + "; ".join([s.split(": ", 1)[1] if ": " in s else s for s in chunk_summaries])
+            else:
+                return "Summary generation failed"
+                
+        except Exception as e:
+            logger.error(f"Chunked summary generation failed: {str(e)}")
+            return "Summary generated from multiple conversation segments"
+    
     async def extract_representative_name(self, full_transcript: str) -> str:
-        """Extract the dental representative's name from transcript"""
+        """Extract the dental representative's name from transcript using employee list"""
         
         if not self.is_initialized:
             return "Unknown"
         
         try:
-            prompt = self.name_extraction_prompt.format(
-                transcript=full_transcript[:2000]  # Focus on beginning where introductions happen
+            # Get the current employee list formatted for the prompt
+            employee_list = self.employee_service.get_employees_formatted_for_prompt()
+            
+            # For name extraction, we only need the beginning of the transcript
+            # Names are typically mentioned in the first few exchanges
+            prompt = self.prompts.NAME_EXTRACTION_PROMPT.format(
+                employee_list=employee_list,
+                transcript=full_transcript[:2000]
             )
             
             response = await self.generate_response(prompt, max_tokens=50)
@@ -237,66 +232,50 @@ Answer: TRUE or FALSE"""
             return self._extract_name_fallback(full_transcript)
     
     def _extract_name_fallback(self, transcript: str) -> str:
-        """Fallback name extraction using simple patterns"""
+        """Fallback name extraction using simple patterns and employee list"""
         
         import re
         
-        # Common introduction patterns
+        # Get employee list for matching
+        visible_employees = self.employee_service.get_visible_employees()
+        
+        # First, try to match against known visible employees (case-insensitive)
+        transcript_lower = transcript.lower()
+        for employee in visible_employees:
+            first_name = employee.split()[0].lower()
+            # Look for the first name in common introduction patterns
+            patterns = [
+                f"this is {first_name}",
+                f"my name is {first_name}",
+                f"i'm {first_name}",
+                f"{first_name} calling",
+                f"hi.*?{first_name}",
+                f"hello.*?{first_name}"
+            ]
+            
+            for pattern in patterns:
+                if re.search(pattern, transcript_lower):
+                    return first_name.title()
+        
+        # If no employee match, try general patterns
         patterns = [
             r"This is (\w+)",
             r"My name is (\w+)", 
             r"I'm (\w+)",
             r"(\w+) calling from",
             r"Hi.*?I'm (\w+)",
-            r"Hello.*?this is (\w+)"
+            r"Hello.*?(\w+) here"
         ]
         
-        transcript_start = transcript[:500].lower()  # Focus on beginning
-        
         for pattern in patterns:
-            match = re.search(pattern, transcript_start, re.IGNORECASE)
+            match = re.search(pattern, transcript, re.IGNORECASE)
             if match:
-                name = match.group(1).strip()
-                # Filter out common false positives
-                if name.lower() not in ["this", "calling", "dental", "office", "hello", "hi"]:
+                name = match.group(1)
+                # Basic validation - avoid common words
+                if name.lower() not in ['this', 'the', 'and', 'for', 'with', 'from', 'calling']:
                     return name.title()
         
         return "Unknown"
-    
-    async def assess_missed_opportunity(self, patient_text: str, staff_text: str) -> bool:
-        """Assess if high-value opportunity was missed using accurate classification"""
-        
-        if not self.is_initialized:
-            return False
-        
-        try:
-            prompt = self.opportunity_assessment_prompt.format(
-                patient_text=patient_text[:1500],
-                staff_text=staff_text[:1500]
-            )
-            
-            response = await self.generate_response(prompt, max_tokens=100)
-            
-            # Parse response - be precise
-            is_missed = "TRUE" in response.upper() and "FALSE" not in response.upper()
-            
-            logger.info(f"Opportunity assessment result: {'TRUE (missed)' if is_missed else 'FALSE (no opportunity missed)'}")
-            
-            return is_missed
-            
-        except Exception as e:
-            logger.error(f"Opportunity assessment failed: {str(e)}")
-            return False  # Conservative default
-    
-    # Legacy methods for compatibility
-    async def analyze_booking_outcome(self, patient_text: str, staff_text: str) -> Dict:
-        """Legacy method - simplified"""
-        return {"outcome": "unknown"}
-    
-    async def detect_missed_opportunities(self, patient_text: str, staff_text: str) -> Dict:
-        """Legacy method - simplified"""
-        high_value_missed = await self.assess_missed_opportunity(patient_text, staff_text)
-        return {"high_value_missed": high_value_missed}
     
     async def cleanup(self):
         """Cleanup resources"""
@@ -304,3 +283,4 @@ Answer: TRUE or FALSE"""
             await self.session.close()
             self.session = None
         self.is_initialized = False
+        logger.info("LLM analyzer cleanup completed")

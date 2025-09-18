@@ -1,0 +1,38 @@
+{
+  "employees": [
+    {
+      "name": "Jovana Vanegas",
+      "active": true,
+      "hidden": false,
+      "shown_date": "2025-09-18T15:32:04.881629"
+    },
+    {
+      "name": "Melina Rodriguez",
+      "active": true,
+      "hidden": false,
+      "shown_date": "2025-09-18T10:28:08.124853"
+    },
+    {
+      "name": "Whitney Minor",
+      "active": true,
+      "hidden": false,
+      "shown_date": "2025-09-18T10:24:22.365776"
+    },
+    {
+      "name": "Yuseli Saldana",
+      "active": true,
+      "hidden": false,
+      "shown_date": "2025-09-18T10:28:08.835748"
+    },
+    {
+      "name": "Amina Jafri",
+      "active": true,
+      "hidden": false,
+      "added_date": "2025-09-18T10:36:01.767833"
+    }
+  ],
+  "count": 5,
+  "visible_count": 5,
+  "hidden_count": 0,
+  "last_updated": "2025-09-18T15:32:04.881629"
+}
