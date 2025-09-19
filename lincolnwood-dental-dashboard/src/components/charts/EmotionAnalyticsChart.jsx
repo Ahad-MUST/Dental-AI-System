@@ -8,10 +8,34 @@ const EmotionAnalyticsChart = ({ emotionAnalytics, getCallsByEmotion, getCallsBy
   const [selectedEmotion, setSelectedEmotion] = useState(null);
 
   const viewOptions = [
-    { key: 'emotions', label: 'Emotions', icon: Brain, description: 'Patient emotion distribution' },
-    { key: 'intensity', label: 'Intensity', icon: TrendingUp, description: 'Emotion intensity levels' },
-    { key: 'flags', label: 'Alerts', icon: AlertTriangle, description: 'Critical emotion flags' },
-    { key: 'health', label: 'Call Health', icon: Heart, description: 'Overall emotional health' }
+    { 
+      key: 'emotions', 
+      label: 'Emotions', 
+      icon: Brain, 
+      description: 'Patient emotion distribution',
+      tooltip: 'Shows the different emotions detected in patient speech during calls'
+    },
+    { 
+      key: 'intensity', 
+      label: 'Intensity', 
+      icon: TrendingUp, 
+      description: 'Emotion intensity levels',
+      tooltip: 'Measures how strongly emotions were expressed (low, medium, high intensity)'
+    },
+    { 
+      key: 'flags', 
+      label: 'Alerts', 
+      icon: AlertTriangle, 
+      description: 'Critical emotion flags',
+      tooltip: 'Important emotional indicators like pain, anxiety, satisfaction that need attention'
+    },
+    { 
+      key: 'health', 
+      label: 'Call Health', 
+      icon: Heart, 
+      description: 'Overall emotional health',
+      tooltip: 'Overall emotional wellness assessment of calls (good, fair, poor)'
+    }
   ];
 
   const emotionColors = {
@@ -48,6 +72,31 @@ const EmotionAnalyticsChart = ({ emotionAnalytics, getCallsByEmotion, getCallsBy
     good: '#10b981',   // emerald-500
     fair: '#f59e0b',   // amber-500
     poor: '#ef4444'    // red-500
+  };
+
+  // Emotion explanations for tooltips
+  const emotionTooltips = {
+    disappointment: 'Patient expressed dissatisfaction with service, outcome, or experience',
+    fear: 'Patient showed anxiety or apprehension about dental procedures',
+    anger: 'Patient displayed frustration or irritation during the call',
+    calm: 'Patient remained composed and relaxed throughout the interaction',
+    complaint: 'Patient voiced specific concerns or complaints about service',
+    none: 'No significant emotions detected in patient speech',
+    pain: 'Patient mentioned or expressed physical discomfort or pain',
+    anxiety: 'Patient showed nervousness or worry about dental treatment',
+    satisfaction: 'Patient expressed contentment or approval with service'
+  };
+
+  const intensityTooltips = {
+    low: 'Mild emotional expression - subtle signs of emotion',
+    medium: 'Moderate emotional expression - clear emotional indicators',
+    high: 'Strong emotional expression - intense emotional reactions'
+  };
+
+  const healthTooltips = {
+    good: 'Positive emotional health - patients feel comfortable and satisfied',
+    fair: 'Neutral emotional health - standard professional interactions',
+    poor: 'Concerning emotional health - patients experiencing distress or dissatisfaction'
   };
 
   // Check if we have emotion analytics data
@@ -142,87 +191,32 @@ const EmotionAnalyticsChart = ({ emotionAnalytics, getCallsByEmotion, getCallsBy
   };
 
   const chartData = getChartData();
+  const totalCalls = chartData.reduce((sum, item) => sum + item.value, 0);
+  const selectedViewData = viewOptions.find(option => option.key === selectedView);
 
-  // Calculate total calls analyzed
-  const getTotalCallsAnalyzed = () => {
-    if (!emotionAnalytics) return 0;
-    
-    switch (selectedView) {
-      case 'emotions':
-        return Object.values(emotionAnalytics.patientEmotions || {}).reduce((sum, val) => sum + val, 0);
-      case 'intensity':
-        return Object.values(emotionAnalytics.emotionIntensity || {}).reduce((sum, val) => sum + val, 0);
-      case 'flags':
-        return Object.values(emotionAnalytics.emotionFlags || {}).reduce((sum, val) => sum + val, 0);
-      case 'health':
-        return Object.values(emotionAnalytics.callHealth || {}).reduce((sum, val) => sum + val, 0);
-      default:
-        return 0;
-    }
-  };
-
-  const totalCalls = getTotalCallsAnalyzed();
-
-  // Handle click on chart items
-  const handleChartClick = (data) => {
-    if (!data) return;
-    
-    const itemName = data.name.toLowerCase();
-    setSelectedEmotion(itemName);
-    
-    // Get relevant calls based on view
-    let relevantCalls = [];
-    switch (selectedView) {
-      case 'emotions':
-        relevantCalls = getCallsByEmotion ? getCallsByEmotion(itemName) : [];
-        break;
-      case 'flags':
-        relevantCalls = getCallsByEmotionFlag ? getCallsByEmotionFlag(itemName) : [];
-        break;
-      default:
-        break;
-    }
-    
-    console.log(`Clicked on ${itemName}, found ${relevantCalls.length} relevant calls`);
-  };
-
-  // Custom tooltip for charts
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900">{data.name}</p>
-          <p className="text-sm text-gray-600">
-            {data.value} calls ({data.percentage}%)
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Get insights for the current view
+  // Get insights based on current view
   const getInsights = () => {
-    if (chartData.length === 0) return null;
-
     const insights = [];
     
+    if (chartData.length === 0) return insights;
+    
     switch (selectedView) {
       case 'emotions':
-        const topEmotion = chartData[0];
-        insights.push({
-          type: 'info',
-          title: 'Most Common Emotion',
-          content: `${topEmotion.name} detected in ${topEmotion.value} calls (${topEmotion.percentage}%)`
-        });
+        const mostCommon = chartData[0];
+        if (mostCommon) {
+          insights.push({
+            type: mostCommon.name.toLowerCase() === 'disappointment' ? 'warning' : 'info',
+            title: 'Most Common Emotion',
+            content: `${mostCommon.name} detected in ${mostCommon.value} calls (${mostCommon.percentage}%)`
+          });
+        }
         
         const negativeEmotions = chartData.filter(item => 
-          ['Sadness', 'Anger', 'Fear', 'Pain', 'Anxiety', 'Frustration', 'Disappointment', 'Complaint'].includes(item.name)
+          ['Anger', 'Fear', 'Disappointment', 'Complaint'].includes(item.name)
         );
         
         if (negativeEmotions.length > 0) {
-          const totalNegative = negativeEmotions.reduce((sum, item) => sum + item.value, 0);
+          const totalNegative = negativeEmotions.reduce((sum, emotion) => sum + emotion.value, 0);
           insights.push({
             type: 'warning',
             title: 'Negative Emotions Detected',
@@ -292,39 +286,73 @@ const EmotionAnalyticsChart = ({ emotionAnalytics, getCallsByEmotion, getCallsBy
 
   const insights = getInsights();
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white/95 backdrop-blur-sm border border-slate-200 rounded-lg shadow-lg p-3">
+          <p className="text-sm font-semibold text-slate-900 mb-1">{data.name}</p>
+          <p className="text-sm text-slate-600">
+            Calls: <span className="font-medium text-slate-900">{data.value}</span>
+          </p>
+          <p className="text-sm text-slate-600">
+            Percentage: <span className="font-medium text-slate-900">{data.percentage}%</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card>
       <div className="p-6">
-        {/* Header */}
+        {/* Header with Logo Tooltip */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-              <Brain className="w-5 h-5 text-blue-600" />
+              <div className="relative group">
+                <Brain className="w-5 h-5 text-blue-600" />
+                {/* Logo Tooltip */}
+                <div className="absolute left-0 top-full mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 z-50">
+                  <div className="bg-slate-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-sm w-max">
+                    <p>Emotion Analytics - Monitor patient emotional states and wellbeing</p>
+                    <div className="absolute -top-1 left-2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                  </div>
+                </div>
+              </div>
               Emotion Analytics
             </h3>
             <p className="text-sm text-slate-600 mt-1">
-              Patient emotion distribution • {totalCalls} calls analyzed
+              {selectedViewData?.description} • {totalCalls} calls analyzed
             </p>
           </div>
           
-          {/* View Selector */}
+          {/* View Selector with Tooltips */}
           <div className="flex bg-slate-100 rounded-lg p-1">
             {viewOptions.map((option) => {
               const Icon = option.icon;
               return (
-                <button
-                  key={option.key}
-                  onClick={() => setSelectedView(option.key)}
-                  className={`px-3 py-2 rounded-md text-xs font-medium transition-all duration-200 flex items-center gap-2 ${
-                    selectedView === option.key
-                      ? 'bg-white text-slate-900 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                  title={option.description}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{option.label}</span>
-                </button>
+                <div key={option.key} className="relative group">
+                  <button
+                    onClick={() => setSelectedView(option.key)}
+                    className={`px-3 py-2 rounded-md text-xs font-medium transition-all duration-200 flex items-center gap-2 ${
+                      selectedView === option.key
+                        ? 'bg-white text-slate-900 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="hidden sm:inline">{option.label}</span>
+                  </button>
+                  {/* Option Tooltip */}
+                  <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 z-50">
+                    <div className="bg-slate-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-sm w-max">
+                      <p>{option.tooltip}</p>
+                      <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-slate-900 rotate-45"></div>
+                    </div>
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -342,114 +370,139 @@ const EmotionAnalyticsChart = ({ emotionAnalytics, getCallsByEmotion, getCallsBy
             </h4>
             
             {!hasEmotionData ? (
-              <div className="flex flex-col items-center justify-center h-64 text-center">
-                <Brain className="w-12 h-12 text-slate-300 mb-4" />
-                <h5 className="text-lg font-medium text-slate-900 mb-2">No emotion data available</h5>
-                <p className="text-sm text-slate-600 max-w-sm">
-                  Process more calls to see emotion analytics
-                </p>
+              <div className="h-64 flex items-center justify-center">
+                <div className="text-center">
+                  <Brain className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 font-medium">No emotion data available</p>
+                  <p className="text-sm text-slate-400">Process some calls to see emotion analytics</p>
+                </div>
               </div>
-            ) : chartData.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-64 text-center">
-                <AlertTriangle className="w-12 h-12 text-amber-400 mb-4" />
-                <h5 className="text-lg font-medium text-slate-900 mb-2">No data for {selectedView}</h5>
-                <p className="text-sm text-slate-600 max-w-sm">
-                  No {selectedView} data available for the selected time period
-                </p>
-              </div>
+            ) : chartData.length > 0 ? (
+              <>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={45}
+                        outerRadius={90}
+                        paddingAngle={2}
+                        dataKey="value"
+                        stroke="#ffffff"
+                        strokeWidth={2}
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell 
+                            key={`cell-${index}`} 
+                            fill={entry.color}
+                            className="hover:opacity-80 transition-opacity cursor-pointer"
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip content={<CustomTooltip />} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                
+                {/* Emotion Legend with Tooltips */}
+                <div className="mt-4 space-y-2">
+                  {chartData.map((entry, index) => {
+                    const tooltipKey = entry.name.toLowerCase();
+                    const tooltipText = selectedView === 'emotions' ? emotionTooltips[tooltipKey] :
+                                      selectedView === 'intensity' ? intensityTooltips[tooltipKey] :
+                                      selectedView === 'health' ? healthTooltips[tooltipKey] :
+                                      `${entry.name} - Click for more details`;
+                    
+                    return (
+                      <div key={index} className="relative group">
+                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer">
+                          <div className="flex items-center space-x-3">
+                            <div 
+                              className="w-3 h-3 rounded-full" 
+                              style={{ backgroundColor: entry.color }}
+                            />
+                            <span className="text-sm font-medium text-slate-700">{entry.name}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-sm font-semibold text-slate-900">{entry.value}</span>
+                            <span className="text-xs text-slate-500 ml-1">({entry.percentage}%)</span>
+                          </div>
+                        </div>
+                        {/* Emotion Item Tooltip */}
+                        <div className="absolute left-0 top-full mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 z-50">
+                          <div className="bg-slate-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-sm w-max">
+                            <p>{tooltipText}</p>
+                            <div className="absolute -top-1 left-4 w-2 h-2 bg-slate-900 rotate-45"></div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={chartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={120}
-                    paddingAngle={2}
-                    dataKey="value"
-                    onClick={handleChartClick}
-                    className="cursor-pointer"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-
-            {/* Legend */}
-            {chartData.length > 0 && (
-              <div className="mt-4 grid grid-cols-2 gap-2">
-                {chartData.slice(0, 6).map((item, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <div 
-                      className="w-3 h-3 rounded-full flex-shrink-0" 
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <span className="text-xs text-slate-600 truncate">
-                      {item.name}
-                      {item.percentage && (
-                        <span className="ml-1 text-slate-400">({item.percentage}%)</span>
-                      )}
-                    </span>
-                  </div>
-                ))}
+              <div className="h-64 flex items-center justify-center">
+                <div className="text-center">
+                  <Brain className="w-8 w-8 text-slate-300 mx-auto mb-2" />
+                  <p className="text-sm text-slate-500">No {selectedView} data available</p>
+                </div>
               </div>
             )}
           </div>
 
-          {/* Insights Panel */}
+          {/* Insights */}
           <div>
             <h4 className="text-sm font-semibold text-slate-900 mb-4">Key Insights</h4>
             
-            {!hasEmotionData ? (
-              <div className="p-4 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200 text-center">
-                <p className="text-sm text-slate-600">
-                  No Data Available
-                </p>
-                <p className="text-xs text-slate-500 mt-1">
-                  Process more calls with emotion detection to see insights for emotions.
-                </p>
-              </div>
-            ) : insights && insights.length > 0 ? (
+            {insights.length > 0 ? (
               <div className="space-y-3">
                 {insights.map((insight, index) => (
-                  <div 
-                    key={index}
-                    className={`p-3 rounded-lg border ${
+                  <div key={index} className="relative group">
+                    <div className={`p-3 rounded-lg border ${
                       insight.type === 'success' ? 'bg-emerald-50 border-emerald-200' :
                       insight.type === 'warning' ? 'bg-amber-50 border-amber-200' :
                       insight.type === 'error' ? 'bg-red-50 border-red-200' :
                       'bg-blue-50 border-blue-200'
-                    }`}
-                  >
-                    <h5 className={`text-xs font-semibold mb-2 ${
-                      insight.type === 'success' ? 'text-emerald-900' :
-                      insight.type === 'warning' ? 'text-amber-900' :
-                      insight.type === 'error' ? 'text-red-900' :
-                      'text-blue-900'
                     }`}>
-                      {insight.title}
-                    </h5>
-                    <p className={`text-sm ${
-                      insight.type === 'success' ? 'text-emerald-800' :
-                      insight.type === 'warning' ? 'text-amber-800' :
-                      insight.type === 'error' ? 'text-red-800' :
-                      'text-blue-800'
-                    }`}>
-                      {insight.content}
-                    </p>
+                      <p className={`font-semibold text-sm ${
+                        insight.type === 'success' ? 'text-emerald-800' :
+                        insight.type === 'warning' ? 'text-amber-800' :
+                        insight.type === 'error' ? 'text-red-800' :
+                        'text-blue-800'
+                      }`}>
+                        {insight.title}
+                      </p>
+                      <p className={`text-xs mt-1 ${
+                        insight.type === 'success' ? 'text-emerald-700' :
+                        insight.type === 'warning' ? 'text-amber-700' :
+                        insight.type === 'error' ? 'text-red-700' :
+                        'text-blue-700'
+                      }`}>
+                        {insight.content}
+                      </p>
+                    </div>
+                    {/* Insight Tooltip */}
+                    <div className="absolute left-0 top-full mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 z-50">
+                      <div className="bg-slate-900 text-white text-xs rounded-lg p-3 shadow-lg max-w-sm w-max">
+                        <p>
+                          {insight.type === 'success' ? 'Positive indicator - maintain current practices' :
+                           insight.type === 'warning' ? 'Attention needed - monitor this metric closely' :
+                           insight.type === 'error' ? 'Critical issue - immediate action recommended' :
+                           'General insight - use for strategic planning'}
+                        </p>
+                        <div className="absolute -top-1 left-4 w-2 h-2 bg-slate-900 rotate-45"></div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <p className="text-sm text-slate-600">
-                  No specific insights available for current data.
-                </p>
+              <div className="text-center py-8">
+                <AlertTriangle className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-500">No insights available</p>
+                <p className="text-xs text-slate-400">Process more calls to generate insights</p>
               </div>
             )}
           </div>
