@@ -9,7 +9,10 @@ import PerformanceSection from './dashboard/PerformanceSection';
 import Analytics from './dashboard/Analytics';
 import Footer from './dashboard/Footer';
 import EmployeeManagement from './EmployeeManagement';
-import { BarChart3, Users } from 'lucide-react';
+import { BarChart3, Users, GraduationCap } from 'lucide-react';
+
+// Import the new Coaching Library component
+import CoachingLibrary from './CoachingLibrary/CoachingLibrary';
 
 const Dashboard = () => {
   const {
@@ -31,7 +34,7 @@ const Dashboard = () => {
   // State for active tab
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Tab configuration
+  // Tab configuration - ONLY ADDITION: Added coaching tab
   const tabs = [
     {
       id: 'dashboard',
@@ -44,27 +47,33 @@ const Dashboard = () => {
       name: 'Employee Management',
       icon: Users,
       description: 'Manage employee visibility for call analysis'
+    },
+    {
+      id: 'coaching',
+      name: 'Coaching Library',
+      icon: GraduationCap,
+      description: 'Create training materials from call analysis'
     }
   ];
 
-  // Loading state
+  // Loading state - UNCHANGED
   if (loading && activeTab === 'dashboard') {
     return <LoadingSpinner message="Connecting to Analytics Engine..." size="lg" />;
   }
 
-  // Error state
+  // Error state - UNCHANGED
   if (error && activeTab === 'dashboard') {
     return <LoadingSpinner isError={true} errorMessage={error} />;
   }
 
-  // Empty state for dashboard
+  // Empty state for dashboard - UNCHANGED
   if (!data.length && activeTab === 'dashboard') {
     return <EmptyState connectionStatus={connectionStatus} lastUpdate={lastUpdate} />;
   }
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Enhanced Header with Tab Navigation */}
+      {/* Enhanced Header with Tab Navigation - UNCHANGED */}
       <div className="bg-white shadow-sm border-b border-gray-200">
         <Header 
           connectionStatus={connectionStatus} 
@@ -76,7 +85,7 @@ const Dashboard = () => {
           data={data}
         />
         
-        {/* Tab Navigation */}
+        {/* Tab Navigation - ONLY CHANGE: Now includes coaching tab */}
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex space-x-8 pt-4">
             {tabs.map((tab) => {
@@ -103,7 +112,7 @@ const Dashboard = () => {
       </div>
 
       <main className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        {/* Tab Description */}
+        {/* Tab Description - ONLY CHANGE: Now handles coaching tab description */}
         <div className="pt-6 pb-4">
           <div className="flex items-center space-x-3">
             <div className="flex-shrink-0">
@@ -122,22 +131,22 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Tab Content */}
+        {/* Tab Content - ONLY ADDITION: Added coaching tab content */}
         {activeTab === 'dashboard' && (
           <div className="space-y-8">
-            {/* Hero Analytics Section */}
+            {/* Hero Analytics Section - UNCHANGED */}
             <div className="pb-2">
               <Analytics data={data} />
             </div>
 
-            {/* Main Dashboard Grid */}
+            {/* Main Dashboard Grid - UNCHANGED */}
             <div className="space-y-8">
-              {/* Quick Stats Row - Includes emotion and call tag metrics */}
+              {/* Quick Stats Row - Includes emotion and call tag metrics - UNCHANGED */}
               <section className="mb-8">
                 <StatsCards todayStats={analytics.todayStats} />
               </section>
               
-              {/* Charts Grid - Now includes call tag analytics */}
+              {/* Charts Grid - Now includes call tag analytics - UNCHANGED */}
               <section>
                 <ChartsSection 
                   analytics={analytics} 
@@ -149,7 +158,7 @@ const Dashboard = () => {
                 />
               </section>
               
-              {/* Performance Section */}
+              {/* Performance Section - UNCHANGED */}
               <section>
                 <PerformanceSection 
                   analytics={analytics} 
@@ -163,6 +172,13 @@ const Dashboard = () => {
         {activeTab === 'employees' && (
           <div>
             <EmployeeManagement />
+          </div>
+        )}
+
+        {/* NEW: Coaching Library Tab Content */}
+        {activeTab === 'coaching' && (
+          <div>
+            <CoachingLibrary />
           </div>
         )}
       </main>

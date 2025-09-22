@@ -25,6 +25,12 @@ class Settings:
     # Whisper Configuration
     WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
     WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "auto")
+   
+    # Google Sheets Configuration (NEW)
+    GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH")  # Path to service account JSON file
+    GOOGLE_SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID")    # Your Google Sheets ID from URL
+    GOOGLE_SPREADSHEET_NAME = os.getenv("GOOGLE_SPREADSHEET_NAME", "Call Analysis Data")  # Fallback name
+
     
     # SpeechBrain Configuration (replacing Pyannote)
     SPEECHBRAIN_SPEAKER_MODEL = os.getenv("SPEECHBRAIN_SPEAKER_MODEL", "speechbrain/spkrec-ecapa-voxceleb")

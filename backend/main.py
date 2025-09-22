@@ -466,7 +466,7 @@ class DentalCallAnalyzer:
         print("="*80)
         
         # Processing summary
-        print(f"\n📊 PROCESSING SUMMARY:")
+        print(f"\nðŸ“Š PROCESSING SUMMARY:")
         print(f"   Total calls processed: {self.stats['total_processed']}")
         print(f"   Successful: {self.stats['successful']}")
         print(f"   Failed: {self.stats['failed']}")
@@ -476,59 +476,59 @@ class DentalCallAnalyzer:
         
         # Employee list summary
         employees = self.employee_service.get_employees()
-        print(f"\n👥 EMPLOYEE LIST MANAGEMENT:")
+        print(f"\nðŸ‘¥ EMPLOYEE LIST MANAGEMENT:")
         print(f"   Configured employees: {len(employees)}")
         print(f"   Employee names: {', '.join(employees)}")
         
         # Opportunity analysis
-        print(f"\n🎯 OPPORTUNITY ANALYSIS:")
+        print(f"\nðŸŽ¯ OPPORTUNITY ANALYSIS:")
         print(f"   High-value missed opportunities: {self.stats['high_opportunities']}")
         if self.stats['successful'] > 0:
             opportunity_rate = (self.stats['high_opportunities'] / self.stats['successful']) * 100
             print(f"   Missed opportunity rate: {opportunity_rate:.1f}%")
         
         # Sentiment analysis
-        print(f"\n😊 SENTIMENT ANALYSIS:")
+        print(f"\nðŸ˜Š SENTIMENT ANALYSIS:")
         for sentiment, count in self.stats['sentiment_stats'].items():
             if count > 0:
                 print(f"   {sentiment.title()}: {count}")
         
         # Emotion analysis
-        print(f"\n🎭 EMOTION ANALYSIS:")
+        print(f"\nðŸŽ­ EMOTION ANALYSIS:")
         for emotion, count in self.stats['emotion_stats'].items():
             if count > 0:
                 print(f"   {emotion.replace('_', ' ').title()}: {count}")
         
         # Call tagging
         if self.stats['tagging_stats']:
-            print(f"\n🏷️  CALL TAGGING:")
+            print(f"\nðŸ·ï¸  CALL TAGGING:")
             for tag, count in self.stats['tagging_stats'].items():
                 if count > 0:
                     print(f"   {tag.replace('_', ' ').title()}: {count}")
         
         # Coaching analysis
-        print(f"\n🎓 COACHING ANALYSIS:")
+        print(f"\nðŸŽ“ COACHING ANALYSIS:")
         print(f"   Coaching candidates: {self.stats['coaching_stats']['coaching_candidates']}")
         print(f"   Excellent calls: {self.stats['coaching_stats']['excellent_calls']}")
         print(f"   High-value calls: {self.stats['coaching_stats']['high_value_calls']}")
         
         # Speaker assignment stats
-        print(f"\n🗣️  SPEAKER ASSIGNMENT:")
+        print(f"\nðŸ—£ï¸  SPEAKER ASSIGNMENT:")
         print(f"   LLM-based assignments: {self.stats['speaker_assignment_stats']['llm_based_assignments']}")
         print(f"   Rule-based fallbacks: {self.stats['speaker_assignment_stats']['rule_based_fallbacks']}")
         print(f"   Three+ speaker calls: {self.stats['speaker_assignment_stats']['three_speaker_calls']}")
         
         # Export information
         if settings.USE_GOOGLE_SHEETS:
-            print("\n📊 Results exported to Google Sheets for dashboard viewing")
+            print("\nðŸ“Š Results exported to Google Sheets for dashboard viewing")
         
-        print("\n🎯 Coaching candidates and excellent examples are now flagged in Google Sheets.")
-        print("🏷️  All calls have been automatically categorized for better organization.")
-        print("🗣️  Speaker roles are now intelligently assigned using LLM analysis.")
-        print("👥 Representative names are extracted from predefined employee list.")
+        print("\nðŸŽ¯ Coaching candidates and excellent examples are now flagged in Google Sheets.")
+        print("ðŸ·ï¸  All calls have been automatically categorized for better organization.")
+        print("ðŸ—£ï¸  Speaker roles are now intelligently assigned using LLM analysis.")
+        print("ðŸ‘¥ Representative names are extracted from predefined employee list.")
         
         print(f"\nMode: {'API' if settings.USE_API_MODE else 'Local Directory'}")
-        print(f"Enhanced Features: Tagging ✅ | Coaching Analysis ✅ | Emotion Detection ✅ | Smart Speaker Assignment ✅ | Employee List ✅")
+        print(f"Enhanced Features: Tagging âœ… | Coaching Analysis âœ… | Emotion Detection âœ… | Smart Speaker Assignment âœ… | Employee List âœ…")
         print(f"Processed files tracked in: {self.file_queue_service.processed_files_db}")
         print(f"Employee list stored in: {self.employee_service.employees_file}")
         print("="*80)
@@ -552,8 +552,8 @@ async def main():
     global logger
     logger = logging.getLogger(__name__)
     
-    print(f"\n🦷 Enhanced Dental Call Analysis System")
-    print(f"🔥 Features: LLM Sentiment Analysis | Auto Call Tagging | Coaching Analysis | Smart Speaker Assignment | Employee List Management")
+    print(f"\nðŸ¦· Enhanced Dental Call Analysis System")
+    print(f"ðŸ”¥ Features: LLM Sentiment Analysis | Auto Call Tagging | Coaching Analysis | Smart Speaker Assignment | Employee List Management")
     print(f"Mode: {'API Integration' if settings.USE_API_MODE else 'Local Directory Processing'}")
     if not settings.USE_API_MODE:
         print(f"Directory: {settings.AUDIO_INPUT_DIR}")

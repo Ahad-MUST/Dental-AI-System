@@ -3,16 +3,16 @@ DENTAL CALL ANALYSIS REPORT
 
 CALL INFORMATION:
 --------------------
-File: D:\Upwork\Sultan Dental Project\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
-Date: 2025-09-18 10:15:10
+File: D:\Upwork\Dental-AI-System\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+Date: 2025-09-22 08:51:11
 Duration: 0.0 seconds
 Speakers: 0
 Representative: Veronica
 
 PERFORMANCE SUMMARY:
 -------------------------
-Overall Score: 0.66/100
-Call Summary: The main purpose of the call was for the customer to request account access and assistance from the dental office. Despite the unprofessional tone, Veronica acknowledged the request but noted significant communication issues, indicating that no specific action was taken during this interaction due to the customer's disruptive behavior.
+Overall Score: 0.69/100
+Call Summary: The main purpose of the call was for the customer to request account access and inquire about their dental services. Despite the unprofessional tone, Veronica attempted to assist but the customer became frustrated, resulting in no specific issues being addressed during the call.
 High-Value Missed Opportunity: NO
 
 SENTIMENT ANALYSIS SUMMARY:
@@ -20,7 +20,7 @@ SENTIMENT ANALYSIS SUMMARY:
 Patient Sentiment: negative (confidence: 0.850)
 Staff Sentiment: neutral (confidence: 0.700)
 Overall Sentiment: negative (confidence: 0.800)
-Summary: The patient expressed frustration and anger towards the staff, primarily due to insurance issues. The patient's tone was confrontational and dismissive throughout the call, indicating a high level of negative sentiment. The staff maintained a professional demeanor but struggled to effectively communicate with the upset patient, leading to an overall poor emotional state in the conversation.
+Summary: The patient expressed frustration and anxiety during the call, indicating a poor emotional state. The staff maintained a professional demeanor but struggled to de-escalate the situation, leading to an overall negative interaction.
 
 TIMESTAMPED TRANSCRIPT:
 -------------------------

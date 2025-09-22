@@ -1,0 +1,707 @@
+2025-09-21 14:01:21 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:01:21 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Employee List Management...
+2025-09-21 14:01:21 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:01:21 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:01:21 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:01:21 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:01:21 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:01:21 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:01:21 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:01:41 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:01:41 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:01:44 | services.diarization_service | [31mERROR[0m | SpeechBrain engine loading failed: Failed to initialize SpeechBrain models: ("The structure of the overrides doesn't match the structure of the document: ", {})
+2025-09-21 14:01:44 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:01:48 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with simplified Call_Tag and Coaching_Candidate columns
+2025-09-21 14:01:48 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Coaching Analysis: Active
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 14:01:48 | services.file_queue_service | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Found 8 files to process
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | 
+--- Processing file 1/8: (218)801-7932_general.mp3 ---
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Starting enhanced analysis of (218)801-7932_general.mp3...
+2025-09-21 14:01:48 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 14:01:50 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 14:01:50 | services.transcription_service | [32mINFO[0m | Transcribing: (218)801-7932_general.mp3
+2025-09-21 14:16:54 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:16:54 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:16:54 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:16:54 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:16:54 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:16:54 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:16:54 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:16:54 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:16:54 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:16:54 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:16:54 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:17:07 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:17:07 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:17:09 | services.diarization_service | [31mERROR[0m | SpeechBrain engine loading failed: Failed to initialize SpeechBrain models: ("The structure of the overrides doesn't match the structure of the document: ", {})
+2025-09-21 14:17:09 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:17:14 | services.google_sheets_exporter | [32mINFO[0m | Google Sheet headers updated with enhanced coaching columns
+2025-09-21 14:17:14 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:17:14 | __main__ | [31mERROR[0m | Enhanced system initialization failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 14:17:14 | __main__ | [31mERROR[0m | Enhanced batch processing failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 14:17:14 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:17:14 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:17:14 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 14:22:18 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:22:18 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:22:18 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:22:18 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:22:18 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:22:18 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:22:18 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:22:18 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:22:18 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:22:18 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:22:18 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:22:35 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:22:35 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:22:40 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:22:45 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:22:45 | __main__ | [31mERROR[0m | Enhanced system initialization failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 14:22:45 | __main__ | [31mERROR[0m | Enhanced batch processing failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 14:22:45 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:22:45 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:22:45 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 14:24:12 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:24:12 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:24:12 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:24:12 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:24:12 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:24:12 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:24:12 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:24:12 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:24:12 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:24:12 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:24:12 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:24:31 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:24:31 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:24:34 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:24:36 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:24:36 | services.file_queue_service | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 1/8: D:\Upwork\Dental-AI-System\backend\audio_files\(218)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (218)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (218)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 2/8: D:\Upwork\Dental-AI-System\backend\audio_files\(219)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (219)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (219)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 3/8: D:\Upwork\Dental-AI-System\backend\audio_files\(220)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (220)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (220)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 4/8: D:\Upwork\Dental-AI-System\backend\audio_files\(221)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (221)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (221)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 5/8: D:\Upwork\Dental-AI-System\backend\audio_files\(222)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (222)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (222)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 6/8: D:\Upwork\Dental-AI-System\backend\audio_files\(223)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (223)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (223)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 7/8: D:\Upwork\Dental-AI-System\backend\audio_files\(224)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: (224)801-7932_general.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for (224)801-7932_general.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Processing file 8/8: D:\Upwork\Dental-AI-System\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:24:36 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: 'AudioProcessor' object has no attribute 'process_audio'
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 14:24:36 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:24:36 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:24:36 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 14:25:34 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:25:34 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:25:34 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:25:34 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:25:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:25:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:25:34 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:25:34 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:25:34 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:25:34 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:25:34 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:25:51 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:25:51 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:25:55 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:25:57 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:25:57 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:25:57 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:25:57 | services.file_queue_service | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:25:57 | __main__ | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:25:57 | __main__ | [32mINFO[0m | Processing file 1/8: D:\Upwork\Dental-AI-System\backend\audio_files\(218)801-7932_general.mp3
+2025-09-21 14:25:57 | __main__ | [32mINFO[0m | Starting enhanced processing of: (218)801-7932_general.mp3
+2025-09-21 14:25:59 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:25:59 | services.transcription_service | [32mINFO[0m | Transcribing: (218)801-7932_general.mp3
+2025-09-21 14:28:49 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.97
+2025-09-21 14:28:49 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 14:28:49 | __main__ | [31mERROR[0m | Enhanced processing failed for (218)801-7932_general.mp3: 'DiarizationService' object has no attribute 'diarize_audio'
+2025-09-21 14:28:49 | __main__ | [32mINFO[0m | Processing file 2/8: D:\Upwork\Dental-AI-System\backend\audio_files\(219)801-7932_general.mp3
+2025-09-21 14:28:49 | __main__ | [32mINFO[0m | Starting enhanced processing of: (219)801-7932_general.mp3
+2025-09-21 14:28:49 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:28:49 | services.transcription_service | [32mINFO[0m | Transcribing: (219)801-7932_general.mp3
+2025-09-21 14:30:17 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:30:17 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:30:17 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:30:17 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:30:17 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:30:17 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:30:17 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:30:17 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:30:17 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:30:17 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:30:17 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:30:33 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:30:33 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:30:36 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:31:10 | services.google_sheets_exporter | [31mERROR[0m | Failed to initialize Google Sheets: APIError: [429]: Resource has been exhausted (e.g. check quota).
+2025-09-21 14:31:10 | services.google_sheets_exporter | [32mINFO[0m | Falling back to CSV export
+2025-09-21 14:31:10 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:31:10 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:31:10 | services.file_queue_service | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:31:10 | __main__ | [32mINFO[0m | Found 8 unprocessed audio files
+2025-09-21 14:31:10 | __main__ | [32mINFO[0m | Processing file 1/8: D:\Upwork\Dental-AI-System\backend\audio_files\(218)801-7932_general.mp3
+2025-09-21 14:31:10 | __main__ | [32mINFO[0m | Starting enhanced processing of: (218)801-7932_general.mp3
+2025-09-21 14:31:12 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:31:12 | services.transcription_service | [32mINFO[0m | Transcribing: (218)801-7932_general.mp3
+2025-09-21 14:34:02 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.97
+2025-09-21 14:34:02 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 14:34:02 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: (218)801-7932_general.mp3
+2025-09-21 14:34:02 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 14:34:02 | services.diarization_service | [32mINFO[0m | Processing audio file: (218)801-7932_general.mp3
+2025-09-21 14:34:06 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 14:34:06 | services.diarization_service | [32mINFO[0m | Found 26 speaker segments
+2025-09-21 14:34:06 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 5 speakers
+2025-09-21 14:34:06 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 5 speakers
+2025-09-21 14:34:06 | __main__ | [32mINFO[0m | Combining transcription with speaker diarization...
+2025-09-21 14:34:06 | __main__ | [32mINFO[0m | Assigning speaker roles with employee detection...
+2025-09-21 14:34:06 | __main__ | [31mERROR[0m | Enhanced processing failed for (218)801-7932_general.mp3: SpeakerRoleAssignmentService.assign_speaker_roles() takes 2 positional arguments but 3 were given
+2025-09-21 14:34:06 | __main__ | [32mINFO[0m | Processing file 2/8: D:\Upwork\Dental-AI-System\backend\audio_files\(219)801-7932_general.mp3
+2025-09-21 14:34:06 | __main__ | [32mINFO[0m | Starting enhanced processing of: (219)801-7932_general.mp3
+2025-09-21 14:34:06 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:34:06 | services.transcription_service | [32mINFO[0m | Transcribing: (219)801-7932_general.mp3
+2025-09-21 14:37:01 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:37:01 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:37:01 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:37:01 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:37:01 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:37:01 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:37:01 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:37:01 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:37:01 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:37:01 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:37:01 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:37:19 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:37:19 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:37:21 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:37:26 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:37:26 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:37:26 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:37:26 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:37:26 | __main__ | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:37:26 | __main__ | [32mINFO[0m | Processing file 1/1: D:\Upwork\Dental-AI-System\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:37:26 | __main__ | [32mINFO[0m | Starting enhanced processing of: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:37:27 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:37:27 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:38:35 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 14:38:35 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 14:38:35 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:38:35 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 14:38:35 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:38:37 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 14:38:37 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 14:38:37 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 14:38:37 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 14:38:37 | __main__ | [32mINFO[0m | Combining transcription with speaker diarization...
+2025-09-21 14:38:37 | __main__ | [32mINFO[0m | Assigning speaker roles with employee detection...
+2025-09-21 14:38:37 | services.speaker_role_assignment_service | [31mERROR[0m | Speaker role assignment failed: 'list' object has no attribute 'get'
+2025-09-21 14:38:37 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: local variable 'segments' referenced before assignment
+2025-09-21 14:38:37 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 14:38:37 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:38:37 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:38:37 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 14:39:28 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:39:28 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:39:28 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:39:28 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:39:28 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:39:28 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:39:28 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:39:28 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:39:28 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:39:28 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:39:28 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:39:45 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:39:45 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:39:48 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:39:52 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:39:52 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:39:52 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:39:52 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:39:52 | __main__ | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:39:52 | __main__ | [32mINFO[0m | Processing file 1/1: D:\Upwork\Dental-AI-System\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:39:52 | __main__ | [32mINFO[0m | Starting enhanced processing of: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:39:53 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:39:53 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:41:02 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 14:41:02 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 14:41:02 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:41:02 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 14:41:02 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:41:03 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 14:41:03 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 14:41:03 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 14:41:03 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Combining transcription with speaker diarization...
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Assigning speaker roles with employee detection...
+2025-09-21 14:41:03 | services.speaker_role_assignment_service | [31mERROR[0m | Speaker role assignment failed: 'list' object has no attribute 'get'
+2025-09-21 14:41:03 | __main__ | [31mERROR[0m | Speaker role assignment failed: local variable 'segments' referenced before assignment
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 14:41:03 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 14:41:03 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 14:41:03 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:41:03 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:41:03 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 14:42:11 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 14:42:11 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 14:42:11 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 14:42:11 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 14:42:11 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 14:42:11 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 14:42:11 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 14:42:11 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 14:42:11 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 14:42:11 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 14:42:11 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 14:42:27 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 14:42:27 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 14:42:32 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 14:42:36 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 14:42:36 | __main__ | [32mINFO[0m | Enhanced system initialization completed successfully!
+2025-09-21 14:42:36 | __main__ | [32mINFO[0m | Local mode - scanning directory for audio files
+2025-09-21 14:42:36 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:42:36 | __main__ | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 14:42:36 | __main__ | [32mINFO[0m | Processing file 1/1: D:\Upwork\Dental-AI-System\backend\audio_files\im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:42:36 | __main__ | [32mINFO[0m | Starting enhanced processing of: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:42:38 | __main__ | [32mINFO[0m | Performing transcription...
+2025-09-21 14:42:38 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:43:46 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 14:43:46 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 14:43:46 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:43:46 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 14:43:46 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 14:43:48 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 14:43:48 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 14:43:48 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 14:43:48 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Combining transcription with speaker diarization...
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Assigning speaker roles with employee detection...
+2025-09-21 14:43:48 | services.speaker_role_assignment_service | [31mERROR[0m | Speaker role assignment failed: 'list' object has no attribute 'get'
+2025-09-21 14:43:48 | __main__ | [31mERROR[0m | Speaker role assignment failed: local variable 'segments' referenced before assignment
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 14:43:48 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 14:43:48 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 14:43:48 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 14:43:48 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 14:43:48 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:07:39 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:07:39 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:07:39 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:07:39 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:07:39 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:07:39 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:07:39 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:07:39 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:07:39 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:07:39 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:07:39 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:07:57 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:07:57 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:07:59 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:08:03 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:08:03 | __main__ | [31mERROR[0m | Enhanced service initialization failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 15:08:03 | __main__ | [31mERROR[0m | Enhanced batch processing failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 15:08:03 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:08:03 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:08:03 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:09:07 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:09:07 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:09:07 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:09:07 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:09:07 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:09:07 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:09:07 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:09:07 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:09:07 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:09:07 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:09:07 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:09:23 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:09:23 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:09:27 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:09:31 | services.google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:09:31 | __main__ | [31mERROR[0m | Enhanced service initialization failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 15:09:31 | __main__ | [31mERROR[0m | Enhanced batch processing failed: 'EmployeeListService' object has no attribute 'initialize'
+2025-09-21 15:09:31 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:09:31 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:09:31 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:12:51 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:12:51 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:12:51 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:12:51 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:12:51 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:12:51 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:12:51 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:12:51 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:12:51 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:12:51 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:12:51 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:13:07 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:13:07 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:13:10 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:13:34 | services.updated_google_sheets_exporter | [31mERROR[0m | Failed to initialize Google Sheets: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2025-09-21 15:13:34 | services.updated_google_sheets_exporter | [32mINFO[0m | Falling back to CSV export
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:13:34 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3 ---
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Starting enhanced analysis of im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3...
+2025-09-21 15:13:34 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 15:13:36 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 15:13:36 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:14:44 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 15:14:44 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 15:14:44 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:14:44 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 15:14:44 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:14:46 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 15:14:46 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 15:14:46 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 15:14:46 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 15:14:46 | __main__ | [32mINFO[0m | Combining transcription and diarization...
+2025-09-21 15:14:46 | __main__ | [32mINFO[0m | Assigning speaker roles with employee detection...
+2025-09-21 15:14:46 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: SpeakerRoleAssignmentService.assign_speaker_roles() takes 2 positional arguments but 3 were given
+2025-09-21 15:14:46 | services.file_queue_service | [32mINFO[0m | Marked as processed: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:14:46 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:14:46 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:14:46 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:14:46 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:17:05 | services.file_queue_service | [32mINFO[0m | Loaded 1 processed files from database
+2025-09-21 15:17:05 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:17:05 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:17:05 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:17:05 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:17:05 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:17:05 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:17:05 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:17:05 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:17:05 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:17:05 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:17:21 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:17:21 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:17:34 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:17:34 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:17:34 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:17:34 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:17:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:17:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:17:34 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:17:34 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:17:34 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:17:34 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:17:34 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:17:50 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:17:50 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:17:53 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:17:58 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:17:58 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3 ---
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Starting enhanced analysis of im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3...
+2025-09-21 15:17:58 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 15:17:59 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 15:17:59 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:19:08 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 15:19:08 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 15:19:08 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:19:08 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 15:19:08 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:19:09 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 15:19:09 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 15:19:09 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 15:19:09 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 15:19:09 | __main__ | [32mINFO[0m | Combining transcription and diarization...
+2025-09-21 15:19:09 | __main__ | [32mINFO[0m | Assigning speaker roles...
+2025-09-21 15:19:09 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (795 chars), using direct analysis
+2025-09-21 15:19:20 | services.speaker_role_assignment_service | [33mWARNING[0m | LLM multi-speaker assignment invalid, using rule-based fallback
+2025-09-21 15:19:20 | services.speaker_role_assignment_service | [33mWARNING[0m | Rule-based assignment failed to identify clear roles, using fallback logic
+2025-09-21 15:19:20 | services.speaker_role_assignment_service | [33mWARNING[0m | Using final fallback assignment based on word count
+2025-09-21 15:19:20 | services.speaker_role_assignment_service | [33mWARNING[0m | Role assignment resulted in empty text - Staff: 635 chars, Patient: 0 chars
+2025-09-21 15:19:20 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_00, Patient: SPEAKER_01
+2025-09-21 15:19:20 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 15:19:20 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 15:19:20 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 15:19:20 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 15:19:20 | services.file_queue_service | [32mINFO[0m | Marked as processed: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:19:20 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:19:20 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:19:20 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:19:20 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:21:37 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:21:37 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:21:37 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:21:37 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:21:37 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:21:37 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:21:37 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:21:37 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:21:37 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:21:37 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:21:37 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:21:59 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:21:59 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:22:05 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:22:11 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:22:11 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3 ---
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Starting enhanced analysis of im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3...
+2025-09-21 15:22:11 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 15:22:12 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 15:22:12 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:24:07 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 15:24:07 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 15:24:07 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:24:07 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 15:24:07 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:24:09 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 15:24:09 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 15:24:09 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 15:24:09 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 15:24:09 | __main__ | [32mINFO[0m | Combining transcription and diarization...
+2025-09-21 15:24:09 | __main__ | [32mINFO[0m | Assigning speaker roles...
+2025-09-21 15:24:09 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (795 chars), using direct analysis
+2025-09-21 15:24:32 | services.speaker_role_assignment_service | [33mWARNING[0m | LLM multi-speaker assignment invalid, using rule-based fallback
+2025-09-21 15:24:32 | services.speaker_role_assignment_service | [33mWARNING[0m | Rule-based assignment failed to identify clear roles, using fallback logic
+2025-09-21 15:24:32 | services.speaker_role_assignment_service | [33mWARNING[0m | Using final fallback assignment based on word count
+2025-09-21 15:24:32 | services.speaker_role_assignment_service | [33mWARNING[0m | Role assignment resulted in empty text - Staff: 635 chars, Patient: 0 chars
+2025-09-21 15:24:32 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_00, Patient: SPEAKER_01
+2025-09-21 15:24:32 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 15:24:32 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 15:24:32 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 15:24:32 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 15:24:32 | services.file_queue_service | [32mINFO[0m | Marked as processed: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:24:32 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:24:32 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:24:32 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:24:32 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:27:12 | services.file_queue_service | [32mINFO[0m | Loaded 1 processed files from database
+2025-09-21 15:27:12 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:27:12 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:27:12 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:27:12 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:27:12 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:27:12 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:27:12 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:27:12 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:27:12 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:27:12 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:27:34 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:27:34 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:27:37 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:27:42 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:27:42 | services.file_queue_service | [32mINFO[0m | Found 0 unprocessed audio files
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | No new audio files found to process
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:27:42 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:27:42 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:27:42 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:28:06 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:28:06 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:28:06 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:28:06 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:28:06 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:28:06 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:28:06 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:28:06 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:28:06 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:28:06 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:28:06 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:28:27 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:28:27 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:28:30 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:28:35 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:28:35 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:28:36 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:28:36 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 15:28:36 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-21 15:28:36 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3 ---
+2025-09-21 15:28:36 | __main__ | [32mINFO[0m | Starting enhanced analysis of im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3...
+2025-09-21 15:28:36 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 15:28:39 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 15:28:39 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:30:15 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 15:30:15 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 15:30:15 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:30:15 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 15:30:15 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:30:17 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 15:30:17 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 15:30:17 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 15:30:17 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 15:30:17 | __main__ | [32mINFO[0m | Combining transcription and diarization...
+2025-09-21 15:30:17 | __main__ | [32mINFO[0m | Assigning speaker roles...
+2025-09-21 15:30:17 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (795 chars), using direct analysis
+2025-09-21 15:30:24 | services.speaker_role_assignment_service | [33mWARNING[0m | LLM multi-speaker assignment invalid, using rule-based fallback
+2025-09-21 15:30:24 | services.speaker_role_assignment_service | [33mWARNING[0m | Rule-based assignment failed to identify clear roles, using fallback logic
+2025-09-21 15:30:24 | services.speaker_role_assignment_service | [33mWARNING[0m | Using final fallback assignment based on word count
+2025-09-21 15:30:24 | services.speaker_role_assignment_service | [33mWARNING[0m | Role assignment resulted in empty text - Staff: 635 chars, Patient: 0 chars
+2025-09-21 15:30:24 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_00, Patient: SPEAKER_01
+2025-09-21 15:30:24 | __main__ | [33mWARNING[0m | Speaker role assignment resulted in empty/minimal patient text, using fallback separation
+2025-09-21 15:30:24 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 15:30:24 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 15:30:24 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 15:30:24 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 15:30:24 | services.file_queue_service | [32mINFO[0m | Marked as processed: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:30:24 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:30:24 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:30:24 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:30:24 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:32:51 | services.file_queue_service | [32mINFO[0m | Loaded 1 processed files from database
+2025-09-21 15:32:51 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:32:51 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:32:51 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:32:51 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:32:51 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:32:51 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:32:51 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:32:51 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:32:51 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:32:51 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:33:11 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:33:11 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:33:14 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:33:18 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:33:18 | services.file_queue_service | [32mINFO[0m | Found 0 unprocessed audio files
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | No new audio files found to process
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:33:18 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:33:18 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:33:18 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
+2025-09-21 15:33:30 | services.file_queue_service | [32mINFO[0m | Loaded 0 processed files from database
+2025-09-21 15:33:30 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Complete Coaching Library...
+2025-09-21 15:33:30 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-21 15:33:30 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-21 15:33:30 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-21 15:33:30 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-21 15:33:30 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-21 15:33:30 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-21 15:33:30 | services.coaching_content_generator | [32mINFO[0m | Coaching content generator initialized
+2025-09-21 15:33:30 | __main__ | [32mINFO[0m | Enhanced coaching content generator initialized
+2025-09-21 15:33:30 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-21 15:33:48 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-21 15:33:48 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-21 15:33:51 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-21 15:33:55 | services.updated_google_sheets_exporter | [32mINFO[0m | Enhanced Google Sheets connection established successfully
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Whitney Minor, Yuseli Saldana, Amina Jafri
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Enhanced Coaching Analysis: Active
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-21 15:33:55 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3 ---
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Starting enhanced analysis of im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3...
+2025-09-21 15:33:55 | __main__ | [32mINFO[0m | Validating audio file...
+2025-09-21 15:33:57 | __main__ | [32mINFO[0m | Transcribing audio...
+2025-09-21 15:33:57 | services.transcription_service | [32mINFO[0m | Transcribing: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:35:38 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 0.0s, Confidence: 0.98
+2025-09-21 15:35:38 | __main__ | [32mINFO[0m | Performing speaker diarization...
+2025-09-21 15:35:38 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:35:38 | services.diarization_service | [32mINFO[0m | Running SpeechBrain speaker diarization...
+2025-09-21 15:35:38 | services.diarization_service | [32mINFO[0m | Processing audio file: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:35:40 | services.diarization_service | [32mINFO[0m | Converting SpeechBrain results...
+2025-09-21 15:35:40 | services.diarization_service | [32mINFO[0m | Found 15 speaker segments
+2025-09-21 15:35:40 | services.diarization_service | [32mINFO[0m | SpeechBrain diarization completed successfully with 10 speakers
+2025-09-21 15:35:40 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 10 speakers
+2025-09-21 15:35:40 | __main__ | [32mINFO[0m | Combining transcription and diarization...
+2025-09-21 15:35:40 | __main__ | [32mINFO[0m | Assigning speaker roles...
+2025-09-21 15:35:40 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (795 chars), using direct analysis
+2025-09-21 15:35:49 | services.speaker_role_assignment_service | [33mWARNING[0m | LLM multi-speaker assignment invalid, using rule-based fallback
+2025-09-21 15:35:49 | services.speaker_role_assignment_service | [33mWARNING[0m | Rule-based assignment failed to identify clear roles, using fallback logic
+2025-09-21 15:35:49 | services.speaker_role_assignment_service | [33mWARNING[0m | Using final fallback assignment based on word count
+2025-09-21 15:35:49 | services.speaker_role_assignment_service | [33mWARNING[0m | Role assignment resulted in empty text - Staff: 635 chars, Patient: 0 chars
+2025-09-21 15:35:49 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_00, Patient: SPEAKER_01
+2025-09-21 15:35:49 | __main__ | [32mINFO[0m | Generating call summary...
+2025-09-21 15:35:49 | services.llm_analyzer | [31mERROR[0m | Call summary analysis failed: unhashable type: 'slice'
+2025-09-21 15:35:49 | __main__ | [32mINFO[0m | Scoring call performance...
+2025-09-21 15:35:49 | __main__ | [31mERROR[0m | Enhanced processing failed for im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3: PerformanceScorer.score_call_performance() missing 1 required positional argument: 'staff_text'
+2025-09-21 15:35:49 | services.file_queue_service | [32mINFO[0m | Marked as processed: im giving you the same energy #karen #foryou #customerservice #rude #callcenter #facts #9to5life.mp3
+2025-09-21 15:35:49 | __main__ | [32mINFO[0m | Enhanced batch processing with coaching library completed successfully!
+2025-09-21 15:35:49 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-21 15:35:49 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-21 15:35:49 | __main__ | [32mINFO[0m | Enhanced system cleanup completed
