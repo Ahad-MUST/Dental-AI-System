@@ -47,9 +47,16 @@ class DataLoader:
             return
             
         try:
-            # Try to get credentials from environment or service account file
-            credentials_path = getattr(settings, 'GOOGLE_CREDENTIALS_PATH', None)
-            spreadsheet_id = getattr(settings, 'GOOGLE_SPREADSHEET_ID', None)
+            # FIXED: Use the correct settings attribute names
+            credentials_path = getattr(settings, 'GOOGLE_CREDENTIALS_FILE', None)
+            spreadsheet_id = getattr(settings, 'GOOGLE_SHEET_ID', None)
+            use_google_sheets = getattr(settings, 'USE_GOOGLE_SHEETS', False)
+            
+            logger.info(f"Google Sheets config: enabled={use_google_sheets}, sheet_id={spreadsheet_id}")
+            
+            if not use_google_sheets:
+                logger.info("Google Sheets disabled in settings")
+                return
             
             if credentials_path and Path(credentials_path).exists():
                 # Use service account file
@@ -65,19 +72,17 @@ class DataLoader:
                 self.sheets_client = gspread.service_account()
                 logger.info("Google Sheets client initialized with default credentials")
             else:
-                logger.info("Google Sheets not configured - using local file fallback")
+                logger.warning("Google Sheets not configured properly")
                 return
                 
             # Open the spreadsheet
             if spreadsheet_id:
                 self.spreadsheet = self.sheets_client.open_by_key(spreadsheet_id)
+                logger.info(f"Connected to Google Sheets: {self.spreadsheet.title}")
             else:
-                # Try to find by name (fallback)
-                spreadsheet_name = getattr(settings, 'GOOGLE_SPREADSHEET_NAME', 'Call Analysis Data')
-                self.spreadsheet = self.sheets_client.open(spreadsheet_name)
+                logger.error("No Google Sheet ID provided")
+                return
                 
-            logger.info(f"Connected to Google Sheets: {self.spreadsheet.title}")
-            
         except Exception as e:
             logger.error(f"Failed to initialize Google Sheets: {str(e)}")
             self.sheets_client = None

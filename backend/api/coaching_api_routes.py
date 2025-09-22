@@ -711,43 +711,179 @@ def _generate_improvement_recommendations(calls: List[Dict]) -> List[str]:
     
     return recommendations[:5]  # Return top 5 recommendations
 
+# Replace the PDF generation endpoint in your coaching_api_routes.py with this version
+
 @coaching_router.post("/generate-pdf")
 async def generate_training_pdf(request: PDFGenerationRequest):
     """
-    Generate PDF training material from case study - FIXED VERSION
+    Generate PDF training material from case study
     """
     try:
         if not request.case_study_data:
             raise HTTPException(status_code=400, detail="No case study data provided")
         
-        # Create a simple PDF content as bytes
-        pdf_content = f"""
-COACHING TRAINING MATERIAL
+        # Try to use reportlab if available, otherwise create a simple PDF
+        try:
+            from reportlab.lib.pagesizes import letter
+            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+            from reportlab.lib.styles import getSampleStyleSheet
+            from reportlab.lib.units import inch
+            from io import BytesIO
+            
+            # Create PDF in memory
+            buffer = BytesIO()
+            doc = SimpleDocTemplate(buffer, pagesize=letter, 
+                                  rightMargin=0.75*inch, leftMargin=0.75*inch,
+                                  topMargin=0.75*inch, bottomMargin=0.75*inch)
+            
+            # Get styles
+            styles = getSampleStyleSheet()
+            story = []
+            
+            # Add title
+            title = Paragraph(f"<font size=20><b>{request.title}</b></font>", styles['Title'])
+            story.append(title)
+            story.append(Spacer(1, 0.2*inch))
+            
+            # Add metadata
+            metadata = f"""
+            <font size=12><b>Training Material</b></font><br/>
+            Target Employee: {request.target_employee}<br/>
+            Analysis Type: {request.analysis_type.title()}<br/>
+            Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}<br/>
+            """
+            story.append(Paragraph(metadata, styles['Normal']))
+            story.append(Spacer(1, 0.3*inch))
+            
+            # Add case study content
+            case_study = request.case_study_data
+            
+            # Conversation examples
+            if case_study.get('conversation_examples'):
+                story.append(Paragraph("<font size=14><b>Conversation Examples</b></font>", styles['Heading2']))
+                story.append(Spacer(1, 0.1*inch))
+                
+                for i, example in enumerate(case_study['conversation_examples'][:3], 1):
+                    example_text = f"""
+                    <font size=12><b>Example {i}:</b></font><br/>
+                    <font color="red"><b>What was said:</b></font> {example.get('what_was_said', '')}<br/>
+                    <font color="green"><b>What to say instead:</b></font> {example.get('what_to_say_instead', '')}<br/>
+                    <font color="blue"><b>Coaching point:</b></font> {example.get('coaching_point', '')}<br/>
+                    """
+                    story.append(Paragraph(example_text, styles['Normal']))
+                    story.append(Spacer(1, 0.2*inch))
+            
+            # Key principles
+            if case_study.get('key_principles'):
+                story.append(Paragraph("<font size=14><b>Key Coaching Principles</b></font>", styles['Heading2']))
+                story.append(Spacer(1, 0.1*inch))
+                
+                for i, principle in enumerate(case_study['key_principles'], 1):
+                    principle_text = f"{i}. {principle}"
+                    story.append(Paragraph(principle_text, styles['Normal']))
+                    story.append(Spacer(1, 0.05*inch))
+                
+                story.append(Spacer(1, 0.2*inch))
+            
+            # Follow-up flow
+            if case_study.get('follow_up_flow'):
+                flow = case_study['follow_up_flow']
+                story.append(Paragraph("<font size=14><b>Standard Follow-Up Flow</b></font>", styles['Heading2']))
+                story.append(Spacer(1, 0.1*inch))
+                
+                if flow.get('steps'):
+                    for step in flow['steps']:
+                        story.append(Paragraph(f"• {step}", styles['Normal']))
+                        story.append(Spacer(1, 0.05*inch))
+                
+                if flow.get('goal'):
+                    story.append(Spacer(1, 0.1*inch))
+                    story.append(Paragraph(f"<b>Goal:</b> {flow['goal']}", styles['Normal']))
+                
+                if flow.get('key_message'):
+                    story.append(Spacer(1, 0.1*inch))
+                    story.append(Paragraph(f"<b>Remember:</b> {flow['key_message']}", styles['Normal']))
+            
+            # Build PDF
+            doc.build(story)
+            buffer.seek(0)
+            pdf_content = buffer.getvalue()
+            buffer.close()
+            
+            logger.info(f"Generated PDF with reportlab: {len(pdf_content)} bytes")
+            
+        except ImportError:
+            # Fallback: Create a simple text-based document
+            logger.warning("ReportLab not available, creating text-based document")
+            
+            content = f"""COACHING TRAINING MATERIAL
+{'=' * 50}
+
 {request.title}
 
 Target Employee: {request.target_employee}
-Analysis Type: {request.analysis_type}
-Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+Analysis Type: {request.analysis_type.title()}
+Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
 
-This is a placeholder PDF content. In production, this would be a properly formatted PDF
-with the coaching insights, conversation examples, and training materials.
+{'=' * 50}
 
-Case Study Data Summary:
-- Title: {request.title}
-- Target Employee: {request.target_employee}
-- Analysis Type: {request.analysis_type}
-
-Note: Full PDF generation with proper formatting requires additional PDF libraries.
 """
+            
+            case_study = request.case_study_data
+            
+            # Add conversation examples
+            if case_study.get('conversation_examples'):
+                content += "\nCONVERSATION EXAMPLES:\n" + "-" * 25 + "\n\n"
+                
+                for i, example in enumerate(case_study['conversation_examples'][:3], 1):
+                    content += f"Example {i}:\n"
+                    content += f"What was said: {example.get('what_was_said', '')}\n"
+                    content += f"What to say instead: {example.get('what_to_say_instead', '')}\n"
+                    content += f"Coaching point: {example.get('coaching_point', '')}\n\n"
+            
+            # Add key principles
+            if case_study.get('key_principles'):
+                content += "\nKEY COACHING PRINCIPLES:\n" + "-" * 25 + "\n\n"
+                
+                for i, principle in enumerate(case_study['key_principles'], 1):
+                    content += f"{i}. {principle}\n"
+                
+                content += "\n"
+            
+            # Add follow-up flow
+            if case_study.get('follow_up_flow'):
+                flow = case_study['follow_up_flow']
+                content += "\nSTANDARD FOLLOW-UP FLOW:\n" + "-" * 25 + "\n\n"
+                
+                if flow.get('steps'):
+                    for step in flow['steps']:
+                        content += f"• {step}\n"
+                
+                if flow.get('goal'):
+                    content += f"\nGoal: {flow['goal']}\n"
+                
+                if flow.get('key_message'):
+                    content += f"\nRemember: {flow['key_message']}\n"
+            
+            content += "\n" + "=" * 50 + "\n"
+            content += "End of Training Material\n"
+            
+            pdf_content = content.encode('utf-8')
+            logger.info(f"Generated text document: {len(pdf_content)} bytes")
         
         from fastapi.responses import Response
         
-        # Return as PDF bytes
+        # Clean filename
+        safe_filename = "".join(c for c in request.title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+        safe_filename = safe_filename.replace(' ', '_')
+        
+        # Return the PDF/document
         return Response(
-            content=pdf_content.encode('utf-8'),
+            content=pdf_content,
             media_type='application/pdf',
             headers={
-                "Content-Disposition": f"attachment; filename={request.title.replace(' ', '_')}.pdf"
+                "Content-Disposition": f"attachment; filename={safe_filename}.pdf",
+                "Content-Length": str(len(pdf_content))
             }
         )
         
