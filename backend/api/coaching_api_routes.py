@@ -144,13 +144,17 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
         'representative_name': ['Representative_Name', 'representative_name', 'employee_name'],
         'analysis_date': ['Analysis_Date', 'analysis_date', 'date'],
         'call_summary': ['Call_Summary', 'call_summary', 'summary'],
-        'patient_transcript': ['Patient_Transcript', 'patient_transcript', 'patient_text'],
-        'staff_transcript': ['Staff_Transcript', 'staff_transcript', 'staff_text'],
+        'patient_transcript': ['Full_Transcript_With_Timestamps', 'Patient_Transcript', 'patient_transcript', 'patient_text'],
+        'staff_transcript': ['Full_Transcript_With_Timestamps', 'Staff_Transcript', 'staff_transcript', 'staff_text'],
         'representative_score': ['Representative_Score', 'representative_score', 'performance_score'],
-        'overall_sentiment': ['Overall_Sentiment', 'overall_sentiment', 'sentiment'],
+        'overall_sentiment': ['Overall_Sentiment', 'overall_sentiment', 'sentiment', 'Patient_Sentiment'],
         'call_tag': ['Call_Tag', 'call_tag', 'call_type', 'type'],
-        'call_duration': ['call_duration', 'duration'],
+        'call_duration': ['call_duration', 'duration', 'Call_Duration'],
         'high_value_missed_opportunity': ['High_Value_Missed_Opportunity', 'high_value_missed_opportunity', 'missed_opportunity'],
+        'patient_sentiment': ['Patient_Sentiment', 'patient_sentiment'],
+        'staff_sentiment': ['Staff_Sentiment', 'staff_sentiment'],
+        'sentiment_confidence': ['Sentiment_Confidence', 'sentiment_confidence'],
+        'patient_emotion': ['Patient_Primary_Emotion', 'patient_emotion', 'patient_primary_emotion'],
     }
     
     # Apply field mappings
@@ -176,7 +180,7 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
             else:
                 coaching_call[target_field] = bool(value) if value is not None else False
         elif target_field == 'analysis_date':
-            # Handle different date formats
+            # Handle different date formats and ensure ISO format output
             if value:
                 try:
                     # If it's already in ISO format, keep it
@@ -184,7 +188,6 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
                         coaching_call[target_field] = value
                     # If it's MM/DD/YYYY format, convert to ISO
                     elif isinstance(value, str) and '/' in value:
-                        from datetime import datetime
                         try:
                             date_obj = datetime.strptime(value, '%m/%d/%Y')
                             coaching_call[target_field] = date_obj.isoformat()
@@ -194,11 +197,11 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
                                 date_obj = datetime.strptime(value, '%Y-%m-%d')
                                 coaching_call[target_field] = date_obj.isoformat()
                             except ValueError:
-                                coaching_call[target_field] = value
+                                coaching_call[target_field] = datetime.now().isoformat()
                     else:
                         coaching_call[target_field] = str(value)
                 except:
-                    coaching_call[target_field] = str(value) if value else datetime.now().isoformat()
+                    coaching_call[target_field] = datetime.now().isoformat()
             else:
                 coaching_call[target_field] = datetime.now().isoformat()
         else:
@@ -209,7 +212,7 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
     coaching_call['id'] = unique_id
     existing_ids.add(unique_id)
     
-    # Extract complex analysis data if available
+    # Extract complex analysis data if available - KEEP EXISTING LOGIC
     coaching_call['performance_analysis'] = call_data.get('performance_analysis', {})
     coaching_call['sentiment_analysis'] = call_data.get('sentiment_analysis', {})
     coaching_call['opportunity_analysis'] = call_data.get('opportunity_analysis', {})
@@ -220,6 +223,10 @@ def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None)
     coaching_call.setdefault('call_summary', 'No summary available')
     coaching_call.setdefault('overall_sentiment', 'neutral')
     coaching_call.setdefault('call_tag', 'general_inquiry')
+    coaching_call.setdefault('patient_transcript', '')
+    coaching_call.setdefault('staff_transcript', '')
+    coaching_call.setdefault('high_value_missed_opportunity', False)
+    coaching_call.setdefault('call_duration', 0)
     
     return coaching_call
 

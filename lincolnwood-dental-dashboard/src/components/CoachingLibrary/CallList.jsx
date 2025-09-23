@@ -83,8 +83,10 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
     }
   };
 
-  const truncateText = (text, maxLength = 100) => {
-    if (!text || text.length <= maxLength) return text || 'No summary available';
+  // FIXED: Don't truncate text in expanded view, only in preview
+  const truncateText = (text, maxLength = 150, forceExpanded = false) => {
+    if (!text) return 'No summary available';
+    if (forceExpanded || text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '...';
   };
 
@@ -93,7 +95,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
   };
 
   const isSelected = (callId) => {
-    // Ensure callId is converted to string for comparison
     const callIdStr = String(callId);
     return selectedCalls.some(selectedId => String(selectedId) === callIdStr);
   };
@@ -102,16 +103,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
     if (!callTag || callTag === 'general_inquiry') return 'General Inquiry';
     return callTag.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
-
-  // Debug logging
-  React.useEffect(() => {
-    console.log('CallList rendered with:', {
-      callsCount: calls.length,
-      selectedCallsCount: selectedCalls.length,
-      firstCallId: calls[0]?.id,
-      selectedCallIds: selectedCalls
-    });
-  }, [calls, selectedCalls]);
 
   if (!calls || calls.length === 0) {
     return (
@@ -126,7 +117,7 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
   return (
     <div className="space-y-4">
       {calls.map((call) => {
-        const callId = String(call.id); // Ensure ID is string
+        const callId = String(call.id);
         const selected = isSelected(callId);
         const expanded = expandedCall === callId;
         
@@ -147,7 +138,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                   {/* Selection Checkbox */}
                   <button
                     onClick={() => {
-                      console.log('Selection clicked:', { callId, selected });
                       onCallSelection(callId, !selected);
                     }}
                     className={`mt-1 transition-colors ${
@@ -204,9 +194,12 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                       )}
                     </div>
 
-                    {/* Call Summary */}
+                    {/* Call Summary - FIXED: Show full summary when expanded */}
                     <p className="text-slate-700 leading-relaxed">
-                      {truncateText(call.call_summary, 150)}
+                      {expanded 
+                        ? truncateText(call.call_summary, 0, true) // Show full text when expanded
+                        : truncateText(call.call_summary, 150) // Truncate in preview
+                      }
                     </p>
                   </div>
                 </div>
@@ -254,175 +247,182 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
             {expanded && (
               <div className="border-t border-slate-200 bg-slate-50/30">
                 <div className="p-6 space-y-6">
-                  {/* Performance Details */}
-                  {call.performance_analysis && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                        <TrendingUp className="h-4 w-4 mr-2 text-blue-600" />
-                        Performance Analysis
-                      </h4>
-                      <div className="bg-white rounded-lg p-4 border border-slate-200">
-                        {call.performance_analysis.strengths && call.performance_analysis.strengths.length > 0 && (
-                          <div className="mb-4">
-                            <div className="text-sm font-medium text-green-700 mb-2">Strengths:</div>
-                            <ul className="space-y-1">
-                              {call.performance_analysis.strengths.map((strength, index) => (
-                                <li key={index} className="text-sm text-slate-700 flex items-start">
-                                  <span className="text-green-500 mr-2">✓</span>
-                                  {strength}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        
-                        {call.performance_analysis.weaknesses && call.performance_analysis.weaknesses.length > 0 && (
-                          <div className="mb-4">
-                            <div className="text-sm font-medium text-red-700 mb-2">Areas for Improvement:</div>
-                            <ul className="space-y-1">
-                              {call.performance_analysis.weaknesses.map((weakness, index) => (
-                                <li key={index} className="text-sm text-slate-700 flex items-start">
-                                  <span className="text-red-500 mr-2">•</span>
-                                  {weakness}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        
-                        {call.performance_analysis.coaching_focus && call.performance_analysis.coaching_focus.length > 0 && (
-                          <div>
-                            <div className="text-sm font-medium text-blue-700 mb-2">Coaching Focus:</div>
-                            <ul className="space-y-1">
-                              {call.performance_analysis.coaching_focus.map((focus, index) => (
-                                <li key={index} className="text-sm text-slate-700 flex items-start">
-                                  <span className="text-blue-500 mr-2">→</span>
-                                  {focus}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Transcripts */}
+                  {/* Performance Details - ALWAYS SHOW */}
                   <div>
                     <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                      <FileText className="h-4 w-4 mr-2 text-blue-600" />
-                      Call Transcripts
+                      <TrendingUp className="h-4 w-4 mr-2 text-blue-600" />
+                      Performance Analysis
                     </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Patient Transcript */}
-                      {call.patient_transcript && (
-                        <div className="bg-white rounded-lg p-4 border border-slate-200">
-                          <div className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-                            <User className="h-4 w-4 mr-1" />
-                            Patient
-                          </div>
-                          <div className="text-sm text-slate-600 max-h-40 overflow-y-auto">
-                            {call.patient_transcript}
-                          </div>
+                    <div className="bg-white rounded-lg p-4 border border-slate-200">
+                      {call.performance_analysis?.strengths && call.performance_analysis.strengths.length > 0 ? (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-green-700 mb-2">Strengths:</div>
+                          <ul className="space-y-1">
+                            {call.performance_analysis.strengths.map((strength, index) => (
+                              <li key={index} className="text-sm text-slate-700 flex items-start">
+                                <span className="text-green-500 mr-2">✓</span>
+                                {strength}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-gray-500 mb-2">Strengths:</div>
+                          <div className="text-sm text-gray-400">No strengths identified yet</div>
                         </div>
                       )}
                       
-                      {/* Staff Transcript */}
-                      {call.staff_transcript && (
-                        <div className="bg-white rounded-lg p-4 border border-slate-200">
-                          <div className="text-sm font-medium text-slate-700 mb-2 flex items-center">
-                            <User className="h-4 w-4 mr-1" />
-                            Staff
-                          </div>
-                          <div className="text-sm text-slate-600 max-h-40 overflow-y-auto">
-                            {call.staff_transcript}
-                          </div>
+                      {call.performance_analysis?.weaknesses && call.performance_analysis.weaknesses.length > 0 ? (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-red-700 mb-2">Areas for Improvement:</div>
+                          <ul className="space-y-1">
+                            {call.performance_analysis.weaknesses.map((weakness, index) => (
+                              <li key={index} className="text-sm text-slate-700 flex items-start">
+                                <span className="text-red-500 mr-2">•</span>
+                                {weakness}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-gray-500 mb-2">Areas for Improvement:</div>
+                          <div className="text-sm text-gray-400">No improvement areas identified</div>
+                        </div>
+                      )}
+                      
+                      {call.performance_analysis?.coaching_focus && call.performance_analysis.coaching_focus.length > 0 ? (
+                        <div>
+                          <div className="text-sm font-medium text-blue-700 mb-2">Coaching Focus:</div>
+                          <ul className="space-y-1">
+                            {call.performance_analysis.coaching_focus.map((focus, index) => (
+                              <li key={index} className="text-sm text-slate-700 flex items-start">
+                                <span className="text-blue-500 mr-2">→</span>
+                                {focus}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="text-sm font-medium text-gray-500 mb-2">Coaching Focus:</div>
+                          <div className="text-sm text-gray-400">No specific coaching focus set</div>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  {/* Sentiment & Emotion Analysis */}
-                  {call.sentiment_analysis && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                        <Heart className="h-4 w-4 mr-2 text-blue-600" />
-                        Emotional Analysis
-                      </h4>
+                  {/* Call Transcripts - FIXED: Handle single transcript field */}
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
+                      <FileText className="h-4 w-4 mr-2 text-blue-600" />
+                      Call Transcripts
+                    </h4>
+                    
+                    {/* FIXED: Check for the actual transcript field */}
+                    {call.patient_transcript && call.patient_transcript.trim() ? (
                       <div className="bg-white rounded-lg p-4 border border-slate-200">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                              Overall Sentiment
-                            </div>
-                            <div className={`text-sm font-medium ${getSentimentColor(call.overall_sentiment)}`}>
-                              {call.overall_sentiment}
-                            </div>
+                        <div className="text-sm font-medium text-slate-700 mb-2 flex items-center">
+                          <FileText className="h-4 w-4 mr-1" />
+                          Full Call Transcript
+                        </div>
+                        <div className="text-sm text-slate-600 max-h-60 overflow-y-auto leading-relaxed whitespace-pre-wrap">
+                          {call.patient_transcript}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 text-center">
+                        <div className="text-gray-500 text-sm">
+                          No transcript available for this call
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Sentiment & Emotion Analysis - ALWAYS SHOW */}
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
+                      <Heart className="h-4 w-4 mr-2 text-blue-600" />
+                      Emotional Analysis
+                    </h4>
+                    <div className="bg-white rounded-lg p-4 border border-slate-200">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
+                            Overall Sentiment
                           </div>
-                          
-                          {call.sentiment_analysis.patient_satisfaction && (
-                            <div>
-                              <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                                Patient Satisfaction
-                              </div>
-                              <div className="text-sm font-medium text-slate-700">
-                                {call.sentiment_analysis.patient_satisfaction}/10
-                              </div>
-                            </div>
-                          )}
-                          
-                          {call.sentiment_analysis.emotional_tone && (
-                            <div>
-                              <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                                Emotional Tone
-                              </div>
-                              <div className="text-sm font-medium text-slate-700">
-                                {call.sentiment_analysis.emotional_tone}
-                              </div>
-                            </div>
-                          )}
+                          <div className={`text-sm font-medium ${getSentimentColor(call.overall_sentiment)}`}>
+                            {call.overall_sentiment || 'Neutral'}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
+                            Patient Satisfaction
+                          </div>
+                          <div className="text-sm font-medium text-slate-700">
+                            {call.sentiment_analysis?.patient_satisfaction || 'N/A'}/10
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
+                            Emotional Tone
+                          </div>
+                          <div className="text-sm font-medium text-slate-700">
+                            {call.sentiment_analysis?.emotional_tone || 'Not analyzed'}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  )}
+                  </div>
 
-                  {/* Opportunities */}
-                  {call.opportunity_analysis && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-900 mb-3">
-                        Coaching Opportunities
-                      </h4>
-                      <div className="bg-white rounded-lg p-4 border border-slate-200">
-                        {call.opportunity_analysis.missed_opportunities && call.opportunity_analysis.missed_opportunities.length > 0 && (
-                          <div className="mb-4">
-                            <div className="text-sm font-medium text-amber-700 mb-2">Missed Opportunities:</div>
-                            <ul className="space-y-1">
-                              {call.opportunity_analysis.missed_opportunities.map((opportunity, index) => (
-                                <li key={index} className="text-sm text-slate-700 flex items-start">
-                                  <span className="text-amber-500 mr-2">⚠</span>
-                                  {opportunity}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        
-                        {call.opportunity_analysis.recommendations && call.opportunity_analysis.recommendations.length > 0 && (
-                          <div>
-                            <div className="text-sm font-medium text-blue-700 mb-2">Recommendations:</div>
-                            <ul className="space-y-1">
-                              {call.opportunity_analysis.recommendations.map((recommendation, index) => (
-                                <li key={index} className="text-sm text-slate-700 flex items-start">
-                                  <span className="text-blue-500 mr-2">💡</span>
-                                  {recommendation}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </div>
+                  {/* Opportunities - ALWAYS SHOW */}
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-900 mb-3">
+                      Coaching Opportunities
+                    </h4>
+                    <div className="bg-white rounded-lg p-4 border border-slate-200">
+                      {call.opportunity_analysis?.missed_opportunities && call.opportunity_analysis.missed_opportunities.length > 0 ? (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-amber-700 mb-2">Missed Opportunities:</div>
+                          <ul className="space-y-1">
+                            {call.opportunity_analysis.missed_opportunities.map((opportunity, index) => (
+                              <li key={index} className="text-sm text-slate-700 flex items-start">
+                                <span className="text-amber-500 mr-2">⚠</span>
+                                {opportunity}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div className="mb-4">
+                          <div className="text-sm font-medium text-gray-500 mb-2">Missed Opportunities:</div>
+                          <div className="text-sm text-gray-400">No missed opportunities identified</div>
+                        </div>
+                      )}
+                      
+                      {call.opportunity_analysis?.recommendations && call.opportunity_analysis.recommendations.length > 0 ? (
+                        <div>
+                          <div className="text-sm font-medium text-blue-700 mb-2">Recommendations:</div>
+                          <ul className="space-y-1">
+                            {call.opportunity_analysis.recommendations.map((recommendation, index) => (
+                              <li key={index} className="text-sm text-slate-700 flex items-start">
+                                <span className="text-blue-500 mr-2">💡</span>
+                                {recommendation}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="text-sm font-medium text-gray-500 mb-2">Recommendations:</div>
+                          <div className="text-sm text-gray-400">No specific recommendations available</div>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             )}

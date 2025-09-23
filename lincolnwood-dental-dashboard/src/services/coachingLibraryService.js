@@ -24,6 +24,7 @@ class CoachingLibraryAPI {
     };
 
     try {
+      console.log(`Making request to: ${url}`);
       const response = await fetch(url, config);
       
       if (!response.ok) {
@@ -35,10 +36,11 @@ class CoachingLibraryAPI {
         );
       }
 
-      // Handle different response types
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
-        return await response.json();
+        const data = await response.json();
+        console.log(`Response from ${endpoint}:`, data);
+        return data;
       } else if (contentType && contentType.includes('application/pdf')) {
         return await response.blob();
       } else {
@@ -51,12 +53,11 @@ class CoachingLibraryAPI {
   }
 
   /**
-   * Get all calls available for coaching analysis
+   * Get all calls available for coaching analysis with enhanced validation
    */
   async getCalls(filters = {}) {
     const queryParams = new URLSearchParams();
     
-    // Add filters to query params
     Object.entries(filters).forEach(([key, value]) => {
       if (value !== null && value !== undefined && value !== '') {
         if (typeof value === 'object') {
@@ -68,7 +69,155 @@ class CoachingLibraryAPI {
     });
 
     const endpoint = `/coaching/calls${queryParams.toString() ? `?${queryParams}` : ''}`;
-    return await this.makeRequest(endpoint);
+    
+    try {
+      const response = await this.makeRequest(endpoint);
+      
+      if (!Array.isArray(response)) {
+        console.warn('API returned non-array response:', response);
+        return [];
+      }
+      
+      // Enhanced validation and cleaning
+      const cleanedCalls = response.map((call, index) => {
+        const cleanedCall = {
+          // Required fields with defaults
+          id: call.id || `call_${index}_${Date.now()}`,
+          representative_name: call.representative_name || 'Unknown',
+          analysis_date: call.analysis_date || new Date().toISOString(),
+          call_summary: call.call_summary || 'No summary available',
+          representative_score: this.validateScore(call.representative_score),
+          overall_sentiment: call.overall_sentiment || 'neutral',
+          call_tag: call.call_tag || 'general_inquiry',
+          
+          // Optional fields with defaults
+          patient_transcript: call.patient_transcript || '',
+          staff_transcript: call.staff_transcript || '',
+          high_value_missed_opportunity: Boolean(call.high_value_missed_opportunity),
+          call_duration: parseInt(call.call_duration) || 0,
+          patient_sentiment: call.patient_sentiment || call.overall_sentiment || 'neutral',
+          staff_sentiment: call.staff_sentiment || 'neutral',
+          sentiment_confidence: parseFloat(call.sentiment_confidence) || 0,
+          patient_emotion: call.patient_emotion || 'neutral',
+          
+          // Analysis objects with enhanced defaults
+          performance_analysis: this.validateAnalysisObject(call.performance_analysis, 'performance'),
+          sentiment_analysis: this.validateAnalysisObject(call.sentiment_analysis, 'sentiment'),
+          opportunity_analysis: this.validateAnalysisObject(call.opportunity_analysis, 'opportunity'),
+          coaching_analysis: this.validateAnalysisObject(call.coaching_analysis, 'coaching'),
+          
+          // Preserve additional fields
+          ...call
+        };
+        
+        return cleanedCall;
+      });
+      
+      console.log(`Successfully loaded and cleaned ${cleanedCalls.length} calls for coaching`);
+      return cleanedCalls;
+      
+    } catch (error) {
+      console.error('Error fetching coaching calls:', error);
+      throw new Error(`Failed to load coaching calls: ${error.message}`);
+    }
+  }
+
+  /**
+   * Validate and ensure score is a proper number
+   */
+  validateScore(score) {
+    const numScore = parseFloat(score);
+    if (isNaN(numScore)) return 0;
+    
+    // If score is between 0-1, convert to percentage
+    if (numScore > 0 && numScore <= 1) {
+      return numScore * 100;
+    }
+    
+    // Ensure score is between 0-100
+    return Math.max(0, Math.min(100, numScore));
+  }
+
+  /**
+   * Validate and enhance analysis objects
+   */
+  validateAnalysisObject(analysisObj, type) {
+    if (!analysisObj || typeof analysisObj !== 'object') {
+      // Create default analysis based on type
+      return this.createDefaultAnalysis(type);
+    }
+    
+    // Ensure arrays exist for expected fields
+    switch (type) {
+      case 'performance':
+        return {
+          strengths: Array.isArray(analysisObj.strengths) ? analysisObj.strengths : [],
+          weaknesses: Array.isArray(analysisObj.weaknesses) ? analysisObj.weaknesses : [],
+          coaching_focus: Array.isArray(analysisObj.coaching_focus) ? analysisObj.coaching_focus : [],
+          ...analysisObj
+        };
+      
+      case 'sentiment':
+        return {
+          patient_satisfaction: analysisObj.patient_satisfaction || 5,
+          emotional_tone: analysisObj.emotional_tone || 'Neutral',
+          sentiment_confidence: analysisObj.sentiment_confidence || 0.5,
+          ...analysisObj
+        };
+      
+      case 'opportunity':
+        return {
+          missed_opportunities: Array.isArray(analysisObj.missed_opportunities) ? analysisObj.missed_opportunities : [],
+          recommendations: Array.isArray(analysisObj.recommendations) ? analysisObj.recommendations : [],
+          ...analysisObj
+        };
+      
+      case 'coaching':
+        return {
+          is_coaching_candidate: Boolean(analysisObj.is_coaching_candidate),
+          priority_level: analysisObj.priority_level || 'medium',
+          ...analysisObj
+        };
+      
+      default:
+        return analysisObj;
+    }
+  }
+
+  /**
+   * Create default analysis objects when none exist
+   */
+  createDefaultAnalysis(type) {
+    switch (type) {
+      case 'performance':
+        return {
+          strengths: ['Professional demeanor maintained'],
+          weaknesses: ['Analysis pending'],
+          coaching_focus: ['General communication improvement']
+        };
+      
+      case 'sentiment':
+        return {
+          patient_satisfaction: 5,
+          emotional_tone: 'Neutral',
+          sentiment_confidence: 0.5
+        };
+      
+      case 'opportunity':
+        return {
+          missed_opportunities: [],
+          recommendations: ['Regular performance review recommended']
+        };
+      
+      case 'coaching':
+        return {
+          is_coaching_candidate: false,
+          priority_level: 'medium'
+        };
+      
+      default:
+        return {};
+    }
   }
 
   /**
@@ -99,7 +248,10 @@ class CoachingLibraryAPI {
         'billing_inquiry',
         'general_inquiry',
         'complaint_handling',
-        'treatment_consultation'
+        'treatment_consultation',
+        'emergency',
+        'cosmetic',
+        'major_treatment'
       ];
     }
   }
@@ -166,39 +318,46 @@ class CoachingLibraryAPI {
   }
 
   /**
-   * Save coaching session record
+   * Test coaching system connectivity
    */
-  async saveCoachingSession({ employeeName, callIds, sessionNotes, actionItems }) {
-    const payload = {
-      employee_name: employeeName,
-      call_ids: callIds,
-      session_notes: sessionNotes,
-      action_items: actionItems,
-      session_date: new Date().toISOString()
-    };
-
-    return await this.makeRequest('/coaching/sessions', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
+  async testSystem() {
+    try {
+      const response = await this.makeRequest('/coaching/test');
+      return {
+        success: true,
+        data: response
+      };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   /**
-   * Get coaching session history
+   * Get system health status
    */
-  async getCoachingSessions(employeeName = null) {
-    const endpoint = employeeName 
-      ? `/coaching/sessions?employee=${encodeURIComponent(employeeName)}`
-      : '/coaching/sessions';
-    
-    return await this.makeRequest(endpoint);
+  async getSystemStatus() {
+    try {
+      const response = await this.makeRequest('/');
+      return {
+        status: 'healthy',
+        data: response
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        error: error.message
+      };
+    }
   }
 }
 
 // Create singleton instance
 export const coachingLibraryAPI = new CoachingLibraryAPI();
 
-// Export individual methods for easier testing
+// Export individual methods for easier testing and use
 export const {
   getCalls,
   getEmployees,
@@ -206,6 +365,9 @@ export const {
   generateCaseStudy,
   generateTrainingPDF,
   getCoachingAnalytics,
-  saveCoachingSession,
-  getCoachingSessions
+  testSystem,
+  getSystemStatus
 } = coachingLibraryAPI;
+
+// Export the class for advanced usage
+export default coachingLibraryAPI;
