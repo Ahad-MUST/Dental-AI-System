@@ -107,13 +107,13 @@ const EmployeeManagement = () => {
     }
   };
 
-  // Hide employee
+  // Hide employee - FIXED: Changed from POST to PUT
   const hideEmployee = async (employeeName) => {
     try {
       setError('');
       
       const response = await fetch(`${API_BASE}/employees/${encodeURIComponent(employeeName)}/hide`, {
-        method: 'POST',
+        method: 'PUT', // FIXED: Changed from 'POST' to 'PUT'
       });
 
       const data = await response.json();
@@ -131,13 +131,13 @@ const EmployeeManagement = () => {
     }
   };
 
-  // Show employee
+  // Show employee - FIXED: Changed from POST to PUT
   const showEmployee = async (employeeName) => {
     try {
       setError('');
       
       const response = await fetch(`${API_BASE}/employees/${encodeURIComponent(employeeName)}/show`, {
-        method: 'POST',
+        method: 'PUT', // FIXED: Changed from 'POST' to 'PUT'
       });
 
       const data = await response.json();

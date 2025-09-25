@@ -1,0 +1,58 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: D:\Upwork\Dental-AI-System\backend\audio_files\(224)801-7932_general.mp3
+Date: 2025-09-25 09:15:09
+Duration: 0.0 seconds
+Speakers: 0
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.77/100
+Call Summary: The main purpose of the call was to reschedule an existing appointment. During the conversation, Marlene Gonzalez adjusted her October appointment from 10 a.m. to 12 p.m. on October 31st, and the new time was confirmed for that day. The outcome was a successful rescheduling with no other changes needed.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.800)
+Staff Sentiment: positive (confidence: 1.000)
+Overall Sentiment: neutral (confidence: 0.750)
+Summary: The call was neutral overall, with the patient expressing satisfaction about their appointment rescheduling. The staff maintained a positive and professional tone throughout the conversation, ensuring clear communication and addressing the patient's needs efficiently.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:01] SPEAKER_02: This is Whitney.
+[00:01-00:02] SPEAKER_02: How can I help you?
+[00:03-00:04] SPEAKER_01: Hi there.
+[00:04-00:05] SPEAKER_00: My name is Marlene Gonzalez.
+[00:05-00:10] SPEAKER_00: I have an appointment scheduled in October that I just need to adjust a little bit.
+[00:11-00:12] SPEAKER_00: All right.
+[00:12-00:12] SPEAKER_02: Give me one second.
+[00:23-00:24] SPEAKER_01: All right.
+[00:24-00:27] SPEAKER_02: Yes, you're scheduled 1028 at 10 a.m.
+[00:27-00:29] SPEAKER_02: Did you want to change the day or time?
+[00:29-00:29] SPEAKER_02: I'm going to change the time.
+[00:30-00:31] SPEAKER_02: Okay.
+[00:31-00:33] SPEAKER_00: The date, do you have anything for October 31st?
+[00:36-00:36] SPEAKER_01: Yes.
+[00:36-00:40] SPEAKER_02: I can do the entire day basically with the exception of 10 o'clock.
+[00:40-00:41] SPEAKER_02: I mean 12 o'clock.
+[00:42-00:42] SPEAKER_02: Oh, okay.
+[00:42-00:46] SPEAKER_02: I can do this at like 10 a.m. if you have that.
+[00:46-00:50] SPEAKER_00: I have you down then Friday, October 31st, 10 a.m.
+[00:51-00:51] SPEAKER_01: Perfect.
+[00:51-00:52] SPEAKER_00: Thank you so much.
+[00:52-00:52] SPEAKER_00: You're welcome.
+[00:53-00:53] SPEAKER_02: Have a good day.
+[00:54-00:54] SPEAKER_02: You too.
+[00:54-00:54] SPEAKER_00: Bye.
+[00:54-00:55] SPEAKER_00: Bye-bye.
+[00:55-00:55] SPEAKER_00: Bye-bye.
+[00:55-00:55] SPEAKER_00: Bye-bye.
+[00:56-00:56] SPEAKER_00: Bye-bye.
+
+======================================================================
+End of Analysis Report

@@ -4,19 +4,13 @@
       "name": "Jovana Vanegas",
       "active": true,
       "hidden": false,
-      "shown_date": "2025-09-22T09:54:22.587879"
+      "shown_date": "2025-09-25T08:18:08.847065"
     },
     {
       "name": "Melina Rodriguez",
       "active": true,
       "hidden": false,
       "shown_date": "2025-09-18T10:28:08.124853"
-    },
-    {
-      "name": "Whitney Minor",
-      "active": true,
-      "hidden": false,
-      "shown_date": "2025-09-18T10:24:22.365776"
     },
     {
       "name": "Yuseli Saldana",
@@ -29,10 +23,17 @@
       "active": true,
       "hidden": false,
       "added_date": "2025-09-18T10:36:01.767833"
+    },
+    {
+      "name": "Whitney Minor",
+      "active": true,
+      "hidden": false,
+      "added_date": "2025-09-25T07:36:23.401000",
+      "shown_date": "2025-09-25T08:00:12.596507"
     }
   ],
   "count": 5,
   "visible_count": 5,
   "hidden_count": 0,
-  "last_updated": "2025-09-22T15:12:39.908140"
+  "last_updated": "2025-09-25T08:18:08.847065"
 }

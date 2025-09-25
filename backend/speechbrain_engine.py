@@ -387,38 +387,41 @@ class SpeechBrainEngine:
                 distances = np.abs(voiced_indices - i)
                 nearest_idx = voiced_indices[np.argmin(distances)]
                 labels[i] = labels[nearest_idx]
-    
+
     def _create_segments(self, cluster_labels: np.ndarray, timestamps: List[float]) -> List[Dict]:
-        """Convert cluster labels to segments"""
+        """Convert cluster labels to segments - Fixed for cropped audio"""
         if len(cluster_labels) == 0:
             return []
         
         segments = []
         current_speaker = cluster_labels[0]
-        segment_start = timestamps[0]
+        segment_start = 0.0  # Always start from 0 for cropped audio
         
         for i in range(1, len(cluster_labels)):
             if cluster_labels[i] != current_speaker:
+                # End current segment
                 segment_end = timestamps[i-1] + self.SEGMENT_LENGTH
                 
                 segments.append({
-                    'start': segment_start,
-                    'end': segment_end,
+                    'start': round(segment_start, 2),
+                    'end': round(segment_end, 2),
                     'speaker': f"SPEAKER_{current_speaker:02d}",
-                    'duration': segment_end - segment_start
+                    'duration': round(segment_end - segment_start, 2)
                 })
                 
+                # Start new segment
                 current_speaker = cluster_labels[i]
                 segment_start = timestamps[i]
         
         # Add final segment
-        final_end = timestamps[-1] + self.SEGMENT_LENGTH
-        segments.append({
-            'start': segment_start,
-            'end': final_end,
-            'speaker': f"SPEAKER_{current_speaker:02d}",
-            'duration': final_end - segment_start
-        })
+        if timestamps:
+            final_end = timestamps[-1] + self.SEGMENT_LENGTH
+            segments.append({
+                'start': round(segment_start, 2),
+                'end': round(final_end, 2),
+                'speaker': f"SPEAKER_{current_speaker:02d}",
+                'duration': round(final_end - segment_start, 2)
+            })
         
         return segments
     

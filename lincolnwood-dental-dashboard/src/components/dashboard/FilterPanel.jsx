@@ -7,7 +7,8 @@ const FilterPanel = ({
   updateFilter,
   updateArrayFilter,
   clearAllFilters,
-  getActiveFiltersCount
+  getActiveFiltersCount,
+  loadingEmployees = false
 }) => {
   const selectAllForFilter = (filterType) => {
     const allOptions = filterOptions[filterType] || [];
@@ -79,34 +80,46 @@ const FilterPanel = ({
           <label className="text-sm font-medium text-slate-700">
             <User className="h-4 w-4 inline mr-2" />
             Representatives ({filters.representatives.length} selected)
+            {loadingEmployees && <span className="text-xs text-blue-600 ml-2">(Loading...)</span>}
           </label>
           <div className="flex gap-2">
             <button
               onClick={() => selectAllForFilter('representatives')}
-              className="text-xs text-slate-600 hover:text-slate-800 px-2 py-1 rounded hover:bg-slate-100 transition-colors"
+              disabled={loadingEmployees}
+              className="text-xs text-slate-600 hover:text-slate-800 px-2 py-1 rounded hover:bg-slate-100 transition-colors disabled:opacity-50"
             >
               All
             </button>
             <button
               onClick={() => deselectAllForFilter('representatives')}
-              className="text-xs text-slate-600 hover:text-slate-800 px-2 py-1 rounded hover:bg-slate-100 transition-colors"
+              disabled={loadingEmployees}
+              className="text-xs text-slate-600 hover:text-slate-800 px-2 py-1 rounded hover:bg-slate-100 transition-colors disabled:opacity-50"
             >
               None
             </button>
           </div>
         </div>
         <div className="max-h-32 overflow-y-auto border border-slate-200 rounded-lg p-3 space-y-2 bg-slate-50/50">
-          {filterOptions.representatives.map(rep => (
-            <label key={rep} className="flex items-center space-x-3 text-sm hover:bg-white/70 p-2 rounded transition-colors">
-              <input
-                type="checkbox"
-                checked={filters.representatives.includes(rep)}
-                onChange={(e) => updateArrayFilter('representatives', rep, e.target.checked)}
-                className="rounded text-slate-600 focus:ring-slate-400 border-slate-300"
-              />
-              <span className="text-slate-700">{rep}</span>
-            </label>
-          ))}
+          {loadingEmployees ? (
+            <div className="flex items-center justify-center py-4">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-400"></div>
+              <span className="ml-2 text-sm text-slate-600">Loading employees...</span>
+            </div>
+          ) : filterOptions.representatives.length === 0 ? (
+            <div className="text-sm text-slate-500 text-center py-2">No visible employees found</div>
+          ) : (
+            filterOptions.representatives.map(rep => (
+              <label key={rep} className="flex items-center space-x-3 text-sm hover:bg-white/70 p-2 rounded transition-colors">
+                <input
+                  type="checkbox"
+                  checked={filters.representatives.includes(rep)}
+                  onChange={(e) => updateArrayFilter('representatives', rep, e.target.checked)}
+                  className="rounded text-slate-600 focus:ring-slate-400 border-slate-300"
+                />
+                <span className="text-slate-700">{rep}</span>
+              </label>
+            ))
+          )}
         </div>
       </div>
 

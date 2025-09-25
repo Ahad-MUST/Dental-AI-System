@@ -25,7 +25,10 @@ class Settings:
     # Whisper Configuration
     WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
     WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "auto")
-   
+
+    # Audio Processing Settings
+    AUDIO_CROP_START_SECONDS = int(os.getenv('AUDIO_CROP_START_SECONDS', '3'))  # Crop first n seconds  
+    
     # Google Sheets Configuration (NEW)
     GOOGLE_CREDENTIALS_PATH = os.getenv("GOOGLE_CREDENTIALS_PATH")  # Path to service account JSON file
     GOOGLE_SPREADSHEET_ID = os.getenv("GOOGLE_SPREADSHEET_ID")    # Your Google Sheets ID from URL

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Download, Filter, X, Search, RotateCcw } from 'lucide-react';
 import { AVAILABLE_COLUMNS, DOWNLOAD_FORMATS, DEFAULT_SELECTED_COLUMNS } from '../../utils/downloadConfig';
 import { generateCSV, generateTXT, generateHTML, generatePDF } from '../../utils/dataGenerators';
@@ -11,6 +11,8 @@ const AdvancedDownloadSystem = ({ data, onClose }) => {
   const [selectedColumns, setSelectedColumns] = useState(DEFAULT_SELECTED_COLUMNS);
   const [downloadFormat, setDownloadFormat] = useState('csv');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [visibleEmployees, setVisibleEmployees] = useState([]);
+  const [loadingEmployees, setLoadingEmployees] = useState(true);
   const [filters, setFilters] = useState({
     dateRange: { start: '', end: '' },
     representatives: [],
@@ -23,28 +25,61 @@ const AdvancedDownloadSystem = ({ data, onClose }) => {
     searchTerm: ''
   });
 
-  // Initialize filter options
+  const API_BASE = 'http://localhost:8000/api';
+
+  // Fetch visible employees from API
+  const fetchVisibleEmployees = async () => {
+    try {
+      setLoadingEmployees(true);
+      const response = await fetch(`${API_BASE}/employees/visible`);
+      if (!response.ok) throw new Error('Failed to fetch visible employees');
+      
+      const data = await response.json();
+      setVisibleEmployees(data.visible_employees || []);
+    } catch (error) {
+      console.error('Error fetching visible employees:', error);
+      // Fallback to extracting from data if API fails
+      const fallbackRepresentatives = [...new Set(data.map(item => item.Representative_Name).filter(Boolean))].sort();
+      setVisibleEmployees(fallbackRepresentatives);
+    } finally {
+      setLoadingEmployees(false);
+    }
+  };
+
+  // Load visible employees on component mount
+  useEffect(() => {
+    fetchVisibleEmployees();
+  }, []);
+
+  // Initialize filter options with visible employees from API
   const filterOptions = useMemo(() => {
-    const representatives = [...new Set(data.map(item => item.Representative_Name).filter(Boolean))].sort();
     const callTags = [...new Set(data.map(item => item.Call_Tag).filter(Boolean))].sort();
     const sentiments = [...new Set(data.map(item => item.Overall_Sentiment).filter(Boolean))].sort();
     const emotions = [...new Set(data.map(item => item.Patient_Primary_Emotion).filter(Boolean))].sort();
     const emotionIntensities = [...new Set(data.map(item => item.Patient_Emotion_Intensity).filter(Boolean))].sort();
 
-    return { representatives, callTags, sentiments, emotions, emotionIntensities };
-  }, [data]);
+    return { 
+      representatives: visibleEmployees, // Now uses visible employees from API instead of data
+      callTags, 
+      sentiments, 
+      emotions, 
+      emotionIntensities 
+    };
+  }, [data, visibleEmployees]);
 
-  // Initialize filters with all options selected
+  // Initialize filters with all options selected (including visible employees)
   React.useEffect(() => {
-    setFilters(prev => ({
-      ...prev,
-      representatives: filterOptions.representatives,
-      callTags: filterOptions.callTags,
-      sentiments: filterOptions.sentiments,
-      emotions: filterOptions.emotions,
-      emotionIntensity: filterOptions.emotionIntensities
-    }));
-  }, [filterOptions]);
+    if (!loadingEmployees) {
+      setFilters(prev => ({
+        ...prev,
+        representatives: filterOptions.representatives,
+        callTags: filterOptions.callTags,
+        sentiments: filterOptions.sentiments,
+        emotions: filterOptions.emotions,
+        emotionIntensity: filterOptions.emotionIntensities
+      }));
+    }
+  }, [filterOptions, loadingEmployees]);
 
   // Apply filters to data
   const filteredData = useMemo(() => {
@@ -293,6 +328,7 @@ const AdvancedDownloadSystem = ({ data, onClose }) => {
               updateArrayFilter={updateArrayFilter}
               clearAllFilters={clearAllFilters}
               getActiveFiltersCount={getActiveFiltersCount}
+              loadingEmployees={loadingEmployees}
             />
           </div>
 
