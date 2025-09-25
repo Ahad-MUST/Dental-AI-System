@@ -1,0 +1,46 @@
+DENTAL CALL ANALYSIS REPORT
+======================================================================
+
+CALL INFORMATION:
+--------------------
+File: D:\Upwork\Dental-AI-System\backend\audio_files\(232)801-7932_general.mp3
+Date: 2025-09-25 14:48:48
+Duration: 24.7 seconds
+Speakers: 0
+Representative: Whitney
+
+PERFORMANCE SUMMARY:
+-------------------------
+Overall Score: 0.71/100
+Call Summary: The main purpose of the call was to confirm an appointment for tooth extraction with Guy Grisham, scheduled for the following day at 11:30 AM. Whitney from Lincolnwood Family Dental confirmed the appointment details with Sima from Remland Services, ensuring that all parties are on the same page regarding the upcoming procedure.
+High-Value Missed Opportunity: NO
+
+SENTIMENT ANALYSIS SUMMARY:
+-----------------------------------
+Patient Sentiment: neutral (confidence: 0.800)
+Staff Sentiment: positive (confidence: 1.000)
+Overall Sentiment: neutral (confidence: 0.700)
+Summary: The call was neutral overall with no strong emotions expressed. The patient called to confirm an appointment for a tooth extraction and did not mention any pain, anxiety, or dissatisfaction. The staff responded professionally without showing any negative emotions.
+
+TIMESTAMPED TRANSCRIPT:
+-------------------------
+[00:00-00:00] SPEAKER_01: Lincolnwood Family Dental.
+[00:00-00:01] SPEAKER_01: This is Whitney.
+[00:01-00:02] SPEAKER_01: How can I help you?
+[00:03-00:03] SPEAKER_00: Yeah, hi.
+[00:03-00:06] SPEAKER_00: My name is Sima, and I'm calling from Remland Services.
+[00:07-00:11] SPEAKER_00: Our client has an appointment tomorrow for tooth extraction.
+[00:11-00:13] SPEAKER_00: His name is Guy Grisham.
+[00:14-00:14] SPEAKER_02: Okay.
+[00:15-00:17] SPEAKER_00: So just wanted to confirm that appointment.
+[00:18-00:19] SPEAKER_00: Is that yes?
+[00:19-00:20] SPEAKER_00: 1130.
+[00:21-00:21] SPEAKER_00: Yeah, okay.
+[00:21-00:22] SPEAKER_00: Sounds good.
+[00:22-00:22] SPEAKER_00: Thank you.
+[00:22-00:23] SPEAKER_00: Thank you.
+[00:23-00:24] SPEAKER_00: Bye-bye.
+[00:24-00:24] SPEAKER_00: Mm-hmm.
+
+======================================================================
+End of Analysis Report

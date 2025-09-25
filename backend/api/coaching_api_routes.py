@@ -1,6 +1,6 @@
 """
-Coaching Library API Routes - FINAL FIX
-Fixed to use correct CoachingService methods from document 4
+Coaching Library API Routes - CLEANED VERSION
+Only includes fields that exist in Google Sheets and are displayed on frontend
 """
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 coaching_router = APIRouter(prefix="/api/coaching", tags=["coaching"])
 
-# Pydantic models (unchanged)
+# Pydantic models - cleaned
 class CallFilterRequest(BaseModel):
     employee: Optional[str] = None
     start_date: Optional[str] = None
@@ -138,43 +138,27 @@ def _generate_unique_call_id(call_data: Dict, existing_ids: set = None) -> str:
     return final_id
 
 def _map_call_data_to_coaching_format(call_data: Dict, existing_ids: set = None) -> Dict:
-    """Map call data to coaching format"""
+    """Map call data to coaching format - CLEANED VERSION with only existing/display fields"""
     if existing_ids is None:
         existing_ids = set()
     
     coaching_call = {
         # Required fields
         'id': _generate_unique_call_id(call_data, existing_ids),
-        'representative_name': call_data.get('Representative_Name', call_data.get('representative_name', 'Unknown')),
+        'source': call_data.get('source', 'unknown'),
+        
+        # ONLY FRONTEND DISPLAY FIELDS (as requested)
         'analysis_date': _standardize_date(call_data.get('Analysis_Date', call_data.get('analysis_date', ''))),
-        'call_summary': call_data.get('Call_Summary', call_data.get('call_summary', '')),
+        'analysis_time': call_data.get('Analysis_Time', call_data.get('analysis_time', '')),
+        'representative_name': call_data.get('Representative_Name', call_data.get('representative_name', 'Unknown')),
+        'full_transcript': call_data.get('Full_Transcript_With_Timestamps', call_data.get('full_transcript', '')),
+        'call_tag': call_data.get('Call_Tag', call_data.get('call_tag', 'general_inquiry')),
         'representative_score': _extract_score(call_data),
         'overall_sentiment': call_data.get('Overall_Sentiment', call_data.get('overall_sentiment', 'neutral')),
-        'call_tag': call_data.get('Call_Tag', call_data.get('call_tag', 'general_inquiry')),
+        'call_summary': call_data.get('Call_Summary', call_data.get('call_summary', '')),
         
-        # Transcript data
-        'full_transcript': call_data.get('Full_Transcript_With_Timestamps', call_data.get('full_transcript', '')),
-        'patient_transcript': call_data.get('Patient_Transcript', call_data.get('patient_transcript', '')),
-        'staff_transcript': call_data.get('Staff_Transcript', call_data.get('staff_transcript', '')),
-        
-        # Performance metrics from existing data
+        # Additional field that exists in sheets but not displayed on frontend
         'high_value_missed_opportunity': _parse_boolean(call_data.get('High_Value_Missed_Opportunity', False)),
-        'patient_sentiment': call_data.get('Patient_Sentiment', 'neutral'),
-        'staff_sentiment': call_data.get('Staff_Sentiment', 'neutral'),
-        'sentiment_confidence': float(call_data.get('Sentiment_Confidence', 0)),
-        'patient_emotion': call_data.get('Patient_Primary_Emotion', 'neutral'),
-        'emotion_flags': call_data.get('Emotion_Flags', ''),
-        
-        # Analysis data from existing fields
-        'performance_analysis': call_data.get('performance_analysis', {}),
-        'sentiment_analysis': call_data.get('sentiment_analysis', {}),
-        'opportunity_analysis': call_data.get('opportunity_analysis', {}),
-        'coaching_analysis': call_data.get('coaching_analysis', {}),
-        
-        # Additional metadata
-        'source': call_data.get('source', 'unknown'),
-        'analysis_time': call_data.get('Analysis_Time', ''),
-        'call_duration': call_data.get('call_duration', 0)
     }
     
     existing_ids.add(coaching_call['id'])
@@ -228,7 +212,7 @@ async def get_coaching_calls(
     max_score: Optional[float] = 100,
     search_term: Optional[str] = None,
 ):
-    """Get filtered calls for coaching library"""
+    """Get filtered calls for coaching library - CLEANED VERSION"""
     try:
         data_loader = get_data_loader()
         
@@ -340,7 +324,7 @@ async def get_call_types():
 
 @coaching_router.post("/generate-case-study")
 async def generate_case_study(request: CaseStudyRequest):
-    """Generate LLM-driven case study - FIXED TO USE CORRECT METHODS"""
+    """Generate LLM-driven case study"""
     try:
         if not request.calls:
             raise HTTPException(status_code=400, detail="No calls provided for analysis")
@@ -362,7 +346,7 @@ async def generate_case_study(request: CaseStudyRequest):
         
         logger.info(f"Generating {request.analysis_type} case study with {len(calls_data)} calls")
         
-        # FIXED: Use the correct method names from the new CoachingService (document 4)
+        # Use the correct method names from the CoachingService
         if request.analysis_type == 'individual':
             case_study = await coaching_service.generate_individual_case_study(
                 calls_data, request.target_employee, request.title
@@ -382,11 +366,9 @@ async def generate_case_study(request: CaseStudyRequest):
         logger.error(f"Case study generation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to generate case study: {str(e)}")
 
-# Replace the PDF generation section in your coaching_api_routes.py with this:
-
 @coaching_router.post("/generate-pdf")
 async def generate_training_pdf(request: PDFGenerationRequest):
-    """Generate PDF using REAL LLM analysis data - FIXED VERSION"""
+    """Generate PDF using REAL LLM analysis data"""
     try:
         if not request.case_study_data:
             raise HTTPException(status_code=400, detail="No case study data provided")
@@ -424,7 +406,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
             
             case_study = request.case_study_data
             
-            # REAL LLM-generated conversation examples (not hardcoded!)
+            # REAL LLM-generated conversation examples
             if case_study.get('conversation_examples'):
                 story.append(Paragraph("<font size=14><b>Conversation Examples (LLM Generated)</b></font>", styles['Heading2']))
                 story.append(Spacer(1, 0.1*inch))
@@ -440,14 +422,13 @@ async def generate_training_pdf(request: PDFGenerationRequest):
                     story.append(Paragraph(example_text, styles['Normal']))
                     story.append(Spacer(1, 0.2*inch))
             
-            # REAL LLM-generated coaching principles (from performance_overview or coaching_principles)
+            # REAL LLM-generated coaching principles
             principles = case_study.get('coaching_principles', [])
             if principles:
                 story.append(Paragraph("<font size=14><b>Key Coaching Principles (LLM Generated)</b></font>", styles['Heading2']))
                 story.append(Spacer(1, 0.1*inch))
                 
                 for i, principle in enumerate(principles, 1):
-                    # Clean up principle text (remove quotes and JSON artifacts)
                     clean_principle = str(principle).strip().strip('"').strip("'")
                     if clean_principle and not clean_principle.startswith(('training_focus', 'strengths', 'areas_for')):
                         principle_text = f"{i}. {clean_principle}"
@@ -456,18 +437,16 @@ async def generate_training_pdf(request: PDFGenerationRequest):
                 
                 story.append(Spacer(1, 0.2*inch))
             
-            # REAL Performance Analysis (from performance_overview)
+            # REAL Performance Analysis
             if case_study.get('performance_overview'):
                 perf_analysis = case_study['performance_overview']
                 story.append(Paragraph("<font size=14><b>Performance Analysis (LLM Generated)</b></font>", styles['Heading2']))
                 story.append(Spacer(1, 0.1*inch))
                 
-                # Current performance level
                 if perf_analysis.get('current_performance_level'):
                     story.append(Paragraph(f"<b>Current Performance:</b> {perf_analysis['current_performance_level']}", styles['Normal']))
                     story.append(Spacer(1, 0.1*inch))
                 
-                # Strengths (REAL from LLM)
                 if perf_analysis.get('key_strengths'):
                     story.append(Paragraph("<font size=12><b>Strengths:</b></font>", styles['Normal']))
                     for strength in perf_analysis['key_strengths'][:5]:
@@ -476,7 +455,6 @@ async def generate_training_pdf(request: PDFGenerationRequest):
                             story.append(Paragraph(f"• {clean_strength}", styles['Normal']))
                     story.append(Spacer(1, 0.1*inch))
                 
-                # Areas for improvement (REAL from LLM)  
                 if perf_analysis.get('primary_challenges'):
                     story.append(Paragraph("<font size=12><b>Areas for Improvement:</b></font>", styles['Normal']))
                     for challenge in perf_analysis['primary_challenges'][:5]:
@@ -485,7 +463,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
                             story.append(Paragraph(f"• {clean_challenge}", styles['Normal']))
                     story.append(Spacer(1, 0.1*inch))
             
-            # REAL Development plan (from development_plan)
+            # REAL Development plan
             if case_study.get('development_plan'):
                 plan = case_study['development_plan']
                 story.append(Paragraph("<font size=14><b>Development Plan (LLM Generated)</b></font>", styles['Heading2']))
@@ -528,29 +506,17 @@ async def generate_training_pdf(request: PDFGenerationRequest):
                         story.append(Spacer(1, 0.05*inch))
             
             # ADD CALL TRANSCRIPT SECTION
-            # Check if we have the primary call data with transcript
-            if hasattr(case_study, 'primary_call') and case_study.get('primary_call'):
-                primary_call = case_study['primary_call']
-                full_transcript = primary_call.get('Full_Transcript_With_Timestamps', '') or primary_call.get('full_transcript', '')
-            else:
-                # For individual case studies, get transcript from first call in the original request
-                full_transcript = ""
-                # The original call data isn't directly available here, but we can add it as a field
-            
-            # If transcript data was passed through, include it
-            if case_study.get('call_transcript') or full_transcript:
-                transcript = case_study.get('call_transcript', full_transcript)
+            if case_study.get('call_transcript'):
+                transcript = case_study.get('call_transcript')
                 if transcript and transcript.strip():
                     story.append(Spacer(1, 0.3*inch))
                     story.append(Paragraph("<font size=14><b>Original Call Transcript</b></font>", styles['Heading2']))
                     story.append(Spacer(1, 0.1*inch))
                     
-                    # Format transcript for better readability
                     transcript_lines = transcript.split('\n')
                     for line in transcript_lines:
                         line = line.strip()
                         if line:
-                            # Style speaker timestamps differently
                             if line.startswith('[') and ']' in line and 'SPEAKER_' in line:
                                 story.append(Paragraph(f"<font color='blue'><b>{line}</b></font>", styles['Normal']))
                             else:
@@ -565,7 +531,6 @@ async def generate_training_pdf(request: PDFGenerationRequest):
             logger.info(f"Generated REAL LLM-driven PDF: {len(pdf_content)} bytes")
             
         except ImportError:
-            # Text fallback only if ReportLab unavailable
             logger.warning("ReportLab not available, creating text document")
             
             content = f"""COACHING TRAINING MATERIAL (LLM-GENERATED)
@@ -583,7 +548,7 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
             
             case_study = request.case_study_data
             
-            # Add REAL LLM-generated content (not hardcoded)
+            # Add REAL LLM-generated content
             if case_study.get('conversation_examples'):
                 content += "\nCONVERSATION EXAMPLES (LLM GENERATED):\n" + "-" * 40 + "\n\n"
                 for i, example in enumerate(case_study['conversation_examples'], 1):
@@ -593,7 +558,6 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
                     content += f"Coaching Point: {example.get('coaching_point', '')}\n"
                     content += f"Expected Outcome: {example.get('expected_outcome', '')}\n\n"
             
-            # Add REAL coaching principles (clean up JSON artifacts)
             if case_study.get('coaching_principles'):
                 content += "\nKEY COACHING PRINCIPLES (LLM GENERATED):\n" + "-" * 40 + "\n\n"
                 for i, principle in enumerate(case_study['coaching_principles'], 1):
@@ -602,52 +566,12 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
                         content += f"{i}. {clean_principle}\n"
                 content += "\n"
             
-            # Add REAL performance analysis
-            if case_study.get('performance_overview'):
-                perf = case_study['performance_overview']
-                content += "\nPERFORMANCE ANALYSIS (LLM GENERATED):\n" + "-" * 40 + "\n\n"
-                
-                if perf.get('key_strengths'):
-                    content += "Strengths:\n"
-                    for strength in perf['key_strengths']:
-                        clean_strength = str(strength).strip().strip('"').strip("'")
-                        if clean_strength and not clean_strength.startswith('strengths'):
-                            content += f"• {clean_strength}\n"
-                    content += "\n"
-                
-                if perf.get('primary_challenges'):
-                    content += "Areas for Improvement:\n"
-                    for challenge in perf['primary_challenges']:
-                        clean_challenge = str(challenge).strip().strip('"').strip("'")
-                        if clean_challenge and not clean_challenge.startswith('areas_for'):
-                            content += f"• {clean_challenge}\n"
-                    content += "\n"
-            
-            # Add REAL recommendations
-            if case_study.get('recommendations'):
-                content += "\nRECOMMENDATIONS (LLM GENERATED):\n" + "-" * 40 + "\n\n"
-                for i, rec in enumerate(case_study['recommendations'], 1):
-                    clean_rec = str(rec).strip().strip('"').strip("'")
-                    if clean_rec:
-                        content += f"{i}. {clean_rec}\n"
-                content += "\n"
-            
-            # ADD CALL TRANSCRIPT TO TEXT VERSION
             if case_study.get('call_transcript'):
                 transcript = case_study['call_transcript']
                 if transcript and transcript.strip():
                     content += "\nORIGINAL CALL TRANSCRIPT:\n" + "=" * 60 + "\n\n"
                     content += transcript
                     content += "\n\n" + "=" * 60 + "\n\n"
-            
-            # ADD CALL METADATA
-            if case_study.get('call_metadata'):
-                metadata = case_study['call_metadata']
-                content += "\nCALL DETAILS:\n" + "-" * 20 + "\n"
-                content += f"Date: {metadata.get('call_date', 'Unknown')}\n"
-                content += f"Type: {metadata.get('call_type', 'Unknown')}\n"
-                content += f"Score: {metadata.get('performance_score', 0)}%\n"
-                content += f"Summary: {metadata.get('call_summary', 'N/A')}\n\n"
             
             content += "\n" + "=" * 60 + "\n"
             content += "End of LLM-Generated Training Material\n"
@@ -673,7 +597,6 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
         logger.error(f"PDF generation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {str(e)}")
 
-# Test endpoint to verify coaching service access
 @coaching_router.get("/test")
 async def test_coaching_system():
     """Test endpoint to verify coaching system and global service access"""

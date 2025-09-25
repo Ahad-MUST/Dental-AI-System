@@ -737,3 +737,166 @@
 2025-09-25 09:32:27 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
 2025-09-25 09:32:27 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
 2025-09-25 09:32:27 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-25 14:37:48 | services.file_queue_service | [32mINFO[0m | Loaded 1 processed files from database
+2025-09-25 14:37:48 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Employee List Management...
+2025-09-25 14:37:48 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-25 14:37:48 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-25 14:37:48 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-25 14:37:48 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-25 14:37:48 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-25 14:37:48 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-25 14:37:48 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-25 14:38:06 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-25 14:38:06 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-25 14:38:11 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-25 14:38:15 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Yuseli Saldana, Amina Jafri, Whitney Minor
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Centralized Audio Preprocessing: Enabled
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Coaching Analysis: Active
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-25 14:38:15 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-25 14:38:15 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: (232)801-7932_general.mp3 ---
+2025-09-25 14:38:15 | call_analyzer | [32mINFO[0m | Starting enhanced analysis of (232)801-7932_general.mp3...
+2025-09-25 14:38:15 | call_analyzer | [32mINFO[0m | Validating audio file...
+2025-09-25 14:38:17 | call_analyzer | [32mINFO[0m | Applying centralized audio preprocessing...
+2025-09-25 14:38:17 | utils.audio_preprocessor | [32mINFO[0m | Preprocessing audio: (232)801-7932_general.mp3
+2025-09-25 14:38:19 | utils.audio_preprocessor | [32mINFO[0m | Preprocessing completed: preprocessed_(232)801-7932_general_k1rac6wh.wav (cropped 3s)
+2025-09-25 14:38:19 | call_analyzer | [32mINFO[0m | Preprocessing completed: preprocessed_(232)801-7932_general_k1rac6wh.wav
+2025-09-25 14:38:19 | call_analyzer | [32mINFO[0m | Transcribing preprocessed audio...
+2025-09-25 14:38:19 | services.transcription_service | [32mINFO[0m | Transcribing preprocessed audio: preprocessed_(232)801-7932_general_k1rac6wh.wav
+2025-09-25 14:39:08 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 24.7s, Confidence: 0.91
+2025-09-25 14:39:08 | call_analyzer | [32mINFO[0m | Performing speaker diarization on preprocessed audio...
+2025-09-25 14:39:08 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization on preprocessed audio: preprocessed_(232)801-7932_general_k1rac6wh.wav
+2025-09-25 14:39:09 | services.diarization_service | [32mINFO[0m | Diarization successful on attempt 1
+2025-09-25 14:39:09 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 3 speakers
+2025-09-25 14:39:09 | call_analyzer | [32mINFO[0m | Combining transcription with speakers...
+2025-09-25 14:39:09 | call_analyzer | [32mINFO[0m | Performing LLM-based speaker role assignment...
+2025-09-25 14:39:09 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (688 chars), using direct analysis
+2025-09-25 14:39:21 | services.speaker_role_assignment_service | [32mINFO[0m | Direct LLM role analysis completed successfully
+2025-09-25 14:39:21 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_01, Patient: SPEAKER_00
+2025-09-25 14:39:21 | call_analyzer | [32mINFO[0m | Speaker role assignment completed - Patient: 274 chars, Staff: 73 chars
+2025-09-25 14:39:21 | call_analyzer | [32mINFO[0m | Generating call summary...
+2025-09-25 14:39:22 | call_analyzer | [32mINFO[0m | Extracting representative name from employee list...
+2025-09-25 14:39:23 | call_analyzer | [32mINFO[0m | Analyzing sentiment and emotions using LLM...
+2025-09-25 14:39:23 | services.llm_sentiment_analysis_service | [32mINFO[0m | Starting improved LLM-based sentiment analysis...
+2025-09-25 14:39:23 | services.llm_sentiment_analysis_service | [32mINFO[0m | Text is short (365 chars), using direct analysis
+2025-09-25 14:39:29 | services.llm_sentiment_analysis_service | [32mINFO[0m | Direct LLM analysis completed successfully
+2025-09-25 14:39:29 | call_analyzer | [32mINFO[0m | Scoring performance...
+2025-09-25 14:39:29 | services.performance_scorer | [32mINFO[0m | Standard call length (365 chars), using direct scoring
+2025-09-25 14:39:36 | call_analyzer | [32mINFO[0m | Detecting opportunities...
+2025-09-25 14:39:36 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with dental keyword focus and intelligent chunking...
+2025-09-25 14:39:36 | services.opportunity_detector | [32mINFO[0m | High-value dental keyword found: 'extraction' in category 'major_treatments'
+2025-09-25 14:39:36 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity despite keywords
+2025-09-25 14:39:36 | call_analyzer | [32mINFO[0m | Performing call tagging analysis...
+2025-09-25 14:39:36 | services.call_tagging_service | [32mINFO[0m | Standard call length (669 chars), using direct tagging
+2025-09-25 14:39:36 | services.call_tagging_service | [32mINFO[0m | Rule-based tag: appointment_confirm
+2025-09-25 14:39:36 | call_analyzer | [32mINFO[0m | Call tagged as: appointment_confirm
+2025-09-25 14:39:36 | call_analyzer | [32mINFO[0m | Performing coaching analysis...
+2025-09-25 14:39:36 | call_analyzer | [33mWARNING[0m | Coaching analysis failed: 'CoachingAnalyzer' object has no attribute 'analyze_coaching_potential'
+2025-09-25 14:39:36 | call_analyzer | [32mINFO[0m | Exporting enhanced results...
+2025-09-25 14:39:36 | services.google_sheets_exporter | [32mINFO[0m | Exporting to Google Sheets with simplified tagging and coaching...
+2025-09-25 14:39:38 | services.google_sheets_exporter | [32mINFO[0m | Added simplified row 81 to Google Sheet
+2025-09-25 14:39:38 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-25 14:39:38 | services.google_sheets_exporter | [32mINFO[0m | Simplified analysis exported to Google Sheets with transcript: D:\Upwork\Dental-AI-System\backend\outputs\transcript_(232)801-7932_general_20250925_143936.txt
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Enhanced analysis completed in 81.2s - Google Sheets
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Representative: Whitney (from employee list)
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Overall sentiment: neutral (confidence: 0.700)
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Call tag: appointment_confirm
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Coaching candidate: No
+2025-09-25 14:39:38 | call_analyzer | [32mINFO[0m | Preprocessing: Applied centrally before analysis
+2025-09-25 14:39:38 | services.file_queue_service | [32mINFO[0m | Marked as processed: (232)801-7932_general.mp3
+2025-09-25 14:39:38 | __main__ | [32mINFO[0m | Enhanced batch processing completed successfully!
+2025-09-25 14:39:38 | services.transcription_service | [32mINFO[0m | Transcription service cleaned up
+2025-09-25 14:39:38 | services.diarization_service | [32mINFO[0m | Diarization service cleaned up
+2025-09-25 14:39:38 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-25 14:39:38 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-25 14:39:38 | __main__ | [32mINFO[0m | Cleanup completed
+2025-09-25 14:46:55 | services.file_queue_service | [32mINFO[0m | Loaded 1 processed files from database
+2025-09-25 14:46:55 | __main__ | [32mINFO[0m | Initializing Enhanced Dental Call Analysis System with Employee List Management...
+2025-09-25 14:46:55 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-25 14:46:55 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-25 14:46:55 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-25 14:46:55 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-25 14:46:55 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-25 14:46:55 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-25 14:46:55 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-25 14:47:14 | services.transcription_service | [32mINFO[0m | Whisper model loaded successfully
+2025-09-25 14:47:14 | services.diarization_service | [32mINFO[0m | Loading SpeechBrain speaker diarization engine...
+2025-09-25 14:47:18 | services.diarization_service | [32mINFO[0m | SpeechBrain engine loaded successfully
+2025-09-25 14:47:22 | services.google_sheets_exporter | [32mINFO[0m | Google Sheets connection established successfully
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Employee list initialized with 5 employees: Jovana Vanegas, Melina Rodriguez, Yuseli Saldana, Amina Jafri, Whitney Minor
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | All services initialized successfully
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Centralized Audio Preprocessing: Enabled
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | LLM-based Sentiment Analysis: Enabled
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Call Tagging System: LLM+Rules
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Coaching Analysis: Active
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Speaker Role Assignment: LLM+Rules
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Employee List Management: Active with 5 employees
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Local mode - processing files from audio_files directory
+2025-09-25 14:47:22 | services.file_queue_service | [32mINFO[0m | Found 1 unprocessed audio files
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | Found 1 files to process
+2025-09-25 14:47:22 | __main__ | [32mINFO[0m | 
+--- Processing file 1/1: (232)801-7932_general.mp3 ---
+2025-09-25 14:47:22 | call_analyzer | [32mINFO[0m | Starting enhanced analysis of (232)801-7932_general.mp3...
+2025-09-25 14:47:22 | call_analyzer | [32mINFO[0m | Validating audio file...
+2025-09-25 14:47:23 | call_analyzer | [32mINFO[0m | Applying centralized audio preprocessing...
+2025-09-25 14:47:23 | utils.audio_preprocessor | [32mINFO[0m | Preprocessing audio: (232)801-7932_general.mp3
+2025-09-25 14:47:24 | utils.audio_preprocessor | [32mINFO[0m | Preprocessing completed: preprocessed_(232)801-7932_general_rl75ech1.wav (cropped 3s)
+2025-09-25 14:47:24 | call_analyzer | [32mINFO[0m | Preprocessing completed: preprocessed_(232)801-7932_general_rl75ech1.wav
+2025-09-25 14:47:24 | call_analyzer | [32mINFO[0m | Transcribing preprocessed audio...
+2025-09-25 14:47:24 | services.transcription_service | [32mINFO[0m | Transcribing preprocessed audio: preprocessed_(232)801-7932_general_rl75ech1.wav
+2025-09-25 14:48:12 | services.transcription_service | [32mINFO[0m | Transcription completed - Duration: 24.7s, Confidence: 0.91
+2025-09-25 14:48:12 | call_analyzer | [32mINFO[0m | Performing speaker diarization on preprocessed audio...
+2025-09-25 14:48:12 | services.diarization_service | [32mINFO[0m | Performing SpeechBrain speaker diarization on preprocessed audio: preprocessed_(232)801-7932_general_rl75ech1.wav
+2025-09-25 14:48:13 | services.diarization_service | [32mINFO[0m | Diarization successful on attempt 1
+2025-09-25 14:48:13 | services.diarization_service | [32mINFO[0m | Diarization completed - Found 3 speakers
+2025-09-25 14:48:13 | call_analyzer | [32mINFO[0m | Combining transcription with speakers...
+2025-09-25 14:48:13 | call_analyzer | [32mINFO[0m | Successfully combined 17 segments
+2025-09-25 14:48:13 | call_analyzer | [32mINFO[0m | Performing LLM-based speaker role assignment...
+2025-09-25 14:48:13 | services.speaker_role_assignment_service | [32mINFO[0m | Standard transcript length (688 chars), using direct analysis
+2025-09-25 14:48:26 | services.speaker_role_assignment_service | [32mINFO[0m | Direct LLM role analysis completed successfully
+2025-09-25 14:48:26 | services.speaker_role_assignment_service | [32mINFO[0m | Speaker roles assigned - Staff: SPEAKER_01, Patient: SPEAKER_00
+2025-09-25 14:48:26 | call_analyzer | [32mINFO[0m | Speaker role assignment completed - Patient: 284 chars, Staff: 63 chars
+2025-09-25 14:48:26 | call_analyzer | [32mINFO[0m | Generating call summary...
+2025-09-25 14:48:34 | call_analyzer | [32mINFO[0m | Extracting representative name from employee list...
+2025-09-25 14:48:34 | call_analyzer | [32mINFO[0m | Analyzing sentiment and emotions using LLM...
+2025-09-25 14:48:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | Starting improved LLM-based sentiment analysis...
+2025-09-25 14:48:34 | services.llm_sentiment_analysis_service | [32mINFO[0m | Text is short (365 chars), using direct analysis
+2025-09-25 14:48:41 | services.llm_sentiment_analysis_service | [32mINFO[0m | Direct LLM analysis completed successfully
+2025-09-25 14:48:41 | call_analyzer | [32mINFO[0m | Scoring performance...
+2025-09-25 14:48:41 | services.performance_scorer | [32mINFO[0m | Standard call length (365 chars), using direct scoring
+2025-09-25 14:48:46 | call_analyzer | [32mINFO[0m | Detecting opportunities...
+2025-09-25 14:48:46 | services.opportunity_detector | [32mINFO[0m | Analyzing missed opportunities with dental keyword focus and intelligent chunking...
+2025-09-25 14:48:46 | services.opportunity_detector | [32mINFO[0m | High-value dental keyword found: 'extraction' in category 'major_treatments'
+2025-09-25 14:48:46 | services.opportunity_detector | [32mINFO[0m | Pre-screening: Definitely not a missed opportunity despite keywords
+2025-09-25 14:48:46 | call_analyzer | [32mINFO[0m | Performing call tagging analysis...
+2025-09-25 14:48:46 | services.call_tagging_service | [32mINFO[0m | Standard call length (678 chars), using direct tagging
+2025-09-25 14:48:46 | services.call_tagging_service | [32mINFO[0m | Rule-based tag: appointment_confirm
+2025-09-25 14:48:46 | call_analyzer | [32mINFO[0m | Call tagged as: appointment_confirm
+2025-09-25 14:48:46 | call_analyzer | [32mINFO[0m | Performing coaching analysis...
+2025-09-25 14:48:46 | call_analyzer | [33mWARNING[0m | Coaching analysis failed: 'CoachingAnalyzer' object has no attribute 'analyze_coaching_potential'
+2025-09-25 14:48:46 | call_analyzer | [32mINFO[0m | Exporting enhanced results...
+2025-09-25 14:48:46 | services.google_sheets_exporter | [32mINFO[0m | Exporting to Google Sheets with simplified tagging and coaching...
+2025-09-25 14:48:48 | services.google_sheets_exporter | [32mINFO[0m | Added simplified row 82 to Google Sheet
+2025-09-25 14:48:48 | services.google_sheets_exporter | [32mINFO[0m | No high-value opportunity - email alert not needed
+2025-09-25 14:48:48 | services.google_sheets_exporter | [32mINFO[0m | Simplified analysis exported to Google Sheets with transcript: D:\Upwork\Dental-AI-System\backend\outputs\transcript_(232)801-7932_general_20250925_144846.txt
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Enhanced analysis completed in 84.3s - Google Sheets
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Representative: Whitney (from employee list)
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Overall sentiment: neutral (confidence: 0.700)
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Call tag: appointment_confirm
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Coaching candidate: No
+2025-09-25 14:48:48 | call_analyzer | [32mINFO[0m | Preprocessing: Applied centrally before analysis
+2025-09-25 14:48:48 | services.file_queue_service | [32mINFO[0m | Marked as processed: (232)801-7932_general.mp3
+2025-09-25 14:48:48 | __main__ | [32mINFO[0m | Enhanced batch processing completed successfully!
+2025-09-25 14:48:48 | services.transcription_service | [32mINFO[0m | Transcription service cleaned up
+2025-09-25 14:48:48 | services.diarization_service | [32mINFO[0m | Diarization service cleaned up
+2025-09-25 14:48:48 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-25 14:48:48 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-25 14:48:48 | __main__ | [32mINFO[0m | Cleanup completed

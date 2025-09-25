@@ -1,6 +1,6 @@
 """
-Enhanced Data Loader for Dental Call Analysis - FIXED FOR LLM-ONLY PROCESSING
-Handles unified transcripts and eliminates hardcoded fallbacks
+Enhanced Data Loader for Dental Call Analysis - CLEANED VERSION
+Handles unified transcripts and only includes existing Google Sheets fields
 """
 import json
 import logging
@@ -25,8 +25,8 @@ logger = logging.getLogger(__name__)
 
 class DataLoader:
     """
-    Enhanced data loader with Google Sheets integration - LLM-only processing
-    NO HARDCODED FALLBACKS - Uses LLM for all analysis
+    Enhanced data loader with Google Sheets integration - CLEANED VERSION
+    Only includes fields that actually exist in Google Sheets
     """
     
     def __init__(self):
@@ -85,7 +85,7 @@ class DataLoader:
         
     async def load_all_calls(self) -> List[Dict[str, Any]]:
         """
-        Load all processed calls - LLM-ONLY VERSION
+        Load all processed calls - CLEANED VERSION with only existing fields
         """
         try:
             # Check cache first
@@ -111,12 +111,11 @@ class DataLoader:
                 all_calls = await self._load_from_local_files()
                 logger.info(f"Loaded {len(all_calls)} calls from local files")
                 
-            # NO SAMPLE DATA FALLBACK - Real data only
             if not all_calls:
                 logger.error("No call data found from any source")
                 return []
             
-            # Process calls for coaching (standardize structure only, no hardcoded analysis)
+            # Process calls for coaching (only include existing fields)
             processed_calls = self._process_calls_for_coaching(all_calls)
             
             # Update cache
@@ -131,7 +130,7 @@ class DataLoader:
             return []
     
     async def _load_from_google_sheets(self) -> List[Dict]:
-        """Load calls from Google Sheets - handles unified transcript"""
+        """Load calls from Google Sheets - only existing fields"""
         all_calls = []
         
         try:
@@ -165,14 +164,14 @@ class DataLoader:
         return all_calls
     
     def _convert_sheets_record_to_call(self, record: Dict, worksheet_name: str) -> Dict:
-        """Convert Google Sheets record to call format - handles unified transcript"""
+        """Convert Google Sheets record to call format - only existing fields"""
         try:
             call_data = {
                 'worksheet_source': worksheet_name,
                 'source': 'google_sheets'
             }
             
-            # Direct field mappings for the CSV structure
+            # Direct field mappings for ONLY existing Google Sheets columns
             field_mappings = {
                 'Call_File_Name': 'Call_File_Name',
                 'Analysis_Date': 'Analysis_Date', 
@@ -196,7 +195,8 @@ class DataLoader:
                 'Call_Emotional_Health': 'Call_Emotional_Health',
                 'Emotional_Alignment': 'Emotional_Alignment',
                 'Escalation_Pattern': 'Escalation_Pattern',
-                'Call_Tag': 'Call_Tag'
+                'Call_Tag': 'Call_Tag',
+                'Coaching_Candidate': 'Coaching_Candidate'
             }
             
             # Apply direct mappings
@@ -213,7 +213,7 @@ class DataLoader:
                         except:
                             call_data[target_field] = 0.0
                             
-                    elif target_field == 'High_Value_Missed_Opportunity':
+                    elif target_field in ['High_Value_Missed_Opportunity', 'Coaching_Candidate']:
                         if isinstance(value, str):
                             call_data[target_field] = value.lower() in ['true', 'yes', '1', 'y']
                         else:
@@ -228,7 +228,7 @@ class DataLoader:
             else:
                 call_data['id'] = f"call_{hash(str(call_data)) % 100000}"
             
-            # Ensure required fields exist
+            # Ensure required fields exist with defaults
             call_data.setdefault('Analysis_Date', datetime.now().strftime('%m/%d/%Y'))
             call_data.setdefault('Representative_Name', 'Unknown')
             call_data.setdefault('Call_Summary', '')
@@ -292,7 +292,7 @@ class DataLoader:
     
     def _process_calls_for_coaching(self, raw_calls: List[Dict]) -> List[Dict]:
         """
-        Process calls for coaching - STRUCTURE ONLY, NO HARDCODED ANALYSIS
+        Process calls for coaching - CLEANED VERSION with only existing fields
         """
         processed_calls = []
         
@@ -301,48 +301,20 @@ class DataLoader:
                 processed_call = {
                     # Basic identifiers
                     'id': call.get('Call_File_Name', '').replace('.wav', '').replace('.mp3', '') or f"call_{hash(str(call)) % 100000}",
-                    'audio_file': call.get('Call_File_Name', ''),
                     'source': call.get('source', 'unknown'),
                     
-                    # Metadata
+                    # ONLY FRONTEND DISPLAY FIELDS (as requested)
                     'analysis_date': self._standardize_date(call.get('Analysis_Date', '')),
                     'analysis_time': call.get('Analysis_Time', ''),
                     'representative_name': call.get('Representative_Name', 'Unknown'),
-                    
-                    # Call content - UNIFIED TRANSCRIPT
-                    'call_summary': call.get('Call_Summary', ''),
                     'full_transcript': call.get('Full_Transcript_With_Timestamps', ''),
-                    
-                    # Performance metrics (from existing analysis)
+                    'call_tag': call.get('Call_Tag', 'general_inquiry'),
                     'representative_score': self._normalize_score(call.get('Representative_Score', 0)),
                     'overall_sentiment': call.get('Overall_Sentiment', 'neutral'),
-                    'call_tag': call.get('Call_Tag', 'general_inquiry'),
+                    'call_summary': call.get('Call_Summary', ''),
+                    
+                    # Additional fields that exist in sheets but not displayed on frontend
                     'high_value_missed_opportunity': self._parse_boolean(call.get('High_Value_Missed_Opportunity', False)),
-                    
-                    # Sentiment/emotion data
-                    'patient_sentiment': call.get('Patient_Sentiment', 'neutral'),
-                    'staff_sentiment': call.get('Staff_Sentiment', 'neutral'),
-                    'sentiment_confidence': float(call.get('Sentiment_Confidence', 0)),
-                    'sentiment_summary': call.get('Sentiment_Summary', ''),
-                    'patient_primary_emotion': call.get('Patient_Primary_Emotion', 'neutral'),
-                    'patient_emotion_confidence': float(call.get('Patient_Emotion_Confidence', 0)),
-                    'patient_emotion_intensity': call.get('Patient_Emotion_Intensity', 'low'),
-                    'staff_primary_emotion': call.get('Staff_Primary_Emotion', 'neutral'),
-                    'staff_emotion_confidence': float(call.get('Staff_Emotion_Confidence', 0)),
-                    'emotion_flags': call.get('Emotion_Flags', ''),
-                    'call_emotional_health': call.get('Call_Emotional_Health', 'good'),
-                    'emotional_alignment': call.get('Emotional_Alignment', 'aligned'),
-                    'escalation_pattern': float(call.get('Escalation_Pattern', 0)),
-                    
-                    # Placeholder fields that will be populated by LLM when needed
-                    'performance_analysis': {},
-                    'sentiment_analysis': {},
-                    'opportunity_analysis': {},
-                    'coaching_analysis': {},
-                    
-                    # Coaching flags (will be determined by LLM)
-                    'is_coaching_candidate': None,  # Will be determined by LLM
-                    'coaching_priority': None       # Will be determined by LLM
                 }
                 
                 processed_calls.append(processed_call)
@@ -404,7 +376,7 @@ class DataLoader:
         self.cache_timestamp = None
         logger.info("Cache cleared")
 
-    # Dashboard support methods remain the same but use real data only
+    # Dashboard support methods - simplified for cleaned data
     async def load_dashboard_data(self) -> Dict[str, Any]:
         """Load dashboard data"""
         try:
@@ -544,28 +516,3 @@ class DataLoader:
             "lastUpdate": datetime.now().isoformat(),
             "message": "No call data available"
         }
-
-    def _has_individual_json_files(self) -> bool:
-        """Check if individual JSON analysis files exist"""
-        if not self.data_directory.exists():
-            return False
-        
-        json_files = list(self.data_directory.glob("*.json"))
-        analysis_files = [f for f in json_files if "analysis" in f.name.lower()]
-        
-        return len(analysis_files) > 0
-    
-    def _has_consolidated_file(self) -> bool:
-        """Check if a consolidated data file exists"""
-        consolidated_files = [
-            self.data_directory / "all_analysis_results.json",
-            self.data_directory / "consolidated_calls.json",
-            self.data_directory / "call_analysis_summary.json"
-        ]
-        
-        return any(f.exists() for f in consolidated_files)
-    
-    def _has_csv_export(self) -> bool:
-        """Check if CSV exports exist"""
-        csv_files = list(self.data_directory.glob("*.csv"))
-        return len(csv_files) > 0

@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Calendar, 
-  User, 
   Clock, 
-  Heart, 
-  TrendingUp, 
   Tag, 
   FileText, 
   ChevronDown, 
@@ -51,11 +48,17 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
     }
   };
 
-  const formatDuration = (seconds) => {
-    if (!seconds) return '0:00';
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    try {
+      // If it's already in HH:MM format
+      if (timeString.includes(':')) {
+        return timeString;
+      }
+      return timeString;
+    } catch (error) {
+      return timeString;
+    }
   };
 
   const getPerformanceColor = (score) => {
@@ -83,7 +86,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
     }
   };
 
-  // FIXED: Don't truncate text in expanded view, only in preview
   const truncateText = (text, maxLength = 150, forceExpanded = false) => {
     if (!text) return 'No summary available';
     if (forceExpanded || text.length <= maxLength) return text;
@@ -172,19 +174,15 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                       )}
                     </div>
 
-                    {/* Meta Info */}
+                    {/* Meta Info - CLEANED: Only show date, time, and sentiment */}
                     <div className="flex items-center space-x-4 text-sm text-slate-600 mb-3">
                       <div className="flex items-center space-x-1">
                         <Calendar className="h-4 w-4" />
                         <span>{formatDate(call.analysis_date)}</span>
+                        {call.analysis_time && (
+                          <span className="text-slate-500">• {formatTime(call.analysis_time)}</span>
+                        )}
                       </div>
-                      
-                      {call.call_duration && (
-                        <div className="flex items-center space-x-1">
-                          <Clock className="h-4 w-4" />
-                          <span>{formatDuration(call.call_duration)}</span>
-                        </div>
-                      )}
                       
                       {call.overall_sentiment && (
                         <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${getSentimentColor(call.overall_sentiment)}`}>
@@ -194,7 +192,7 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                       )}
                     </div>
 
-                    {/* Call Summary - FIXED: Show full summary when expanded */}
+                    {/* Call Summary */}
                     <p className="text-slate-700 leading-relaxed">
                       {expanded 
                         ? truncateText(call.call_summary, 0, true) // Show full text when expanded
@@ -217,7 +215,7 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                 </button>
               </div>
 
-              {/* Quick Coaching Indicators */}
+              {/* Quick Coaching Indicators - CLEANED: Only show if missed opportunity exists */}
               <div className="flex items-center justify-between pt-4 border-t border-slate-100">
                 <div className="flex items-center space-x-4">
                   {/* Missed Opportunities */}
@@ -225,14 +223,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                     <div className="flex items-center space-x-1 text-amber-600">
                       <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
                       <span className="text-xs font-medium">Missed Opportunity</span>
-                    </div>
-                  )}
-                  
-                  {/* Coaching Potential */}
-                  {call.coaching_analysis?.is_coaching_candidate && (
-                    <div className="flex items-center space-x-1 text-blue-600">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-xs font-medium">Coaching Candidate</span>
                     </div>
                   )}
                 </div>
@@ -243,92 +233,26 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
               </div>
             </div>
 
-            {/* Expanded Content */}
+            {/* Expanded Content - CLEANED: Only show transcript */}
             {expanded && (
               <div className="border-t border-slate-200 bg-slate-50/30">
                 <div className="p-6 space-y-6">
-                  {/* Performance Details - ALWAYS SHOW */}
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                      <TrendingUp className="h-4 w-4 mr-2 text-blue-600" />
-                      Performance Analysis
-                    </h4>
-                    <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      {call.performance_analysis?.strengths && call.performance_analysis.strengths.length > 0 ? (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-green-700 mb-2">Strengths:</div>
-                          <ul className="space-y-1">
-                            {call.performance_analysis.strengths.map((strength, index) => (
-                              <li key={index} className="text-sm text-slate-700 flex items-start">
-                                <span className="text-green-500 mr-2">✓</span>
-                                {strength}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-gray-500 mb-2">Strengths:</div>
-                          <div className="text-sm text-gray-400">No strengths identified yet</div>
-                        </div>
-                      )}
-                      
-                      {call.performance_analysis?.weaknesses && call.performance_analysis.weaknesses.length > 0 ? (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-red-700 mb-2">Areas for Improvement:</div>
-                          <ul className="space-y-1">
-                            {call.performance_analysis.weaknesses.map((weakness, index) => (
-                              <li key={index} className="text-sm text-slate-700 flex items-start">
-                                <span className="text-red-500 mr-2">•</span>
-                                {weakness}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-gray-500 mb-2">Areas for Improvement:</div>
-                          <div className="text-sm text-gray-400">No improvement areas identified</div>
-                        </div>
-                      )}
-                      
-                      {call.performance_analysis?.coaching_focus && call.performance_analysis.coaching_focus.length > 0 ? (
-                        <div>
-                          <div className="text-sm font-medium text-blue-700 mb-2">Coaching Focus:</div>
-                          <ul className="space-y-1">
-                            {call.performance_analysis.coaching_focus.map((focus, index) => (
-                              <li key={index} className="text-sm text-slate-700 flex items-start">
-                                <span className="text-blue-500 mr-2">→</span>
-                                {focus}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="text-sm font-medium text-gray-500 mb-2">Coaching Focus:</div>
-                          <div className="text-sm text-gray-400">No specific coaching focus set</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Call Transcripts - FIXED: Handle single transcript field */}
+                  {/* Call Transcript - MAIN CONTENT */}
                   <div>
                     <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
                       <FileText className="h-4 w-4 mr-2 text-blue-600" />
-                      Call Transcripts
+                      Call Transcript
                     </h4>
                     
-                    {/* FIXED: Check for the actual transcript field */}
-                    {call.patient_transcript && call.patient_transcript.trim() ? (
+                    {/* Check for full_transcript which contains the actual data */}
+                    {call.full_transcript && call.full_transcript.trim() ? (
                       <div className="bg-white rounded-lg p-4 border border-slate-200">
                         <div className="text-sm font-medium text-slate-700 mb-2 flex items-center">
                           <FileText className="h-4 w-4 mr-1" />
                           Full Call Transcript
                         </div>
                         <div className="text-sm text-slate-600 max-h-60 overflow-y-auto leading-relaxed whitespace-pre-wrap">
-                          {call.patient_transcript}
+                          {call.full_transcript}
                         </div>
                       </div>
                     ) : (
@@ -338,90 +262,6 @@ const CallList = ({ calls, selectedCalls, onCallSelection }) => {
                         </div>
                       </div>
                     )}
-                  </div>
-
-                  {/* Sentiment & Emotion Analysis - ALWAYS SHOW */}
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-3 flex items-center">
-                      <Heart className="h-4 w-4 mr-2 text-blue-600" />
-                      Emotional Analysis
-                    </h4>
-                    <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                            Overall Sentiment
-                          </div>
-                          <div className={`text-sm font-medium ${getSentimentColor(call.overall_sentiment)}`}>
-                            {call.overall_sentiment || 'Neutral'}
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                            Patient Satisfaction
-                          </div>
-                          <div className="text-sm font-medium text-slate-700">
-                            {call.sentiment_analysis?.patient_satisfaction || 'N/A'}/10
-                          </div>
-                        </div>
-                        
-                        <div>
-                          <div className="text-xs text-slate-500 uppercase tracking-wide mb-1">
-                            Emotional Tone
-                          </div>
-                          <div className="text-sm font-medium text-slate-700">
-                            {call.sentiment_analysis?.emotional_tone || 'Not analyzed'}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Opportunities - ALWAYS SHOW */}
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-3">
-                      Coaching Opportunities
-                    </h4>
-                    <div className="bg-white rounded-lg p-4 border border-slate-200">
-                      {call.opportunity_analysis?.missed_opportunities && call.opportunity_analysis.missed_opportunities.length > 0 ? (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-amber-700 mb-2">Missed Opportunities:</div>
-                          <ul className="space-y-1">
-                            {call.opportunity_analysis.missed_opportunities.map((opportunity, index) => (
-                              <li key={index} className="text-sm text-slate-700 flex items-start">
-                                <span className="text-amber-500 mr-2">⚠</span>
-                                {opportunity}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className="mb-4">
-                          <div className="text-sm font-medium text-gray-500 mb-2">Missed Opportunities:</div>
-                          <div className="text-sm text-gray-400">No missed opportunities identified</div>
-                        </div>
-                      )}
-                      
-                      {call.opportunity_analysis?.recommendations && call.opportunity_analysis.recommendations.length > 0 ? (
-                        <div>
-                          <div className="text-sm font-medium text-blue-700 mb-2">Recommendations:</div>
-                          <ul className="space-y-1">
-                            {call.opportunity_analysis.recommendations.map((recommendation, index) => (
-                              <li key={index} className="text-sm text-slate-700 flex items-start">
-                                <span className="text-blue-500 mr-2">💡</span>
-                                {recommendation}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div>
-                          <div className="text-sm font-medium text-gray-500 mb-2">Recommendations:</div>
-                          <div className="text-sm text-gray-400">No specific recommendations available</div>
-                        </div>
-                      )}
-                    </div>
                   </div>
                 </div>
               </div>

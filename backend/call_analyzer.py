@@ -213,42 +213,77 @@ class CallAnalyzer:
                     logger.warning(f"Failed to cleanup preprocessed files: {cleanup_error}")
     
     def _combine_transcription_diarization(self, transcription: Dict, diarization: Dict) -> Dict:
-        """Combine transcription results with speaker diarization"""
+        """Combine transcription results with speaker diarization - FIXED timestamp mapping"""
         
         try:
             segments = transcription.get("segments", [])
             speaker_timeline = diarization.get("speaker_timeline", [])
             
-            if not segments or not speaker_timeline:
-                logger.warning("Missing segments for combination")
+            if not segments:
+                logger.warning("No transcription segments found")
+                return {"segments": []}
+                
+            if not speaker_timeline:
+                logger.warning("No speaker timeline found, using transcription only")
                 return {"segments": segments}
+            
+            logger.debug(f"Combining {len(segments)} transcription segments with {len(speaker_timeline)} speaker segments")
             
             # Create a mapping of time to speaker
             def get_speaker_at_time(timestamp: float) -> str:
-                """Get speaker at specific timestamp"""
+                """Get speaker at specific timestamp with better matching"""
+                best_speaker = "SPEAKER_00"  # Default
+                
                 for speaker_seg in speaker_timeline:
+                    # Check if timestamp falls within this speaker segment
                     if speaker_seg["start_time"] <= timestamp <= speaker_seg["end_time"]:
                         return speaker_seg["speaker"]
-                return "SPEAKER_00"  # Default speaker
+                    
+                    # If not exact match, find closest speaker segment
+                    if timestamp >= speaker_seg["start_time"]:
+                        best_speaker = speaker_seg["speaker"]
+                
+                return best_speaker
             
-            # Assign speakers to transcription segments
+            # Assign speakers to transcription segments WITHOUT changing timestamps
             combined_segments = []
             for segment in segments:
+                # Keep original transcription timestamps - DO NOT MODIFY
                 segment_start = segment.get("start_time", 0)
                 segment_end = segment.get("end_time", segment_start + 1)
-                segment_speaker = get_speaker_at_time(segment_start)
+                segment_text = segment.get("text", "").strip()
                 
-                # Use consistent field names
+                if not segment_text:  # Skip empty segments
+                    continue
+                
+                # Find speaker for the middle of this segment
+                mid_timestamp = (segment_start + segment_end) / 2
+                segment_speaker = get_speaker_at_time(mid_timestamp)
+                
+                # Use original transcription timestamps and text
                 combined_segment = {
-                    "start_time": segment_start,
-                    "end_time": segment_end,
-                    "text": segment.get("text", ""),
+                    "start_time": segment_start,  # Keep original timestamp
+                    "end_time": segment_end,      # Keep original timestamp  
+                    "text": segment_text,
                     "speaker": segment_speaker
                 }
                 combined_segments.append(combined_segment)
+                
+                logger.debug(f"Segment [{segment_start:.2f}-{segment_end:.2f}] -> {segment_speaker}: {segment_text[:50]}")
             
+            logger.info(f"Successfully combined {len(combined_segments)} segments")
             return {"segments": combined_segments}
             
         except Exception as e:
             logger.error(f"Error combining transcription and diarization: {str(e)}")
-            return {"segments": transcription.get("segments", [])}
+            # Fallback: return transcription segments with default speaker
+            fallback_segments = []
+            for segment in transcription.get("segments", []):
+                if segment.get("text", "").strip():
+                    fallback_segments.append({
+                        "start_time": segment.get("start_time", 0),
+                        "end_time": segment.get("end_time", 0),
+                        "text": segment.get("text", ""),
+                        "speaker": "SPEAKER_00"
+                    })
+            return {"segments": fallback_segments}
