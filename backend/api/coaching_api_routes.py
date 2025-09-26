@@ -368,7 +368,7 @@ async def generate_case_study(request: CaseStudyRequest):
 
 @coaching_router.post("/generate-pdf")
 async def generate_training_pdf(request: PDFGenerationRequest):
-    """Generate PDF using REAL LLM analysis data"""
+    """Generate PDF using REAL LLM analysis data - UPDATED FOR MULTI-CALL SUPPORT"""
     try:
         if not request.case_study_data:
             raise HTTPException(status_code=400, detail="No case study data provided")
@@ -376,7 +376,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
         # Try ReportLab for proper PDF generation
         try:
             from reportlab.lib.pagesizes import letter
-            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
             from reportlab.lib.styles import getSampleStyleSheet
             from reportlab.lib.units import inch
             from io import BytesIO
@@ -389,195 +389,379 @@ async def generate_training_pdf(request: PDFGenerationRequest):
             styles = getSampleStyleSheet()
             story = []
             
-            # Title
-            title = Paragraph(f"<font size=20><b>{request.title}</b></font>", styles['Title'])
-            story.append(title)
-            story.append(Spacer(1, 0.2*inch))
-            
-            # Metadata
-            metadata = f"""
-            <font size=12><b>LLM-Generated Training Material</b></font><br/>
-            Target Employee: {request.target_employee}<br/>
-            Analysis Type: {request.analysis_type.title()}<br/>
-            Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}<br/>
-            """
-            story.append(Paragraph(metadata, styles['Normal']))
-            story.append(Spacer(1, 0.3*inch))
-            
             case_study = request.case_study_data
             
-            # REAL LLM-generated conversation examples
-            if case_study.get('conversation_examples'):
-                story.append(Paragraph("<font size=14><b>Conversation Examples (LLM Generated)</b></font>", styles['Heading2']))
-                story.append(Spacer(1, 0.1*inch))
+            # Title Page
+            title = Paragraph(f"<font size=24><b>{request.title}</b></font>", styles['Title'])
+            story.append(title)
+            story.append(Spacer(1, 0.3*inch))
+            
+            # Metadata
+            calls_analyzed = case_study.get('calls_analyzed', 0)
+            metadata = f"""
+            <font size=16><b>Comprehensive Training Analysis</b></font><br/>
+            <font size=12>Target Employee: {request.target_employee}</font><br/>
+            <font size=12>Analysis Type: {request.analysis_type.title()}</font><br/>
+            <font size=12>Total Calls Analyzed: {calls_analyzed}</font><br/>
+            <font size=12>Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</font><br/>
+            """
+            story.append(Paragraph(metadata, styles['Normal']))
+            story.append(Spacer(1, 0.5*inch))
+            
+            # Overall Summary (for multi-call analysis)
+            if case_study.get('overall_summary'):
+                overall_summary = case_study['overall_summary']
+                story.append(Paragraph("<font size=18><b>Executive Summary</b></font>", styles['Heading1']))
+                story.append(Spacer(1, 0.2*inch))
                 
-                for i, example in enumerate(case_study['conversation_examples'][:3], 1):
-                    example_text = f"""
-                    <font size=12><b>Example {i}:</b></font><br/>
-                    <font color="red"><b>What Was Said:</b></font> {example.get('current_approach', '')}<br/>
-                    <font color="green"><b>What to Say Instead:</b></font> {example.get('recommended_approach', '')}<br/>
-                    <font color="blue"><b>Coaching Point:</b></font> {example.get('coaching_point', '')}<br/>
-                    <font color="purple"><b>Expected Outcome:</b></font> {example.get('expected_outcome', '')}<br/>
+                summary_text = f"""
+                <font size=12><b>Analysis Overview:</b></font><br/>
+                • Total calls analyzed: {overall_summary.get('total_calls_analyzed', 0)}<br/>
+                • Average performance score: {overall_summary.get('average_performance_score', 0)}%<br/>
+                • Performance range: {overall_summary.get('score_range', {}).get('lowest', 0)}% to {overall_summary.get('score_range', {}).get('highest', 0)}%<br/>
+                • Analysis period: {overall_summary.get('analysis_period', {}).get('start_date', 'N/A')} to {overall_summary.get('analysis_period', {}).get('end_date', 'N/A')}<br/>
+                """
+                story.append(Paragraph(summary_text, styles['Normal']))
+                story.append(Spacer(1, 0.3*inch))
+                
+                # Common strengths and challenges
+                if overall_summary.get('common_strengths'):
+                    story.append(Paragraph("<font size=14><b>Common Strengths Identified:</b></font>", styles['Heading2']))
+                    for strength in overall_summary.get('common_strengths', [])[:5]:
+                        story.append(Paragraph(f"• {strength}", styles['Normal']))
+                    story.append(Spacer(1, 0.2*inch))
+                
+                if overall_summary.get('common_challenges'):
+                    story.append(Paragraph("<font size=14><b>Common Areas for Improvement:</b></font>", styles['Heading2']))
+                    for challenge in overall_summary.get('common_challenges', [])[:5]:
+                        story.append(Paragraph(f"• {challenge}", styles['Normal']))
+                    story.append(Spacer(1, 0.2*inch))
+                
+                story.append(PageBreak())
+            
+            # Individual Call Analyses Section
+            individual_analyses = case_study.get('individual_call_analyses', [])
+            if individual_analyses:
+                story.append(Paragraph("<font size=20><b>Individual Call Analyses</b></font>", styles['Heading1']))
+                story.append(Spacer(1, 0.2*inch))
+                story.append(Paragraph(f"<font size=12>Detailed analysis of {len(individual_analyses)} calls with individual LLM coaching insights</font>", styles['Normal']))
+                story.append(Spacer(1, 0.3*inch))
+                
+                for i, call_analysis in enumerate(individual_analyses):
+                    # Call Header
+                    call_metadata = call_analysis.get('call_metadata', {})
+                    call_number = call_analysis.get('call_number', i+1)
+                    
+                    story.append(Paragraph(f"<font size=16><b>Call #{call_number} Analysis</b></font>", styles['Heading2']))
+                    story.append(Spacer(1, 0.1*inch))
+                    
+                    # Call Details
+                    call_details = f"""
+                    <font size=11><b>Call Details:</b></font><br/>
+                    • Date: {call_metadata.get('call_date', 'N/A')}<br/>
+                    • Time: {call_metadata.get('call_time', 'N/A')}<br/>
+                    • Call Type: {call_metadata.get('call_type', 'N/A').replace('_', ' ').title()}<br/>
+                    • Performance Score: {call_metadata.get('performance_score', 0)}%<br/>
+                    • Overall Sentiment: {call_metadata.get('overall_sentiment', 'N/A').title()}<br/>
+                    • Representative: {call_metadata.get('representative_name', request.target_employee)}<br/>
                     """
-                    story.append(Paragraph(example_text, styles['Normal']))
+                    story.append(Paragraph(call_details, styles['Normal']))
+                    story.append(Spacer(1, 0.2*inch))
+                    
+                    # Call Summary
+                    if call_metadata.get('call_summary'):
+                        story.append(Paragraph("<font size=12><b>Call Summary:</b></font>", styles['Normal']))
+                        story.append(Paragraph(call_metadata.get('call_summary', ''), styles['Normal']))
+                        story.append(Spacer(1, 0.2*inch))
+                    
+                    # LLM Analysis Results
+                    llm_analysis = call_analysis.get('llm_analysis', {})
+                    if llm_analysis:
+                        story.append(Paragraph("<font size=14><b>LLM Coaching Analysis:</b></font>", styles['Heading2']))
+                        
+                        # Strengths
+                        if llm_analysis.get('strengths'):
+                            story.append(Paragraph("<font size=12><b>Strengths:</b></font>", styles['Normal']))
+                            for strength in llm_analysis.get('strengths', []):
+                                clean_strength = str(strength).strip().strip('"').strip("'")
+                                if clean_strength and not clean_strength.startswith(('strengths', 'areas_for')):
+                                    story.append(Paragraph(f"✓ {clean_strength}", styles['Normal']))
+                            story.append(Spacer(1, 0.1*inch))
+                        
+                        # Areas for Improvement
+                        if llm_analysis.get('areas_for_improvement'):
+                            story.append(Paragraph("<font size=12><b>Areas for Improvement:</b></font>", styles['Normal']))
+                            for improvement in llm_analysis.get('areas_for_improvement', []):
+                                clean_improvement = str(improvement).strip().strip('"').strip("'")
+                                if clean_improvement and not clean_improvement.startswith(('areas_for', 'strengths')):
+                                    story.append(Paragraph(f"• {clean_improvement}", styles['Normal']))
+                            story.append(Spacer(1, 0.1*inch))
+                        
+                        # Coaching Priorities
+                        if llm_analysis.get('coaching_priorities'):
+                            story.append(Paragraph("<font size=12><b>Coaching Priorities:</b></font>", styles['Normal']))
+                            for priority in llm_analysis.get('coaching_priorities', []):
+                                clean_priority = str(priority).strip().strip('"').strip("'")
+                                if clean_priority and not clean_priority.startswith(('coaching_priorities', 'training_focus')):
+                                    story.append(Paragraph(f"→ {clean_priority}", styles['Normal']))
+                            story.append(Spacer(1, 0.1*inch))
+                        
+                        # Training Focus
+                        training_focus = llm_analysis.get('training_focus', '')
+                        if training_focus:
+                            clean_focus = str(training_focus).strip().strip('"').strip("'")
+                            if clean_focus and not clean_focus.startswith(('training_focus', 'success_indicators')):
+                                story.append(Paragraph(f"<font size=12><b>Training Focus:</b> {clean_focus}</font>", styles['Normal']))
+                                story.append(Spacer(1, 0.1*inch))
+                        
+                        # Recommendations
+                        if llm_analysis.get('follow_up_recommendations'):
+                            story.append(Paragraph("<font size=12><b>Specific Recommendations:</b></font>", styles['Normal']))
+                            for rec in llm_analysis.get('follow_up_recommendations', []):
+                                clean_rec = str(rec).strip().strip('"').strip("'")
+                                if clean_rec and not clean_rec.startswith(('follow_up', 'success_indicators')):
+                                    story.append(Paragraph(f"💡 {clean_rec}", styles['Normal']))
+                            story.append(Spacer(1, 0.2*inch))
+                    
+                    # Conversation Examples from this call
+                    conversation_examples = call_analysis.get('conversation_examples', [])
+                    if conversation_examples:
+                        story.append(Paragraph("<font size=14><b>Conversation Examples:</b></font>", styles['Heading2']))
+                        story.append(Spacer(1, 0.1*inch))
+                        
+                        for j, example in enumerate(conversation_examples[:2], 1):  # Limit to 2 examples per call
+                            story.append(Paragraph(f"<font size=12><b>Example {j}:</b></font>", styles['Normal']))
+                            
+                            current = example.get('current_approach', '')
+                            recommended = example.get('recommended_approach', '')
+                            coaching_point = example.get('coaching_point', '')
+                            
+                            if current:
+                                story.append(Paragraph(f"<font color='red'><b>Current Approach:</b></font> {current}", styles['Normal']))
+                            if recommended:
+                                story.append(Paragraph(f"<font color='green'><b>Recommended Approach:</b></font> {recommended}", styles['Normal']))
+                            if coaching_point:
+                                story.append(Paragraph(f"<font color='blue'><b>Coaching Point:</b></font> {coaching_point}", styles['Normal']))
+                            
+                            story.append(Spacer(1, 0.1*inch))
+                    
+                    # Call Transcript (if available and not too long)
+                    call_transcript = call_analysis.get('call_transcript', '')
+                    if call_transcript and call_transcript.strip():
+                        story.append(Paragraph("<font size=14><b>Call Transcript:</b></font>", styles['Heading2']))
+                        story.append(Spacer(1, 0.1*inch))
+                        
+                        # Add transcript in a smaller font (truncate if too long)
+                        transcript_lines = call_transcript.split('\n')[:50]  # Limit to first 50 lines
+                        for line in transcript_lines:
+                            line = line.strip()
+                            if line:
+                                if line.startswith('[') and ']' in line and 'SPEAKER_' in line:
+                                    story.append(Paragraph(f"<font size=9 color='blue'><b>{line}</b></font>", styles['Normal']))
+                                else:
+                                    story.append(Paragraph(f"<font size=9>{line}</font>", styles['Normal']))
+                        
+                        if len(call_transcript.split('\n')) > 50:
+                            story.append(Paragraph("<font size=9><i>[Transcript truncated for brevity...]</i></font>", styles['Normal']))
+                        
+                        story.append(Spacer(1, 0.2*inch))
+                    
+                    # Add page break between calls (except for the last one)
+                    if i < len(individual_analyses) - 1:
+                        story.append(PageBreak())
+                    else:
+                        story.append(Spacer(1, 0.3*inch))
+            
+            # Combined Insights Section (for multi-call analysis)
+            if case_study.get('combined_insights'):
+                story.append(PageBreak())
+                story.append(Paragraph("<font size=18><b>Combined Insights & Recommendations</b></font>", styles['Heading1']))
+                story.append(Spacer(1, 0.2*inch))
+                
+                combined_insights = case_study['combined_insights']
+                
+                # Coaching Principles
+                if combined_insights.get('coaching_principles'):
+                    story.append(Paragraph("<font size=14><b>Key Coaching Principles:</b></font>", styles['Heading2']))
+                    story.append(Spacer(1, 0.1*inch))
+                    
+                    for i, principle in enumerate(combined_insights.get('coaching_principles', []), 1):
+                        clean_principle = str(principle).strip().strip('"').strip("'")
+                        if clean_principle and not clean_principle.startswith(('training_focus', 'strengths')):
+                            story.append(Paragraph(f"{i}. {clean_principle}", styles['Normal']))
+                    
+                    story.append(Spacer(1, 0.2*inch))
+                
+                # Comprehensive Recommendations
+                if combined_insights.get('comprehensive_recommendations'):
+                    story.append(Paragraph("<font size=14><b>Comprehensive Recommendations:</b></font>", styles['Heading2']))
+                    story.append(Spacer(1, 0.1*inch))
+                    
+                    for i, recommendation in enumerate(combined_insights.get('comprehensive_recommendations', []), 1):
+                        clean_rec = str(recommendation).strip().strip('"').strip("'")
+                        if clean_rec:
+                            story.append(Paragraph(f"{i}. {clean_rec}", styles['Normal']))
+                    
                     story.append(Spacer(1, 0.2*inch))
             
-            # REAL LLM-generated coaching principles
-            principles = case_study.get('coaching_principles', [])
-            if principles:
-                story.append(Paragraph("<font size=14><b>Key Coaching Principles (LLM Generated)</b></font>", styles['Heading2']))
-                story.append(Spacer(1, 0.1*inch))
-                
-                for i, principle in enumerate(principles, 1):
-                    clean_principle = str(principle).strip().strip('"').strip("'")
-                    if clean_principle and not clean_principle.startswith(('training_focus', 'strengths', 'areas_for')):
-                        principle_text = f"{i}. {clean_principle}"
-                        story.append(Paragraph(principle_text, styles['Normal']))
-                        story.append(Spacer(1, 0.05*inch))
-                
+            # Comprehensive Development Plan
+            if case_study.get('comprehensive_development_plan'):
+                story.append(Paragraph("<font size=18><b>Development Plan</b></font>", styles['Heading1']))
                 story.append(Spacer(1, 0.2*inch))
-            
-            # REAL Performance Analysis
-            if case_study.get('performance_overview'):
-                perf_analysis = case_study['performance_overview']
-                story.append(Paragraph("<font size=14><b>Performance Analysis (LLM Generated)</b></font>", styles['Heading2']))
-                story.append(Spacer(1, 0.1*inch))
                 
-                if perf_analysis.get('current_performance_level'):
-                    story.append(Paragraph(f"<b>Current Performance:</b> {perf_analysis['current_performance_level']}", styles['Normal']))
-                    story.append(Spacer(1, 0.1*inch))
+                dev_plan = case_study['comprehensive_development_plan']
                 
-                if perf_analysis.get('key_strengths'):
-                    story.append(Paragraph("<font size=12><b>Strengths:</b></font>", styles['Normal']))
-                    for strength in perf_analysis['key_strengths'][:5]:
-                        clean_strength = str(strength).strip().strip('"').strip("'")
-                        if clean_strength and not clean_strength.startswith(('"', "'", 'strengths')):
-                            story.append(Paragraph(f"• {clean_strength}", styles['Normal']))
-                    story.append(Spacer(1, 0.1*inch))
-                
-                if perf_analysis.get('primary_challenges'):
-                    story.append(Paragraph("<font size=12><b>Areas for Improvement:</b></font>", styles['Normal']))
-                    for challenge in perf_analysis['primary_challenges'][:5]:
-                        clean_challenge = str(challenge).strip().strip('"').strip("'")
-                        if clean_challenge and not clean_challenge.startswith(('"', "'", 'areas_for')):
-                            story.append(Paragraph(f"• {clean_challenge}", styles['Normal']))
-                    story.append(Spacer(1, 0.1*inch))
-            
-            # REAL Development plan
-            if case_study.get('development_plan'):
-                plan = case_study['development_plan']
-                story.append(Paragraph("<font size=14><b>Development Plan (LLM Generated)</b></font>", styles['Heading2']))
-                story.append(Spacer(1, 0.1*inch))
-                
-                if plan.get('immediate_focus'):
-                    story.append(Paragraph("<font size=12><b>Immediate Focus:</b></font>", styles['Normal']))
-                    for focus in plan['immediate_focus'][:3]:
+                if dev_plan.get('immediate_focus'):
+                    story.append(Paragraph("<font size=14><b>Immediate Focus Areas:</b></font>", styles['Heading2']))
+                    for focus in dev_plan['immediate_focus'][:3]:
                         clean_focus = str(focus).strip().strip('"').strip("'")
                         if clean_focus:
                             story.append(Paragraph(f"• {clean_focus}", styles['Normal']))
                     story.append(Spacer(1, 0.1*inch))
                 
-                if plan.get('30_day_goals'):
-                    story.append(Paragraph("<font size=12><b>30-Day Goals:</b></font>", styles['Normal']))
-                    for goal in plan['30_day_goals'][:3]:
+                if dev_plan.get('30_day_goals'):
+                    story.append(Paragraph("<font size=14><b>30-Day Goals:</b></font>", styles['Heading2']))
+                    for goal in dev_plan['30_day_goals'][:3]:
                         clean_goal = str(goal).strip().strip('"').strip("'")
                         if clean_goal:
                             story.append(Paragraph(f"• {clean_goal}", styles['Normal']))
                     story.append(Spacer(1, 0.1*inch))
                 
-                if plan.get('success_metrics'):
-                    story.append(Paragraph("<font size=12><b>Success Metrics:</b></font>", styles['Normal']))
-                    for metric in plan['success_metrics'][:3]:
+                if dev_plan.get('90_day_objectives'):
+                    story.append(Paragraph("<font size=14><b>90-Day Objectives:</b></font>", styles['Heading2']))
+                    for objective in dev_plan['90_day_objectives'][:3]:
+                        clean_objective = str(objective).strip().strip('"').strip("'")
+                        if clean_objective:
+                            story.append(Paragraph(f"• {clean_objective}", styles['Normal']))
+                    story.append(Spacer(1, 0.1*inch))
+                
+                if dev_plan.get('success_metrics'):
+                    story.append(Paragraph("<font size=14><b>Success Metrics:</b></font>", styles['Heading2']))
+                    for metric in dev_plan['success_metrics'][:4]:
                         clean_metric = str(metric).strip().strip('"').strip("'")
                         if clean_metric:
                             story.append(Paragraph(f"• {clean_metric}", styles['Normal']))
-            
-            # REAL Recommendations
-            if case_study.get('recommendations'):
-                story.append(Spacer(1, 0.2*inch))
-                story.append(Paragraph("<font size=14><b>Specific Recommendations (LLM Generated)</b></font>", styles['Heading2']))
-                story.append(Spacer(1, 0.1*inch))
-                
-                for i, recommendation in enumerate(case_study['recommendations'], 1):
-                    clean_rec = str(recommendation).strip().strip('"').strip("'")
-                    if clean_rec:
-                        rec_text = f"{i}. {clean_rec}"
-                        story.append(Paragraph(rec_text, styles['Normal']))
-                        story.append(Spacer(1, 0.05*inch))
-            
-            # ADD CALL TRANSCRIPT SECTION
-            if case_study.get('call_transcript'):
-                transcript = case_study.get('call_transcript')
-                if transcript and transcript.strip():
-                    story.append(Spacer(1, 0.3*inch))
-                    story.append(Paragraph("<font size=14><b>Original Call Transcript</b></font>", styles['Heading2']))
-                    story.append(Spacer(1, 0.1*inch))
-                    
-                    transcript_lines = transcript.split('\n')
-                    for line in transcript_lines:
-                        line = line.strip()
-                        if line:
-                            if line.startswith('[') and ']' in line and 'SPEAKER_' in line:
-                                story.append(Paragraph(f"<font color='blue'><b>{line}</b></font>", styles['Normal']))
-                            else:
-                                story.append(Paragraph(line, styles['Normal']))
-                            story.append(Spacer(1, 0.02*inch))
             
             doc.build(story)
             buffer.seek(0)
             pdf_content = buffer.getvalue()
             buffer.close()
             
-            logger.info(f"Generated REAL LLM-driven PDF: {len(pdf_content)} bytes")
+            logger.info(f"Generated comprehensive multi-call PDF: {len(pdf_content)} bytes")
             
         except ImportError:
-            logger.warning("ReportLab not available, creating text document")
+            logger.warning("ReportLab not available, creating comprehensive text document")
             
-            content = f"""COACHING TRAINING MATERIAL (LLM-GENERATED)
-{'=' * 60}
+            content = f"""COMPREHENSIVE COACHING TRAINING MATERIAL
+{'=' * 80}
 
 {request.title}
 
 Target Employee: {request.target_employee}
 Analysis Type: {request.analysis_type.title()}
+Total Calls Analyzed: {case_study.get('calls_analyzed', 0)}
 Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
 
-{'=' * 60}
+{'=' * 80}
 
 """
             
-            case_study = request.case_study_data
+            # Overall Summary
+            if case_study.get('overall_summary'):
+                overall_summary = case_study['overall_summary']
+                content += f"\nEXECUTIVE SUMMARY:\n" + "=" * 40 + "\n\n"
+                content += f"Total calls analyzed: {overall_summary.get('total_calls_analyzed', 0)}\n"
+                content += f"Average performance score: {overall_summary.get('average_performance_score', 0)}%\n"
+                content += f"Performance range: {overall_summary.get('score_range', {}).get('lowest', 0)}% to {overall_summary.get('score_range', {}).get('highest', 0)}%\n\n"
+                
+                if overall_summary.get('common_strengths'):
+                    content += "Common Strengths:\n"
+                    for strength in overall_summary.get('common_strengths', []):
+                        content += f"• {strength}\n"
+                    content += "\n"
+                
+                if overall_summary.get('common_challenges'):
+                    content += "Common Areas for Improvement:\n"
+                    for challenge in overall_summary.get('common_challenges', []):
+                        content += f"• {challenge}\n"
+                    content += "\n"
             
-            # Add REAL LLM-generated content
-            if case_study.get('conversation_examples'):
-                content += "\nCONVERSATION EXAMPLES (LLM GENERATED):\n" + "-" * 40 + "\n\n"
-                for i, example in enumerate(case_study['conversation_examples'], 1):
-                    content += f"Example {i}:\n"
-                    content += f"Current Approach: {example.get('current_approach', '')}\n"
-                    content += f"Recommended Approach: {example.get('recommended_approach', '')}\n"
-                    content += f"Coaching Point: {example.get('coaching_point', '')}\n"
-                    content += f"Expected Outcome: {example.get('expected_outcome', '')}\n\n"
+            # Individual Call Analyses
+            individual_analyses = case_study.get('individual_call_analyses', [])
+            if individual_analyses:
+                content += f"\nINDIVIDUAL CALL ANALYSES ({len(individual_analyses)} calls):\n" + "=" * 50 + "\n\n"
+                
+                for call_analysis in individual_analyses:
+                    call_metadata = call_analysis.get('call_metadata', {})
+                    call_number = call_analysis.get('call_number', 1)
+                    
+                    content += f"CALL #{call_number} ANALYSIS:\n" + "-" * 30 + "\n"
+                    content += f"Date: {call_metadata.get('call_date', 'N/A')}\n"
+                    content += f"Performance Score: {call_metadata.get('performance_score', 0)}%\n"
+                    content += f"Call Type: {call_metadata.get('call_type', 'N/A')}\n"
+                    content += f"Overall Sentiment: {call_metadata.get('overall_sentiment', 'N/A')}\n\n"
+                    
+                    if call_metadata.get('call_summary'):
+                        content += f"Call Summary: {call_metadata.get('call_summary', '')}\n\n"
+                    
+                    # LLM Analysis
+                    llm_analysis = call_analysis.get('llm_analysis', {})
+                    if llm_analysis:
+                        content += "LLM COACHING ANALYSIS:\n"
+                        
+                        if llm_analysis.get('strengths'):
+                            content += "Strengths:\n"
+                            for strength in llm_analysis.get('strengths', []):
+                                clean_strength = str(strength).strip().strip('"').strip("'")
+                                if clean_strength and not clean_strength.startswith(('strengths', 'areas_for')):
+                                    content += f"✓ {clean_strength}\n"
+                            content += "\n"
+                        
+                        if llm_analysis.get('areas_for_improvement'):
+                            content += "Areas for Improvement:\n"
+                            for improvement in llm_analysis.get('areas_for_improvement', []):
+                                clean_improvement = str(improvement).strip().strip('"').strip("'")
+                                if clean_improvement and not clean_improvement.startswith(('areas_for', 'strengths')):
+                                    content += f"• {clean_improvement}\n"
+                            content += "\n"
+                        
+                        if llm_analysis.get('follow_up_recommendations'):
+                            content += "Recommendations:\n"
+                            for rec in llm_analysis.get('follow_up_recommendations', []):
+                                clean_rec = str(rec).strip().strip('"').strip("'")
+                                if clean_rec and not clean_rec.startswith(('follow_up', 'success_indicators')):
+                                    content += f"💡 {clean_rec}\n"
+                            content += "\n"
+                    
+                    # Transcript
+                    call_transcript = call_analysis.get('call_transcript', '')
+                    if call_transcript and call_transcript.strip():
+                        content += "CALL TRANSCRIPT:\n" + "-" * 20 + "\n"
+                        content += call_transcript[:2000]  # Limit transcript length
+                        if len(call_transcript) > 2000:
+                            content += "\n[Transcript truncated for brevity...]\n"
+                        content += "\n"
+                    
+                    content += "\n" + "=" * 50 + "\n\n"
             
-            if case_study.get('coaching_principles'):
-                content += "\nKEY COACHING PRINCIPLES (LLM GENERATED):\n" + "-" * 40 + "\n\n"
-                for i, principle in enumerate(case_study['coaching_principles'], 1):
-                    clean_principle = str(principle).strip().strip('"').strip("'")
-                    if clean_principle and not clean_principle.startswith(('training_focus', 'strengths')):
-                        content += f"{i}. {clean_principle}\n"
-                content += "\n"
+            # Combined insights
+            if case_study.get('combined_insights'):
+                combined_insights = case_study['combined_insights']
+                content += "\nCOMBINED INSIGHTS & RECOMMENDATIONS:\n" + "=" * 50 + "\n\n"
+                
+                if combined_insights.get('coaching_principles'):
+                    content += "Key Coaching Principles:\n"
+                    for i, principle in enumerate(combined_insights.get('coaching_principles', []), 1):
+                        clean_principle = str(principle).strip().strip('"').strip("'")
+                        if clean_principle and not clean_principle.startswith(('training_focus', 'strengths')):
+                            content += f"{i}. {clean_principle}\n"
+                    content += "\n"
             
-            if case_study.get('call_transcript'):
-                transcript = case_study['call_transcript']
-                if transcript and transcript.strip():
-                    content += "\nORIGINAL CALL TRANSCRIPT:\n" + "=" * 60 + "\n\n"
-                    content += transcript
-                    content += "\n\n" + "=" * 60 + "\n\n"
-            
-            content += "\n" + "=" * 60 + "\n"
-            content += "End of LLM-Generated Training Material\n"
+            content += "\n" + "=" * 80 + "\n"
+            content += "End of Comprehensive Training Material\n"
             
             pdf_content = content.encode('utf-8')
-            logger.info(f"Generated REAL LLM text document: {len(pdf_content)} bytes")
+            logger.info(f"Generated comprehensive multi-call text document: {len(pdf_content)} bytes")
         
         from fastapi.responses import Response
         
@@ -588,7 +772,7 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
             content=pdf_content,
             media_type='application/pdf',
             headers={
-                "Content-Disposition": f"attachment; filename={safe_filename}_LLM_Generated.pdf",
+                "Content-Disposition": f"attachment; filename={safe_filename}_Comprehensive_Training.pdf",
                 "Content-Length": str(len(pdf_content))
             }
         )
@@ -596,6 +780,7 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
     except Exception as e:
         logger.error(f"PDF generation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {str(e)}")
+
 
 @coaching_router.get("/test")
 async def test_coaching_system():

@@ -1,6 +1,6 @@
 """
-Coaching Service - FINAL WORKING VERSION
-Uses the correct prompts that work with your Ollama setup
+Coaching Service - UPDATED VERSION WITH ENHANCED PROMPTS
+Now uses dedicated prompt file for improved LLM analysis quality
 """
 import json
 import logging
@@ -8,60 +8,50 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Import the enhanced prompts
+from prompts.coaching_prompts import (
+    get_individual_call_analysis_prompt,
+    get_comparative_analysis_prompt,
+    get_conversation_example_extraction_prompt
+)
+
 logger = logging.getLogger(__name__)
 
 class CoachingService:
     """
     Service for generating coaching case studies and training materials
-    Uses working LLM prompts that are compatible with qwen2.5:7b-instruct
+    UPDATED: Now uses enhanced prompts for better LLM analysis quality
     """
     
     def __init__(self, llm_analyzer):
         self.llm_analyzer = llm_analyzer
         
     async def generate_individual_case_study(self, calls_data: List[Dict], target_employee: str, title: str) -> Dict[str, Any]:
-        """Generate individual case study - WORKING VERSION"""
+        """Generate individual case study - UPDATED WITH ENHANCED PROMPTS"""
         try:
-            logger.info(f"Generating individual case study for {target_employee}")
+            logger.info(f"Generating individual case study for {target_employee} with {len(calls_data)} calls")
             
             if not calls_data:
                 raise Exception("No call data provided")
             
-            # Select the primary call for analysis
-            primary_call = self._select_primary_call(calls_data)
-            logger.info(f"Selected primary call with score: {primary_call.get('representative_score', 0)}")
+            # UPDATED: Analyze ALL calls individually with enhanced prompts
+            individual_call_analyses = []
             
-            # Create a SIMPLE, WORKING prompt for the LLM
-            prompt = self._create_simple_coaching_prompt(primary_call, target_employee)
-            logger.info(f"Created prompt of length: {len(prompt)}")
-            
-            # Get LLM response with error handling
-            coaching_response = await self.llm_analyzer.generate_response(prompt, max_tokens=1000)
-            
-            if not coaching_response or coaching_response.strip() == "":
-                logger.error("LLM returned empty response")
-                # Return a structured response even if LLM fails
-                return self._create_fallback_case_study(primary_call, target_employee, title)
-            
-            logger.info(f"LLM response length: {len(coaching_response)}")
-            
-            # Try to parse JSON, with better fallback
-            try:
-                # Clean the response first - remove any markdown formatting
-                clean_response = coaching_response.strip()
-                if clean_response.startswith('```json'):
-                    clean_response = clean_response.replace('```json', '').replace('```', '').strip()
+            for i, call in enumerate(calls_data, 1):
+                logger.info(f"Analyzing call {i} of {len(calls_data)}: {call.get('representative_name', 'Unknown')} - Score: {call.get('representative_score', 0)}")
                 
-                parsed_analysis = json.loads(clean_response)
-                logger.info("Successfully parsed LLM JSON response")
-            except json.JSONDecodeError as e:
-                logger.warning(f"JSON parsing failed: {e}, extracting from text response")
-                parsed_analysis = self._parse_text_response(coaching_response)
-                
-            # Clean up any malformed JSON artifacts in the parsed data
-            parsed_analysis = self._clean_parsed_analysis(parsed_analysis)
+                try:
+                    # UPDATED: Use enhanced prompt for better analysis
+                    call_analysis = await self._analyze_single_call_enhanced(call, target_employee, i)
+                    individual_call_analyses.append(call_analysis)
+                    
+                except Exception as e:
+                    logger.warning(f"Failed to analyze call {i}: {str(e)}")
+                    continue
             
-            # Create the case study structure
+            logger.info(f"Successfully analyzed {len(individual_call_analyses)} calls with enhanced prompts")
+            
+            # Create comprehensive case study structure with ALL call analyses
             case_study = {
                 'title': title,
                 'analysis_type': 'individual',
@@ -69,111 +59,148 @@ class CoachingService:
                 'calls_analyzed': len(calls_data),
                 'generated_at': datetime.now().isoformat(),
                 'status': 'generated',
-                'generation_method': 'llm_analysis',
+                'generation_method': 'enhanced_llm_analysis',
                 
-                # ADD CALL TRANSCRIPT FOR PDF
-                'call_transcript': primary_call.get('Full_Transcript_With_Timestamps', '') or primary_call.get('full_transcript', ''),
-                'call_metadata': {
-                    'call_date': primary_call.get('analysis_date', ''),
-                    'call_type': primary_call.get('call_tag', ''),
-                    'performance_score': primary_call.get('representative_score', 0),
-                    'call_summary': primary_call.get('call_summary', '')
-                },
+                # UPDATED: Include all enhanced individual call analyses
+                'individual_call_analyses': individual_call_analyses,
                 
-                # Performance overview
-                'performance_overview': {
-                    'current_performance_level': f"Score: {primary_call.get('representative_score', 0)}%",
-                    'key_strengths': parsed_analysis.get('strengths', ['Professional communication', 'Completed call objectives']),
-                    'primary_challenges': parsed_analysis.get('areas_for_improvement', ['Follow-up consistency', 'Objection handling'])
-                },
+                # Overall summary combining all calls
+                'overall_summary': self._create_overall_summary(individual_call_analyses, target_employee),
                 
-                # Conversation examples
-                'conversation_examples': self._create_conversation_examples(primary_call, parsed_analysis),
+                # Combined insights from all calls
+                'combined_insights': self._combine_insights_from_all_calls(individual_call_analyses),
                 
-                # Coaching principles
-                'coaching_principles': parsed_analysis.get('coaching_priorities', [
-                    "Build rapport first - Always open with warmth and personal connection",
-                    "Explain the 'why' - Help patients understand treatment importance", 
-                    "Handle objections - Acknowledge concerns then reframe positively",
-                    "Offer choices - Give appointment options, not yes/no questions"
-                ]),
-                
-                # Recommendations
-                'recommendations': parsed_analysis.get('follow_up_recommendations', [
-                    "Practice objection handling scenarios",
-                    "Use warmer opening statements",
-                    "Implement structured follow-up process"
-                ]),
-                
-                # Development plan
-                'development_plan': {
-                    'immediate_focus': [parsed_analysis.get('training_focus', 'Communication skills')],
-                    '30_day_goals': ['Improve patient rapport scores', 'Increase appointment booking rate'],
-                    '90_day_objectives': ['Achieve consistent 85%+ performance scores'],
-                    'success_metrics': parsed_analysis.get('success_indicators', ['Higher patient satisfaction', 'More bookings'])
-                }
+                # Comprehensive development plan
+                'comprehensive_development_plan': self._create_comprehensive_development_plan(individual_call_analyses, target_employee)
             }
             
-            logger.info(f"Successfully generated individual case study for {target_employee}")
+            logger.info(f"Successfully generated enhanced individual case study for {target_employee}")
             return case_study
             
         except Exception as e:
             logger.error(f"Individual case study generation failed: {str(e)}")
-            # Return fallback instead of raising exception
-            return self._create_fallback_case_study(calls_data[0] if calls_data else {}, target_employee, title)
+            raise e
+    
+    async def _analyze_single_call_enhanced(self, call_data: Dict, employee: str, call_number: int) -> Dict:
+        """Analyze a single call with enhanced LLM prompt - UPDATED"""
+        
+        # UPDATED: Use enhanced prompt from prompts file
+        prompt = get_individual_call_analysis_prompt(call_data, employee)
+        
+        # Get LLM response for this specific call with enhanced prompt
+        coaching_response = await self.llm_analyzer.generate_response(prompt, max_tokens=1500)
+        
+        if not coaching_response or coaching_response.strip() == "":
+            logger.warning(f"LLM returned empty response for call {call_number}")
+            raise Exception("Empty LLM response")
+        
+        try:
+            # Clean and parse JSON response
+            clean_response = coaching_response.strip()
+            if clean_response.startswith('```json'):
+                clean_response = clean_response.replace('```json', '').replace('```', '').strip()
+            
+            parsed_analysis = json.loads(clean_response)
+            logger.info(f"Successfully parsed enhanced LLM response for call {call_number}")
+        except json.JSONDecodeError as e:
+            logger.warning(f"JSON parsing failed for call {call_number}: {e}")
+            # UPDATED: Try to extract conversation examples separately if main parsing fails
+            await self._try_extract_conversation_examples(call_data, call_number)
+            raise e
+        
+        # UPDATED: Create enhanced call analysis structure with new fields
+        call_analysis = {
+            'call_number': call_number,
+            'call_metadata': {
+                'call_date': call_data.get('analysis_date', ''),
+                'call_time': call_data.get('analysis_time', ''),
+                'call_type': call_data.get('call_tag', ''),
+                'performance_score': call_data.get('representative_score', 0),
+                'overall_sentiment': call_data.get('overall_sentiment', 'neutral'),
+                'call_summary': call_data.get('call_summary', ''),
+                'representative_name': call_data.get('representative_name', employee)
+            },
+            
+            # Full transcript for this call
+            'call_transcript': call_data.get('full_transcript', '') or call_data.get('Full_Transcript_With_Timestamps', ''),
+            
+            # UPDATED: Enhanced LLM analysis results with new fields
+            'llm_analysis': parsed_analysis,
+            
+            # UPDATED: Enhanced performance overview
+            'performance_overview': {
+                'current_performance_level': f"Score: {call_data.get('representative_score', 0)}%",
+                'key_strengths': parsed_analysis.get('strengths', []),
+                'primary_challenges': parsed_analysis.get('areas_for_improvement', []),
+                'technical_issues_detected': parsed_analysis.get('technical_issues_detected', False)
+            },
+            
+            # UPDATED: Real conversation examples from enhanced prompt
+            'conversation_examples': parsed_analysis.get('conversation_examples', []),
+            
+            # UPDATED: Enhanced coaching recommendations 
+            'call_specific_recommendations': parsed_analysis.get('follow_up_recommendations', []),
+            
+            # Training focus for this call
+            'training_focus': parsed_analysis.get('training_focus', 'Communication skills'),
+            
+            # UPDATED: New field for transcript-based insights
+            'transcript_insights': parsed_analysis.get('transcript_based_insights', [])
+        }
+        
+        return call_analysis
+    
+    async def _try_extract_conversation_examples(self, call_data: Dict, call_number: int):
+        """Try to extract conversation examples separately if main analysis fails"""
+        try:
+            transcript = call_data.get('full_transcript', '') or call_data.get('Full_Transcript_With_Timestamps', '')
+            if not transcript:
+                return []
+            
+            prompt = get_conversation_example_extraction_prompt(transcript)
+            response = await self.llm_analyzer.generate_response(prompt, max_tokens=800)
+            
+            if response:
+                examples_data = json.loads(response.strip())
+                logger.info(f"Successfully extracted conversation examples for call {call_number}")
+                return examples_data.get('conversation_examples', [])
+        except Exception as e:
+            logger.warning(f"Failed to extract conversation examples for call {call_number}: {e}")
+            return []
     
     async def generate_comparative_case_study(self, calls_data: List[Dict], target_employee: str, title: str) -> Dict[str, Any]:
-        """Generate comparative case study - WORKING VERSION"""
+        """Generate comparative case study - UPDATED WITH ENHANCED PROMPT"""
         try:
             logger.info(f"Generating comparative case study with {len(calls_data)} calls")
             
             if len(calls_data) < 2:
                 raise Exception("Need at least 2 calls for comparative analysis")
             
-            # Find best and worst performing calls
-            best_call = max(calls_data, key=lambda x: x.get('representative_score', 0))
-            worst_call = min(calls_data, key=lambda x: x.get('representative_score', 100))
+            # UPDATED: Use enhanced comparative analysis prompt
+            prompt = get_comparative_analysis_prompt(calls_data, target_employee, title)
             
-            # Create simple comparative prompt
-            prompt = f"""Compare these two dental office calls and provide coaching insights:
-
-BEST CALL (Score: {best_call.get('representative_score', 0)}%):
-Summary: {best_call.get('call_summary', '')[:200]}
-
-WORST CALL (Score: {worst_call.get('representative_score', 0)}%):  
-Summary: {worst_call.get('call_summary', '')[:200]}
-
-What made the best call successful? What can be improved in the worst call? Provide 3 key lessons.
-
-Respond in this format:
-{{
-    "best_practices": ["practice 1", "practice 2", "practice 3"],
-    "improvement_areas": ["area 1", "area 2", "area 3"],
-    "key_lessons": ["lesson 1", "lesson 2", "lesson 3"]
-}}"""
-            
-            # Get LLM response
-            response = await self.llm_analyzer.generate_response(prompt, max_tokens=800)
+            # Get LLM response with enhanced prompt
+            response = await self.llm_analyzer.generate_response(prompt, max_tokens=1200)
             
             if not response:
                 logger.error("LLM returned empty response for comparative analysis")
-                return self._create_fallback_comparative_case_study(calls_data, target_employee, title)
+                raise Exception("Empty LLM response for comparative analysis")
             
-            # Parse response
+            # Parse enhanced response
             try:
-                analysis = json.loads(response)
-            except:
-                analysis = {
-                    "best_practices": ["Professional communication", "Clear explanations", "Follow-up consistency"],
-                    "improvement_areas": ["Response time", "Empathy expression", "Problem resolution"],
-                    "key_lessons": ["Build rapport first", "Listen actively", "Provide clear next steps"]
-                }
+                clean_response = response.strip()
+                if clean_response.startswith('```json'):
+                    clean_response = clean_response.replace('```json', '').replace('```', '').strip()
+                analysis = json.loads(clean_response)
+            except json.JSONDecodeError as e:
+                logger.error(f"Failed to parse comparative analysis response: {e}")
+                raise e
             
             # Calculate stats
             scores = [call.get('representative_score', 0) for call in calls_data]
             avg_score = sum(scores) / len(scores) if scores else 0
             
-            # Create comparative case study
+            # UPDATED: Create enhanced comparative case study
             case_study = {
                 'title': title,
                 'analysis_type': 'comparative',
@@ -182,364 +209,260 @@ Respond in this format:
                 'employees_compared': list(set(call.get('representative_name', 'Unknown') for call in calls_data)),
                 'generated_at': datetime.now().isoformat(),
                 'status': 'generated',
-                'generation_method': 'llm_analysis',
+                'generation_method': 'enhanced_llm_analysis',
                 
-                # Comparative analysis
-                'comparative_analysis': {
-                    'performance_comparison': f"Scores range from {min(scores)}% to {max(scores)}% (avg: {avg_score:.1f}%)",
-                    'best_practices': analysis.get('best_practices', []),
-                    'common_issues': analysis.get('improvement_areas', []),
-                    'performance_gaps': f"{max(scores) - min(scores):.1f}% gap between best and worst performers"
-                },
+                # UPDATED: Enhanced comparative analysis with new structure
+                'comparative_analysis': analysis,
                 
-                # Coaching principles
+                # UPDATED: Enhanced coaching principles from LLM
                 'coaching_principles': analysis.get('key_lessons', []),
                 
-                # Standardized approaches
-                'standardized_approaches': [
-                    "Use consistent greeting and closing scripts",
-                    "Implement standard objection handling responses", 
-                    "Follow structured appointment booking process"
-                ],
+                # Performance metrics
+                'performance_metrics': {
+                    'average_score': round(avg_score, 1),
+                    'score_range': f"{min(scores)}% to {max(scores)}%",
+                    'total_calls': len(calls_data)
+                },
                 
-                # Individual adaptations
-                'individual_adaptations': [
-                    "Tailor communication style to employee strengths",
-                    "Focus training on specific skill gaps identified",
-                    "Set personalized performance improvement goals"
-                ],
-                
-                # Recommendations
-                'recommendations': [
-                    f"Focus team training on: {', '.join(analysis.get('improvement_areas', [])[:2])}",
-                    f"Replicate best practices: {', '.join(analysis.get('best_practices', [])[:2])}",
-                    "Implement peer mentoring between high and low performers"
-                ],
-                
-                # Training program
-                'training_program': {
-                    'group_training_topics': analysis.get('improvement_areas', [])[:3],
-                    'individual_coaching_needs': [f"{call.get('representative_name', 'Unknown')}: Focus on score improvement" for call in calls_data if call.get('representative_score', 100) < 75],
-                    'implementation_plan': [
-                        "Week 1-2: Group training on common issues",
-                        "Week 3-4: Individual coaching sessions", 
-                        "Week 5-6: Practice and role-playing",
-                        "Week 7-8: Follow-up and assessment"
-                    ]
-                }
+                # UPDATED: Enhanced training program from LLM analysis
+                'training_program': analysis.get('training_recommendations', [])
             }
             
-            logger.info(f"Successfully generated comparative case study")
+            logger.info(f"Successfully generated enhanced comparative case study")
             return case_study
             
         except Exception as e:
             logger.error(f"Comparative case study generation failed: {str(e)}")
-            return self._create_fallback_comparative_case_study(calls_data, target_employee, title)
+            raise e
     
-    def _select_primary_call(self, calls_data: List[Dict]) -> Dict:
-        """Select the most valuable call for individual analysis"""
+    # Keep all existing helper methods unchanged - they work with the new enhanced data structure
+    def _create_overall_summary(self, call_analyses: List[Dict], target_employee: str) -> Dict:
+        """Create overall summary combining insights from all analyzed calls"""
         
-        if not calls_data:
-            return {}
+        total_calls = len(call_analyses)
+        if total_calls == 0:
+            return {'message': 'No calls analyzed'}
         
-        if len(calls_data) == 1:
-            return calls_data[0]
+        # Calculate average performance
+        scores = [call.get('call_metadata', {}).get('performance_score', 0) for call in call_analyses]
+        avg_score = sum(scores) / len(scores) if scores else 0
         
-        # Score calls based on coaching value
-        scored_calls = []
-        for call in calls_data:
-            score = 0
+        # Collect all strengths across calls
+        all_strengths = []
+        all_challenges = []
+        all_focus_areas = []
+        technical_issues_count = 0
+        
+        for call in call_analyses:
+            strengths = call.get('performance_overview', {}).get('key_strengths', [])
+            challenges = call.get('performance_overview', {}).get('primary_challenges', [])
+            focus = call.get('training_focus', '')
+            technical_issues = call.get('performance_overview', {}).get('technical_issues_detected', False)
             
-            # Prefer calls with clear improvement opportunities
-            rep_score = call.get('representative_score', 100)
-            if rep_score < 75:
-                score += 30
-            elif rep_score < 85:
-                score += 15
-            
-            # Prefer calls with missed opportunities
-            if call.get('high_value_missed_opportunity'):
-                score += 25
-            
-            # Prefer calls with good transcript content
-            transcript = call.get('full_transcript', '') or call.get('call_summary', '')
-            if len(transcript) > 100:
-                score += 20
-            
-            # Prefer calls with existing analysis
-            if call.get('performance_analysis') or call.get('coaching_analysis'):
-                score += 15
-            
-            # Prefer recent calls
-            try:
-                call_date = datetime.fromisoformat(call.get('analysis_date', ''))
-                days_old = (datetime.now() - call_date).days
-                if days_old < 30:
-                    score += 10
-            except:
-                pass
-            
-            scored_calls.append((call, score))
+            all_strengths.extend(strengths)
+            all_challenges.extend(challenges)
+            if focus:
+                all_focus_areas.append(focus)
+            if technical_issues:
+                technical_issues_count += 1
         
-        # Return highest scoring call
-        return max(scored_calls, key=lambda x: x[1])[0]
-    
-    def _create_simple_coaching_prompt(self, call_data: Dict, employee: str) -> str:
-        """Create a simple, working prompt for the LLM"""
-        
-        # Get basic call info
-        summary = call_data.get('call_summary', 'No summary available')
-        full_transcript = call_data.get('Full_Transcript_With_Timestamps', '') or call_data.get('full_transcript', '')
-        score = call_data.get('representative_score', 0)
-        sentiment = call_data.get('overall_sentiment', 'neutral')
-        call_type = call_data.get('call_tag', 'general_inquiry')
-        
-        # Use full transcript if available, fallback to summary
-        transcript_content = full_transcript if full_transcript.strip() else summary
-        
-        # Create simple, focused prompt
-        prompt = f"""Analyze this dental office call for coaching purposes:
-
-Employee: {employee}
-Call Type: {call_type}
-Performance Score: {score}%
-Sentiment: {sentiment}
-Full Call Transcript: {transcript_content}
-
-Provide coaching analysis in JSON format:
-{{
-    "strengths": ["strength 1", "strength 2"],
-    "areas_for_improvement": ["area 1", "area 2"], 
-    "coaching_priorities": ["priority 1", "priority 2"],
-    "training_focus": "main area to focus on",
-    "success_indicators": ["how to measure improvement"],
-    "follow_up_recommendations": ["specific action 1", "specific action 2"]
-}}"""
-        
-        return prompt
-    
-    def _create_conversation_examples(self, call_data: Dict, analysis: Dict) -> List[Dict]:
-        """Create conversation examples based on the actual call transcript and LLM analysis"""
-        
-        examples = []
-        
-        # Get the actual transcript
-        transcript = call_data.get('Full_Transcript_With_Timestamps', '') or call_data.get('full_transcript', '')
-        
-        if transcript and 'SPEAKER_01:' in transcript:
-            # Extract actual staff responses from the transcript
-            staff_lines = []
-            for line in transcript.split('\n'):
-                if 'SPEAKER_01:' in line:
-                    # Extract the actual spoken text (remove timestamp and speaker label)
-                    spoken_text = line.split('SPEAKER_01:')[-1].strip()
-                    if spoken_text:
-                        staff_lines.append(spoken_text)
-            
-            # Create examples based on actual conversation
-            if staff_lines:
-                # Example 1: Use the first staff response if it exists
-                if len(staff_lines) > 0:
-                    examples.append({
-                        'current_approach': staff_lines[0][:100] + "..." if len(staff_lines[0]) > 100 else staff_lines[0],
-                        'recommended_approach': f"Great opening! Could add more warmth: {staff_lines[0]}",
-                        'coaching_point': 'Continue using professional greetings with added personal warmth',
-                        'expected_outcome': 'Enhanced patient rapport from the start'
-                    })
-                
-                # Example 2: Look for empathy opportunities
-                empathy_line = None
-                for line in staff_lines:
-                    if any(word in line.lower() for word in ['sorry', 'understand', 'hear', 'pain']):
-                        empathy_line = line
-                        break
-                
-                if empathy_line:
-                    examples.append({
-                        'current_approach': empathy_line[:100] + "..." if len(empathy_line) > 100 else empathy_line,
-                        'recommended_approach': f"Excellent empathy! Could enhance with: 'I completely understand how concerning that must be. {empathy_line.split('.')[0]}'",
-                        'coaching_point': 'Great use of empathy - consider adding validation of patient emotions',
-                        'expected_outcome': 'Patients feel more understood and supported'
-                    })
-                
-                # Example 3: Look for scheduling/solution responses
-                solution_line = None
-                for line in staff_lines:
-                    if any(word in line.lower() for word in ['schedule', 'appointment', 'available', 'check', 'opening']):
-                        solution_line = line
-                        break
-                
-                if solution_line:
-                    examples.append({
-                        'current_approach': solution_line[:100] + "..." if len(solution_line) > 100 else solution_line,
-                        'recommended_approach': f"Good problem-solving! Could be more specific: '{solution_line} Would that time work for your schedule?'",
-                        'coaching_point': 'Excellent solution-focused response - adding confirmation questions helps ensure patient satisfaction',
-                        'expected_outcome': 'More efficient scheduling and better patient experience'
-                    })
-        
-        # If no transcript-based examples, create contextual ones based on call summary
-        if not examples:
-            call_summary = call_data.get('call_summary', '')
-            
-            if 'emergency' in call_summary.lower():
-                examples.append({
-                    'current_approach': "Let me check our schedule for you",
-                    'recommended_approach': "I understand this is urgent. Let me immediately check our emergency appointments to get you seen today",
-                    'coaching_point': "Acknowledge urgency first, then provide immediate action",
-                    'expected_outcome': "Patient feels prioritized and cared for"
-                })
-            
-            elif 'reschedule' in call_summary.lower():
-                examples.append({
-                    'current_approach': "When would you like to reschedule?",
-                    'recommended_approach': "Of course, I understand things come up. I have Tuesday at 10am or Friday at 2pm - which works better for you?",
-                    'coaching_point': "Show understanding and offer specific alternatives",
-                    'expected_outcome': "Smoother rescheduling and better patient experience"
-                })
-        
-        return examples[:3]  # Return max 3 examples
-    
-    def _parse_text_response(self, response_text: str) -> Dict:
-        """Parse non-JSON LLM response into structured format"""
-        
-        # Extract key information from text response
-        strengths = []
-        improvements = []
-        priorities = []
-        
-        lines = response_text.split('\n')
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                continue
-                
-            if 'strength' in line.lower() or 'good' in line.lower():
-                strengths.append(line.replace('-', '').replace('•', '').strip())
-            elif 'improve' in line.lower() or 'better' in line.lower():
-                improvements.append(line.replace('-', '').replace('•', '').strip())
-            elif 'priority' in line.lower() or 'focus' in line.lower():
-                priorities.append(line.replace('-', '').replace('•', '').strip())
+        # Find most common patterns
+        from collections import Counter
+        common_strengths = [item for item, count in Counter(all_strengths).most_common(5)]
+        common_challenges = [item for item, count in Counter(all_challenges).most_common(5)]
+        common_focus_areas = [item for item, count in Counter(all_focus_areas).most_common(3)]
         
         return {
-            'strengths': strengths[:3] if strengths else ['Professional communication'],
-            'areas_for_improvement': improvements[:3] if improvements else ['Follow-up consistency'], 
-            'coaching_priorities': priorities[:3] if priorities else ['Improve patient rapport'],
-            'training_focus': improvements[0] if improvements else 'Communication skills',
-            'success_indicators': ['Higher satisfaction scores'],
-            'follow_up_recommendations': ['Practice active listening', 'Use warmer greetings']
-        }
-    
-    def _clean_parsed_analysis(self, analysis: Dict) -> Dict:
-        """Clean up malformed JSON artifacts in parsed analysis"""
-        cleaned = {}
-        
-        for key, value in analysis.items():
-            if isinstance(value, list):
-                # Clean list items - remove JSON artifacts
-                cleaned_list = []
-                for item in value:
-                    if isinstance(item, str):
-                        clean_item = item.strip().strip('"').strip("'")
-                        # Skip JSON field names that got included as values
-                        if not clean_item.startswith(('"', "'", 'strengths', 'areas_for', 'training_focus')):
-                            cleaned_list.append(clean_item)
-                    else:
-                        cleaned_list.append(item)
-                cleaned[key] = cleaned_list
-            elif isinstance(value, str):
-                # Clean string values - remove quotes and JSON artifacts
-                clean_value = value.strip().strip('"').strip("'")
-                # Skip malformed JSON field names
-                if not clean_value.startswith(('"', "'")) or not clean_value.endswith((':', '[')):
-                    cleaned[key] = clean_value
-                else:
-                    cleaned[key] = "Communication skills"  # Default fallback
-            else:
-                cleaned[key] = value
-        
-        return cleaned
-    
-    def _create_fallback_case_study(self, call_data: Dict, target_employee: str, title: str) -> Dict:
-        """Create fallback case study when LLM fails"""
-        
-        return {
-            'title': title,
-            'analysis_type': 'individual',
-            'target_employee': target_employee,
-            'calls_analyzed': 1,
-            'generated_at': datetime.now().isoformat(),
-            'status': 'generated_fallback',
-            'generation_method': 'fallback_analysis',
-            
-            'performance_overview': {
-                'current_performance_level': f"Score: {call_data.get('representative_score', 0)}%",
-                'key_strengths': ['Professional demeanor', 'Completed call objectives'],
-                'primary_challenges': ['Needs coaching analysis', 'LLM analysis unavailable']
+            'total_calls_analyzed': total_calls,
+            'average_performance_score': round(avg_score, 1),
+            'score_range': {
+                'highest': max(scores) if scores else 0,
+                'lowest': min(scores) if scores else 0
             },
-            
-            'conversation_examples': [{
-                'current_approach': "Standard approach observed",
-                'recommended_approach': "Enhanced approach with better rapport building",
-                'coaching_point': "Focus on building stronger patient connections",
-                'expected_outcome': "Improved patient satisfaction"
-            }],
-            
-            'coaching_principles': [
-                "Build rapport first - Always open with warmth",
-                "Listen actively - Show genuine interest in patient concerns", 
-                "Provide clear explanations - Help patients understand",
-                "Follow up consistently - Ensure patient needs are met"
-            ],
-            
-            'recommendations': [
-                "Schedule follow-up coaching session",
-                "Review call transcript in detail",
-                "Practice rapport building techniques"
-            ],
-            
-            'development_plan': {
-                'immediate_focus': ['Schedule coaching session'],
-                '30_day_goals': ['Improve communication scores'],
-                '90_day_objectives': ['Achieve consistent performance'],
-                'success_metrics': ['Patient feedback scores']
+            'common_strengths': common_strengths,
+            'common_challenges': common_challenges,
+            'primary_focus_areas': common_focus_areas,
+            'technical_issues_detected': technical_issues_count,
+            'target_employee': target_employee,
+            'analysis_period': {
+                'start_date': min([call.get('call_metadata', {}).get('call_date', '') for call in call_analyses]),
+                'end_date': max([call.get('call_metadata', {}).get('call_date', '') for call in call_analyses])
             }
         }
     
-    def _create_fallback_comparative_case_study(self, calls_data: List[Dict], target_employee: str, title: str) -> Dict:
-        """Create fallback comparative case study when LLM fails"""
+    def _combine_insights_from_all_calls(self, call_analyses: List[Dict]) -> Dict:
+        """Combine insights from all calls to create comprehensive coaching principles"""
         
-        scores = [call.get('representative_score', 0) for call in calls_data]
-        avg_score = sum(scores) / len(scores) if scores else 0
+        # Collect all coaching priorities and recommendations
+        all_priorities = []
+        all_recommendations = []
+        all_transcript_insights = []
+        
+        for call in call_analyses:
+            llm_analysis = call.get('llm_analysis', {})
+            priorities = llm_analysis.get('coaching_priorities', [])
+            recommendations = call.get('call_specific_recommendations', [])
+            insights = call.get('transcript_insights', [])
+            
+            all_priorities.extend(priorities)
+            all_recommendations.extend(recommendations)
+            all_transcript_insights.extend(insights)
+        
+        # Remove duplicates while preserving order
+        unique_priorities = []
+        unique_recommendations = []
+        unique_insights = []
+        
+        for item in all_priorities:
+            if item not in unique_priorities:
+                unique_priorities.append(item)
+        
+        for item in all_recommendations:
+            if item not in unique_recommendations:
+                unique_recommendations.append(item)
+                
+        for item in all_transcript_insights:
+            if item not in unique_insights:
+                unique_insights.append(item)
         
         return {
-            'title': title,
-            'analysis_type': 'comparative', 
-            'target_employee': target_employee,
-            'calls_analyzed': len(calls_data),
-            'generated_at': datetime.now().isoformat(),
-            'status': 'generated_fallback',
-            'generation_method': 'fallback_analysis',
-            
-            'comparative_analysis': {
-                'performance_comparison': f"Average score: {avg_score:.1f}%",
-                'best_practices': ['Professional communication', 'Timely responses', 'Clear explanations'],
-                'common_issues': ['Consistency in follow-up', 'Rapport building', 'Objection handling'],
-                'performance_gaps': 'Analysis requires manual review'
-            },
-            
-            'coaching_principles': [
-                'Maintain consistent professional standards',
-                'Focus on patient-centered communication',
-                'Implement structured follow-up processes'
-            ],
-            
-            'recommendations': [
-                'Conduct detailed manual analysis',
-                'Implement team training program',
-                'Establish coaching best practices'
-            ]
+            'coaching_principles': unique_priorities[:8],  # Top 8 principles
+            'comprehensive_recommendations': unique_recommendations[:10],  # Top 10 recommendations
+            'transcript_based_insights': unique_insights[:8],  # Top 8 transcript insights
+            'pattern_analysis': {
+                'consistently_strong_areas': self._find_consistent_strengths(call_analyses),
+                'recurring_challenges': self._find_recurring_challenges(call_analyses),
+                'improvement_opportunities': self._identify_improvement_patterns(call_analyses)
+            }
         }
+    
+    def _create_comprehensive_development_plan(self, call_analyses: List[Dict], target_employee: str) -> Dict:
+        """Create comprehensive development plan based on all calls"""
+        
+        # Analyze performance trends
+        scores = [call.get('call_metadata', {}).get('performance_score', 0) for call in call_analyses]
+        avg_score = sum(scores) / len(scores) if scores else 0
+        
+        # Determine immediate focus based on most common challenges
+        all_challenges = []
+        for call in call_analyses:
+            challenges = call.get('performance_overview', {}).get('primary_challenges', [])
+            all_challenges.extend(challenges)
+        
+        from collections import Counter
+        top_challenges = [item for item, count in Counter(all_challenges).most_common(3)]
+        
+        # Create development plan
+        return {
+            'immediate_focus': top_challenges,
+            '30_day_goals': [
+                f'Improve consistency in {top_challenges[0] if top_challenges else "communication skills"}',
+                f'Achieve {min(avg_score + 10, 95)}% average performance score',
+                'Implement feedback from call analyses'
+            ],
+            '90_day_objectives': [
+                f'Maintain {min(avg_score + 20, 95)}%+ performance across all call types',
+                'Demonstrate mastery of identified improvement areas',
+                'Mentor other team members in strong areas'
+            ],
+            'success_metrics': [
+                'Performance score improvement',
+                'Reduced number of missed opportunities',
+                'Improved patient satisfaction feedback',
+                'Consistent application of coaching principles'
+            ],
+            'training_recommendations': self._create_training_recommendations(call_analyses)
+        }
+    
+    def _find_consistent_strengths(self, call_analyses: List[Dict]) -> List[str]:
+        """Find strengths that appear consistently across multiple calls"""
+        strength_counts = {}
+        total_calls = len(call_analyses)
+        
+        for call in call_analyses:
+            strengths = call.get('performance_overview', {}).get('key_strengths', [])
+            for strength in strengths:
+                strength_counts[strength] = strength_counts.get(strength, 0) + 1
+        
+        # Return strengths that appear in at least 50% of calls
+        threshold = max(1, total_calls // 2)
+        consistent_strengths = [strength for strength, count in strength_counts.items() if count >= threshold]
+        
+        return consistent_strengths[:5]  # Top 5 consistent strengths
+    
+    def _find_recurring_challenges(self, call_analyses: List[Dict]) -> List[str]:
+        """Find challenges that appear across multiple calls"""
+        challenge_counts = {}
+        total_calls = len(call_analyses)
+        
+        for call in call_analyses:
+            challenges = call.get('performance_overview', {}).get('primary_challenges', [])
+            for challenge in challenges:
+                challenge_counts[challenge] = challenge_counts.get(challenge, 0) + 1
+        
+        # Return challenges that appear in at least 40% of calls
+        threshold = max(1, total_calls * 2 // 5)
+        recurring_challenges = [challenge for challenge, count in challenge_counts.items() if count >= threshold]
+        
+        return recurring_challenges[:5]  # Top 5 recurring challenges
+    
+    def _identify_improvement_patterns(self, call_analyses: List[Dict]) -> List[str]:
+        """Identify patterns for improvement across all calls"""
+        patterns = []
+        
+        # Check score patterns
+        scores = [call.get('call_metadata', {}).get('performance_score', 0) for call in call_analyses]
+        if scores:
+            avg_score = sum(scores) / len(scores)
+            if avg_score < 75:
+                patterns.append("Overall performance needs improvement across all call types")
+            
+            score_variance = max(scores) - min(scores)
+            if score_variance > 20:
+                patterns.append("Performance inconsistency - focus on standardizing approach")
+        
+        # Check call type patterns
+        call_types = [call.get('call_metadata', {}).get('call_type', '') for call in call_analyses]
+        type_scores = {}
+        for i, call_type in enumerate(call_types):
+            if call_type and i < len(scores):
+                if call_type not in type_scores:
+                    type_scores[call_type] = []
+                type_scores[call_type].append(scores[i])
+        
+        # Identify weak call types
+        for call_type, type_score_list in type_scores.items():
+            avg_type_score = sum(type_score_list) / len(type_score_list)
+            if avg_type_score < 70:
+                patterns.append(f"Needs focused training on {call_type.replace('_', ' ')} calls")
+        
+        return patterns[:5]  # Top 5 improvement patterns
+    
+    def _create_training_recommendations(self, call_analyses: List[Dict]) -> List[str]:
+        """Create specific training recommendations based on all call analyses"""
+        recommendations = []
+        
+        # Collect all training focuses
+        training_focuses = []
+        for call in call_analyses:
+            focus = call.get('training_focus', '')
+            if focus:
+                training_focuses.append(focus)
+        
+        from collections import Counter
+        common_focuses = [item for item, count in Counter(training_focuses).most_common(3)]
+        
+        for focus in common_focuses:
+            recommendations.append(f"Intensive training in {focus}")
+        
+        # Add general recommendations
+        recommendations.extend([
+            "Role-play exercises based on actual call scenarios",
+            "Regular coaching sessions to reinforce learning",
+            "Peer review sessions with high-performing team members"
+        ])
+        
+        return recommendations[:6]  # Top 6 training recommendations
     
     def is_available(self) -> bool:
         """Check if coaching service is available"""
