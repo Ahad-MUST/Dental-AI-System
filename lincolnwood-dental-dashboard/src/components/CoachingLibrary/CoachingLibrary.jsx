@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { GraduationCap, Filter, Download, Users, Calendar, Tag, Search, BarChart3 } from 'lucide-react';
+import { GraduationCap, Filter, Download, Users, Calendar, Tag, Search, BarChart3, ArrowUp } from 'lucide-react';
 import CallFilter from './CallFilter';
 import CallList from './CallList';
 import CaseStudyGenerator from './CaseStudyGenerator';
@@ -13,6 +13,7 @@ const CoachingLibrary = () => {
   const [selectedCalls, setSelectedCalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showFloatingGenerator, setShowFloatingGenerator] = useState(false);
   const [filters, setFilters] = useState({
     employee: '',
     dateRange: { start: '', end: '' },
@@ -33,6 +34,29 @@ const CoachingLibrary = () => {
   useEffect(() => {
     applyFilters();
   }, [calls, filters]);
+
+  // Show/hide floating generator based on selected calls and scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (selectedCalls.length > 0) {
+        const scrollY = window.scrollY;
+        // Show floating button if user has scrolled down more than 200px and has selected calls
+        setShowFloatingGenerator(scrollY > 200);
+      } else {
+        setShowFloatingGenerator(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [selectedCalls.length]);
+
+  // Update floating generator visibility when selection changes
+  useEffect(() => {
+    if (selectedCalls.length === 0) {
+      setShowFloatingGenerator(false);
+    }
+  }, [selectedCalls.length]);
 
   const loadCoachingData = async () => {
     try {
@@ -191,6 +215,17 @@ const CoachingLibrary = () => {
     return selectedData;
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const scrollToGenerator = () => {
+    const generatorElement = document.getElementById('case-study-generator');
+    if (generatorElement) {
+      generatorElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   if (loading) {
     return <LoadingState />;
   }
@@ -214,7 +249,33 @@ const CoachingLibrary = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
+      {/* Floating Generate Button - Only shows when calls are selected and user has scrolled */}
+      {showFloatingGenerator && selectedCalls.length > 0 && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className="bg-white rounded-lg shadow-lg border border-slate-200 p-4 min-w-[280px]">
+            <div className="flex items-center justify-between mb-3">
+              <div className="text-sm font-medium text-slate-900">
+                {selectedCalls.length} call{selectedCalls.length !== 1 ? 's' : ''} selected
+              </div>
+              <button 
+                onClick={scrollToTop}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                <ArrowUp className="h-4 w-4" />
+              </button>
+            </div>
+            <button
+              onClick={scrollToGenerator}
+              className="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-3 rounded-lg transition-colors flex items-center justify-center space-x-2"
+            >
+              <GraduationCap className="h-4 w-4" />
+              <span>Generate Training Material</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
@@ -352,10 +413,12 @@ const CoachingLibrary = () => {
 
           {/* Case Study Generator */}
           {selectedCalls.length > 0 && (
-            <CaseStudyGenerator
-              selectedCalls={getSelectedCallsData()}
-              onSuccess={clearSelection}
-            />
+            <div id="case-study-generator">
+              <CaseStudyGenerator
+                selectedCalls={getSelectedCallsData()}
+                onSuccess={clearSelection}
+              />
+            </div>
           )}
         </div>
       </div>

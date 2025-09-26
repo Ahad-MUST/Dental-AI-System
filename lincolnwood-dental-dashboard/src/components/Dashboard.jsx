@@ -139,14 +139,101 @@ const Dashboard = () => {
               <Analytics data={data} />
             </div>
 
-            {/* Main Dashboard Grid - UNCHANGED */}
+            {/* Main Dashboard Grid - SWAPPED SENTIMENT AND TOP PERFORMERS */}
             <div className="space-y-8">
-              {/* Quick Stats Row - Includes emotion and call tag metrics - UNCHANGED */}
+              {/* Quick Stats Row - UNCHANGED */}
               <section className="mb-8">
                 <StatsCards todayStats={analytics.todayStats} />
               </section>
               
-              {/* Charts Grid - Now includes call tag analytics - UNCHANGED */}
+              {/* Primary Charts (Call Volume, Performance, Call Tags) */}
+              <section>
+                <div className="space-y-8">
+                  {/* Primary Charts Row */}
+                  <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+                    <div className="xl:col-span-2">
+                      {/* Call Volume Chart */}
+                      <ChartsSection 
+                        analytics={analytics} 
+                        rawData={data} 
+                        getCallsBySentiment={getCallsBySentiment}
+                        getCallsByEmotion={getCallsByEmotion}
+                        getCallsByEmotionFlag={getCallsByEmotionFlag}
+                        getCallsByTag={getCallsByTag}
+                        showOnlyCallVolume={true}
+                      />
+                    </div>
+                    <div className="xl:col-span-1">
+                      {/* Call Tags Chart */}
+                      <ChartsSection 
+                        analytics={analytics} 
+                        rawData={data} 
+                        getCallsBySentiment={getCallsBySentiment}
+                        getCallsByEmotion={getCallsByEmotion}
+                        getCallsByEmotionFlag={getCallsByEmotionFlag}
+                        getCallsByTag={getCallsByTag}
+                        showOnlyCallTags={true}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Performance Charts Row */}
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    <div>
+                      {/* Performance Scores Chart */}
+                      <ChartsSection 
+                        analytics={analytics} 
+                        rawData={data} 
+                        getCallsBySentiment={getCallsBySentiment}
+                        getCallsByEmotion={getCallsByEmotion}
+                        getCallsByEmotionFlag={getCallsByEmotionFlag}
+                        getCallsByTag={getCallsByTag}
+                        showOnlyPerformanceScores={true}
+                      />
+                    </div>
+                    <div>
+                      {/* Performance Trends Chart */}
+                      <ChartsSection 
+                        analytics={analytics} 
+                        rawData={data} 
+                        getCallsBySentiment={getCallsBySentiment}
+                        getCallsByEmotion={getCallsByEmotion}
+                        getCallsByEmotionFlag={getCallsByEmotionFlag}
+                        getCallsByTag={getCallsByTag}
+                        showOnlyPerformanceTrends={true}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+              
+              {/* SWAPPED ROW: Emotion Analytics + Top Performers (same height) */}
+              <section>
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                  {/* Emotion Analytics */}
+                  <div>
+                    <ChartsSection 
+                      analytics={analytics} 
+                      rawData={data} 
+                      getCallsBySentiment={getCallsBySentiment}
+                      getCallsByEmotion={getCallsByEmotion}
+                      getCallsByEmotionFlag={getCallsByEmotionFlag}
+                      getCallsByTag={getCallsByTag}
+                      showOnlyEmotion={true}
+                    />
+                  </div>
+                  
+                  {/* Top Performers */}
+                  <div>
+                    <PerformanceSection 
+                      analytics={analytics} 
+                      rawData={data}
+                    />
+                  </div>
+                </div>
+              </section>
+              
+              {/* Sentiment Analysis - full width */}
               <section>
                 <ChartsSection 
                   analytics={analytics} 
@@ -155,14 +242,7 @@ const Dashboard = () => {
                   getCallsByEmotion={getCallsByEmotion}
                   getCallsByEmotionFlag={getCallsByEmotionFlag}
                   getCallsByTag={getCallsByTag}
-                />
-              </section>
-              
-              {/* Performance Section - UNCHANGED */}
-              <section>
-                <PerformanceSection 
-                  analytics={analytics} 
-                  rawData={data}
+                  showOnlySentiment={true}
                 />
               </section>
             </div>

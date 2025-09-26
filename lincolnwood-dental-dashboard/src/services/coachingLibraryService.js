@@ -1,7 +1,7 @@
 /**
- * Coaching Library Service - CLEANED VERSION
+ * Coaching Library Service - FIXED VERSION
  * API service for the coaching library functionality
- * Only handles fields that exist in Google Sheets and are displayed on frontend
+ * Fixed field name mapping to match backend expectations
  */
 
 const API_BASE_URL = 'http://localhost:8000';
@@ -44,7 +44,7 @@ class CoachingLibraryService {
   }
 
   /**
-   * Get unique employees from all calls - CLEANED VERSION
+   * Get unique employees from all calls
    */
   async getEmployees() {
     try {
@@ -66,7 +66,7 @@ class CoachingLibraryService {
   }
 
   /**
-   * Get unique call types from all calls - CLEANED VERSION
+   * Get unique call types from all calls
    */
   async getCallTypes() {
     try {
@@ -100,22 +100,33 @@ class CoachingLibraryService {
   }
 
   /**
-   * Generate case study from selected calls
+   * Generate case study from selected calls - FIXED FIELD NAMES
    */
   async generateCaseStudy(request) {
     try {
-      console.log('Generating case study:', request);
+      console.log('Original request:', request);
+      
+      // FIXED: Map frontend camelCase to backend snake_case
+      const backendRequest = {
+        calls: request.calls,
+        analysis_type: request.analysisType || request.analysis_type,  // Frontend sends analysisType, backend expects analysis_type
+        target_employee: request.targetEmployee || request.target_employee,  // Frontend sends targetEmployee, backend expects target_employee
+        title: request.title
+      };
+      
+      console.log('Mapped request for backend:', backendRequest);
       
       const response = await fetch(`${API_BASE_URL}/api/coaching/generate-case-study`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(backendRequest),
       });
 
       if (!response.ok) {
         const errorData = await response.text();
+        console.error('Backend error response:', errorData);
         throw new Error(`HTTP ${response.status}: ${errorData}`);
       }
 
@@ -130,22 +141,34 @@ class CoachingLibraryService {
   }
 
   /**
-   * Generate PDF training material
+   * Generate PDF training material - FIXED FIELD NAMES
    */
   async generatePDF(request) {
     try {
-      console.log('Generating PDF:', request);
+      console.log('Original PDF request:', request);
+      
+      // FIXED: Map frontend camelCase to backend snake_case
+      const backendRequest = {
+        case_study_data: request.case_study_data || request.caseStudyData,
+        title: request.title,
+        target_employee: request.targetEmployee || request.target_employee,
+        analysis_type: request.analysisType || request.analysis_type,
+        format: request.format || 'pdf'
+      };
+      
+      console.log('Mapped PDF request for backend:', backendRequest);
       
       const response = await fetch(`${API_BASE_URL}/api/coaching/generate-pdf`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(request),
+        body: JSON.stringify(backendRequest),
       });
 
       if (!response.ok) {
         const errorData = await response.text();
+        console.error('PDF generation error:', errorData);
         throw new Error(`HTTP ${response.status}: ${errorData}`);
       }
 
@@ -179,7 +202,7 @@ class CoachingLibraryService {
   }
 
   /**
-   * Get coaching statistics - CLEANED VERSION
+   * Get coaching statistics
    */
   async getStatistics() {
     try {

@@ -1,6 +1,7 @@
 """
 Coaching Library API Routes - CLEANED VERSION
 Only includes fields that exist in Google Sheets and are displayed on frontend
+Updated to remove comparative analysis
 """
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -42,7 +43,7 @@ class CallFilterRequest(BaseModel):
 
 class CaseStudyRequest(BaseModel):
     calls: List[Dict[str, Any]]
-    analysis_type: str
+    analysis_type: str  # Only 'individual' now
     target_employee: str
     title: str
 
@@ -50,7 +51,7 @@ class PDFGenerationRequest(BaseModel):
     case_study_data: Dict[str, Any]
     title: str
     target_employee: str
-    analysis_type: str
+    analysis_type: str  # Only 'individual' now
     format: str = "pdf"
 
 class CoachingSessionRequest(BaseModel):
@@ -324,7 +325,7 @@ async def get_call_types():
 
 @coaching_router.post("/generate-case-study")
 async def generate_case_study(request: CaseStudyRequest):
-    """Generate LLM-driven case study"""
+    """Generate LLM-driven case study - INDIVIDUAL ONLY"""
     try:
         if not request.calls:
             raise HTTPException(status_code=400, detail="No calls provided for analysis")
@@ -332,8 +333,9 @@ async def generate_case_study(request: CaseStudyRequest):
         if len(request.calls) > 10:
             raise HTTPException(status_code=400, detail="Maximum 10 calls allowed for analysis")
         
-        if request.analysis_type not in ['individual', 'comparative']:
-            raise HTTPException(status_code=400, detail="Analysis type must be 'individual' or 'comparative'")
+        # Only allow individual analysis now
+        if request.analysis_type != 'individual':
+            raise HTTPException(status_code=400, detail="Analysis type must be 'individual'")
         
         # Get the global coaching service
         coaching_service = get_coaching_service()
@@ -344,17 +346,12 @@ async def generate_case_study(request: CaseStudyRequest):
         for call_dict in request.calls:
             calls_data.append(call_dict)
         
-        logger.info(f"Generating {request.analysis_type} case study with {len(calls_data)} calls")
+        logger.info(f"Generating individual case study with {len(calls_data)} calls")
         
-        # Use the correct method names from the CoachingService
-        if request.analysis_type == 'individual':
-            case_study = await coaching_service.generate_individual_case_study(
-                calls_data, request.target_employee, request.title
-            )
-        else:
-            case_study = await coaching_service.generate_comparative_case_study(
-                calls_data, request.target_employee, request.title
-            )
+        # Use individual case study generation only
+        case_study = await coaching_service.generate_individual_case_study(
+            calls_data, request.target_employee, request.title
+        )
         
         logger.info(f"Successfully generated LLM-driven case study: {request.title}")
         return case_study
@@ -372,6 +369,10 @@ async def generate_training_pdf(request: PDFGenerationRequest):
     try:
         if not request.case_study_data:
             raise HTTPException(status_code=400, detail="No case study data provided")
+        
+        # Only allow individual analysis now
+        if request.analysis_type != 'individual':
+            raise HTTPException(status_code=400, detail="Analysis type must be 'individual'")
         
         # Try ReportLab for proper PDF generation
         try:
@@ -401,7 +402,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
             metadata = f"""
             <font size=16><b>Comprehensive Training Analysis</b></font><br/>
             <font size=12>Target Employee: {request.target_employee}</font><br/>
-            <font size=12>Analysis Type: {request.analysis_type.title()}</font><br/>
+            <font size=12>Analysis Type: Individual Training</font><br/>
             <font size=12>Total Calls Analyzed: {calls_analyzed}</font><br/>
             <font size=12>Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}</font><br/>
             """
@@ -647,7 +648,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
             pdf_content = buffer.getvalue()
             buffer.close()
             
-            logger.info(f"Generated comprehensive multi-call PDF: {len(pdf_content)} bytes")
+            logger.info(f"Generated comprehensive individual training PDF: {len(pdf_content)} bytes")
             
         except ImportError:
             logger.warning("ReportLab not available, creating comprehensive text document")
@@ -658,7 +659,7 @@ async def generate_training_pdf(request: PDFGenerationRequest):
 {request.title}
 
 Target Employee: {request.target_employee}
-Analysis Type: {request.analysis_type.title()}
+Analysis Type: Individual Training
 Total Calls Analyzed: {case_study.get('calls_analyzed', 0)}
 Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
 
@@ -761,7 +762,7 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
             content += "End of Comprehensive Training Material\n"
             
             pdf_content = content.encode('utf-8')
-            logger.info(f"Generated comprehensive multi-call text document: {len(pdf_content)} bytes")
+            logger.info(f"Generated comprehensive individual training text document: {len(pdf_content)} bytes")
         
         from fastapi.responses import Response
         
@@ -772,7 +773,7 @@ Generated: {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
             content=pdf_content,
             media_type='application/pdf',
             headers={
-                "Content-Disposition": f"attachment; filename={safe_filename}_Comprehensive_Training.pdf",
+                "Content-Disposition": f"attachment; filename={safe_filename}_Individual_Training.pdf",
                 "Content-Length": str(len(pdf_content))
             }
         )
@@ -809,6 +810,7 @@ async def test_coaching_system():
             "calls_found": len(calls),
             "sample_call_keys": list(calls[0].keys()) if calls else [],
             "coaching_service_info": service_info,
+            "supported_analysis_types": ["individual"],  # Only individual now
             "timestamp": datetime.now().isoformat()
         }
     except Exception as e:
@@ -817,6 +819,7 @@ async def test_coaching_system():
             "status": "error",
             "message": "Coaching system has issues",
             "error": str(e),
+            "supported_analysis_types": ["individual"],  # Only individual now
             "timestamp": datetime.now().isoformat()
         }
 

@@ -14,7 +14,7 @@ import { coachingLibraryAPI } from '../../services/coachingLibraryService';
 const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
   const [generating, setGenerating] = useState(false);
   const [generationStatus, setGenerationStatus] = useState('');
-  const [analysisType, setAnalysisType] = useState('individual'); // 'individual' or 'comparative'
+  const [analysisType, setAnalysisType] = useState('individual'); // Only 'individual' now
   const [employeeName, setEmployeeName] = useState('');
   const [caseStudyTitle, setCaseStudyTitle] = useState('');
 
@@ -25,16 +25,9 @@ const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
       description: 'Create focused training for specific employee performance',
       icon: User,
       minCalls: 1,
-      maxCalls: 5
-    },
-    {
-      value: 'comparative',
-      label: 'Comparative Analysis',
-      description: 'Compare multiple calls to identify patterns and best practices',
-      icon: Users,
-      minCalls: 2,
-      maxCalls: 10
+      maxCalls: 10 // Increased from 5 to handle more calls
     }
+    // Removed comparative analysis option
   ];
 
   const getUniqueEmployees = () => {
@@ -50,12 +43,12 @@ const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
       year: 'numeric' 
     });
     
-    if (analysisType === 'individual' && employees.length === 1) {
+    if (employees.length === 1) {
       return `Training Case Study: ${employees[0]} - ${date}`;
-    } else if (analysisType === 'comparative') {
-      return `Comparative Analysis: ${selectedCalls.length} Calls - ${date}`;
+    } else if (employees.length > 1) {
+      return `Multi-Employee Training Analysis: ${selectedCalls.length} Calls - ${date}`;
     } else {
-      return `Coaching Case Study - ${date}`;
+      return `Training Case Study - ${date}`;
     }
   };
 
@@ -203,12 +196,12 @@ const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
         </div>
       </div>
 
-      {/* Analysis Type Selection */}
+      {/* Analysis Type Selection - Now only shows Individual Training */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-slate-700 mb-3">
           Training Type
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {analysisTypes.map((type) => {
             const Icon = type.icon;
             const isSelected = analysisType === type.value;
