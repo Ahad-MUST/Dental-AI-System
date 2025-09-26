@@ -1,6 +1,6 @@
 """
-Enhanced API Server for Dental Call Analysis Dashboard
-Now includes Coaching Library functionality
+Dental Call Analysis API Server
+API server for dental call analysis dashboard with coaching library
 """
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,7 +29,7 @@ try:
     COACHING_AVAILABLE = True
     print("✅ Coaching routes imported successfully")
 except ImportError as e:
-    print(f"❌ Failed to import coaching routes: {e}")
+    print(f"⚠️ Failed to import coaching routes: {e}")
     COACHING_AVAILABLE = False
     coaching_router = None
 
@@ -199,7 +199,7 @@ async def test_coaching_system():
             "message": "Coaching system has issues"
         }
 
-# Enhanced Employee Management Endpoints
+# Employee Management Endpoints
 
 @app.get("/api/employees", response_model=EmployeeListResponse)
 async def get_employees():
@@ -509,8 +509,8 @@ async def get_system_status():
         }
 
 def main():
-    """Run the enhanced API server"""
-    print("\n🦷 Enhanced Dental Call Analysis API Server v3.0")
+    """Run the API server"""
+    print("\n🏥 Dental Call Analysis API Server v3.0")
     print("="*60)
     print(f"🚀 Starting API server with Coaching Library...")
     print(f"📡 Employee management endpoints available")
@@ -536,7 +536,7 @@ def main():
         print(f"   🔒 Hidden: {len(hidden_employees)} ({', '.join(hidden_employees)})")
     
     print("="*60)
-    print(f"📍 Available endpoints:")
+    print(f"🔗 Available endpoints:")
     print(f"   🏠 Health check: http://localhost:8000/")
     print(f"   👥 Employees: http://localhost:8000/api/employees")
     print(f"   📊 Dashboard: http://localhost:8000/api/dashboard/data")

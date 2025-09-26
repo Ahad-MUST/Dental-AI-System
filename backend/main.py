@@ -1,5 +1,5 @@
 """
-Enhanced Dental Call Analysis System with Employee List Management
+Dental Call Analysis System with Employee List Management
 Main processing script with comprehensive analysis pipeline - REFACTORED VERSION
 """
 import asyncio
@@ -34,7 +34,7 @@ from stats_manager import StatsManager
 logger = None
 
 class DentalCallAnalyzer:
-    """Enhanced dental call analyzer with employee list management - Refactored"""
+    """Dental call analyzer with employee list management - Refactored"""
     
     def __init__(self):
         # Core services
@@ -48,7 +48,7 @@ class DentalCallAnalyzer:
         self.file_queue_service = FileQueueService()
         # REMOVED: self.audio_processor = AudioProcessor()  # Now handled by CallAnalyzer's AudioPreprocessor
         
-        # Enhanced services
+        # Services
         self.call_tagging_service = None  # Will be initialized with LLM analyzer
         self.coaching_analyzer = CoachingAnalyzer()
         self.speaker_role_service = None  # Will be initialized with LLM analyzer
@@ -62,7 +62,7 @@ class DentalCallAnalyzer:
     
     async def initialize(self):
         """Initialize all services including employee list management"""
-        logger.info("Initializing Enhanced Dental Call Analysis System with Employee List Management...")
+        logger.info("Initializing Dental Call Analysis System with Employee List Management...")
         
         try:
             # Initialize LLM analyzer first (other services depend on it)
@@ -122,12 +122,12 @@ class DentalCallAnalyzer:
             logger.info(f"Employee list initialized with {len(employees)} employees: {', '.join(employees)}")
             
             logger.info("All services initialized successfully")
-            logger.info(f"Centralized Audio Preprocessing: Enabled")
-            logger.info(f"LLM-based Sentiment Analysis: {'Enabled' if self.sentiment_service.is_initialized else 'Fallback Mode'}")
-            logger.info(f"Call Tagging System: {'LLM+Rules' if self.llm_analyzer.is_initialized else 'Rules Only'}")
+            logger.info(f"Audio Preprocessing: Enabled")
+            logger.info(f"LLM Sentiment Analysis: {'Enabled' if self.sentiment_service.is_initialized else 'Fallback Mode'}")
+            logger.info(f"Call Classification: {'AI-Powered' if self.llm_analyzer.is_initialized else 'Rules Only'}")
             logger.info(f"Coaching Analysis: {'Active' if self.coaching_analyzer else 'Offline'}")
-            logger.info(f"Speaker Role Assignment: {'LLM+Rules' if self.llm_analyzer.is_initialized else 'Rules Only'}")
-            logger.info(f"Employee List Management: Active with {len(employees)} employees")            
+            logger.info(f"Speaker Identification: {'AI-Powered' if self.llm_analyzer.is_initialized else 'Rules Only'}")
+            logger.info(f"Employee Management: Active with {len(employees)} employees")            
         except Exception as e:
             logger.error(f"Service initialization failed: {str(e)}")
             raise
@@ -142,7 +142,7 @@ class DentalCallAnalyzer:
             logger.info("Local mode - processing files from audio_files directory")
             await self._process_local_files()
         
-        # Display enhanced final statistics
+        # Display final statistics
         self.stats_manager.display_enhanced_final_stats()
     
     async def _process_local_files(self):
@@ -163,8 +163,8 @@ class DentalCallAnalyzer:
                 logger.info(f"\n--- Processing file {i}/{len(audio_files)}: {audio_file.name} ---")
                 
                 try:
-                    # Analyze the audio file with enhanced features using CallAnalyzer
-                    # CallAnalyzer now handles centralized preprocessing internally
+                    # Analyze the audio file using CallAnalyzer
+                    # CallAnalyzer now handles preprocessing internally
                     results = await self.call_analyzer.analyze_single_file_enhanced(audio_file)
                     
                     # Update statistics using StatsManager
@@ -200,7 +200,7 @@ class DentalCallAnalyzer:
             await self.llm_analyzer.cleanup()
             await self.sentiment_service.cleanup()
             
-            # Cleanup centralized preprocessing
+            # Cleanup preprocessing
             if self.call_analyzer and hasattr(self.call_analyzer, 'audio_preprocessor'):
                 self.call_analyzer.audio_preprocessor.cleanup_temp_files()
             
@@ -209,18 +209,18 @@ class DentalCallAnalyzer:
             logger.warning(f"Cleanup error: {str(e)}")
 
 async def main():
-    """Main function for enhanced batch processing with employee list management"""
+    """Main function for batch processing with employee list management"""
     
     # Setup logging
     setup_logging(settings.LOG_LEVEL, settings.LOGS_DIR)
     global logger
     logger = logging.getLogger(__name__)
     
-    print(f"\n🦷 Enhanced Dental Call Analysis System")
-    print(f"🎯 Features: Centralized Preprocessing | LLM Sentiment Analysis | Auto Call Tagging | Coaching Analysis | Smart Speaker Assignment | Employee List Management")
-    print(f"Mode: {'API Integration' if settings.USE_API_MODE else 'Local Directory Processing'}")
+    print(f"\n🏥 Dental Call Analysis System")
+    print(f"📊 Features: Audio Processing | AI Sentiment Analysis | Call Classification | Performance Scoring | Training Analysis | Employee Management")
+    print(f"⚙️  Mode: {'API Integration' if settings.USE_API_MODE else 'Local Directory Processing'}")
     if not settings.USE_API_MODE:
-        print(f"Directory: {settings.AUDIO_INPUT_DIR}")
+        print(f"📁 Directory: {settings.AUDIO_INPUT_DIR}")
     print("="*80)
     
     # Initialize analyzer
@@ -233,14 +233,14 @@ async def main():
         # Process all available files
         await analyzer.process_all_files()
         
-        logger.info("Enhanced batch processing completed successfully!")
+        logger.info("Call analysis processing completed successfully!")
         
     except KeyboardInterrupt:
-        logger.info("Batch processing interrupted by user")
+        logger.info("Processing interrupted by user")
         sys.exit(0)
         
     except Exception as e:
-        logger.error(f"Enhanced batch processing failed: {str(e)}")
+        logger.error(f"Processing failed: {str(e)}")
         sys.exit(1)
         
     finally:

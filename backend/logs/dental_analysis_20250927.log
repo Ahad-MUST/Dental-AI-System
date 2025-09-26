@@ -1,0 +1,14 @@
+2025-09-27 01:46:18 | services.file_queue_service | [32mINFO[0m | Loaded 2 processed files from database
+2025-09-27 01:46:18 | __main__ | [32mINFO[0m | Initializing Dental Call Analysis System with Employee List Management...
+2025-09-27 01:46:18 | services.llm_analyzer | [32mINFO[0m | Initializing LLM analyzer...
+2025-09-27 01:46:18 | services.llm_analyzer | [32mINFO[0m | LLM analyzer ready with model: qwen2.5:7b-instruct
+2025-09-27 01:46:18 | services.llm_sentiment_analysis_service | [32mINFO[0m | Initializing LLM-based sentiment analysis service...
+2025-09-27 01:46:18 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service ready with model: qwen2.5:7b-instruct
+2025-09-27 01:46:18 | __main__ | [32mINFO[0m | Call tagging service initialized
+2025-09-27 01:46:18 | __main__ | [32mINFO[0m | LLM-based speaker role assignment service initialized
+2025-09-27 01:46:18 | services.transcription_service | [32mINFO[0m | Loading Whisper model: large
+2025-09-27 01:47:06 | services.transcription_service | [32mINFO[0m | Transcription service cleaned up
+2025-09-27 01:47:06 | services.diarization_service | [32mINFO[0m | Diarization service cleaned up
+2025-09-27 01:47:06 | services.llm_analyzer | [32mINFO[0m | LLM analyzer cleanup completed
+2025-09-27 01:47:06 | services.llm_sentiment_analysis_service | [32mINFO[0m | LLM sentiment analysis service cleaned up
+2025-09-27 01:47:06 | __main__ | [32mINFO[0m | Cleanup completed

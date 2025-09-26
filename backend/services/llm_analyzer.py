@@ -219,10 +219,29 @@ Final Call Summary:"""
                 
                 # Basic validation
                 if name and name.lower() not in ["unknown", "not mentioned", "none", "n/a"]:
-                    # Extract just the first name if full name given
+                    # Try to match against employee list first
+                    visible_employees = self.employee_service.get_visible_employees()
+                    name_lower = name.lower().strip()
+                    
+                    # Try exact match first
+                    for employee in visible_employees:
+                        if employee.lower() == name_lower:
+                            return employee
+                    
+                    # Try first name match
+                    for employee in visible_employees:
+                        if employee.split()[0].lower() == name_lower:
+                            return employee
+                    
+                    # Extract just the first name if no match and full name given
                     name_parts = name.split()
                     if name_parts:
-                        return name_parts[0].title()  # Capitalize first letter
+                        first_name = name_parts[0].title()
+                        # Try matching first name again
+                        for employee in visible_employees:
+                            if employee.split()[0].lower() == first_name.lower():
+                                return employee
+                        return first_name
                 
             # Fallback: Try simple pattern matching
             return self._extract_name_fallback(full_transcript)
@@ -255,7 +274,7 @@ Final Call Summary:"""
             
             for pattern in patterns:
                 if re.search(pattern, transcript_lower):
-                    return first_name.title()
+                    return employee  # Return full name instead of first name
         
         # If no employee match, try general patterns
         patterns = [
@@ -270,10 +289,14 @@ Final Call Summary:"""
         for pattern in patterns:
             match = re.search(pattern, transcript, re.IGNORECASE)
             if match:
-                name = match.group(1)
+                extracted_name = match.group(1)
                 # Basic validation - avoid common words
-                if name.lower() not in ['this', 'the', 'and', 'for', 'with', 'from', 'calling']:
-                    return name.title()
+                if extracted_name.lower() not in ['this', 'the', 'and', 'for', 'with', 'from', 'calling']:
+                    # Try to match against employee list
+                    for employee in visible_employees:
+                        if employee.split()[0].lower() == extracted_name.lower():
+                            return employee
+                    return extracted_name.title()
         
         return "Unknown"
     

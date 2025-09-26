@@ -1,5 +1,5 @@
 """
-Enhanced Data Loader for Dental Call Analysis - CLEANED VERSION
+Data Loader for Dental Call Analysis - CLEANED VERSION
 Handles unified transcripts and only includes existing Google Sheets fields
 """
 import json
@@ -21,11 +21,13 @@ except ImportError:
     GSPREAD_AVAILABLE = False
     gspread = None
 
+# Set up silent logging for production
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.ERROR)  # Only show errors
 
 class DataLoader:
     """
-    Enhanced data loader with Google Sheets integration - CLEANED VERSION
+    Data loader with Google Sheets integration - CLEANED VERSION
     Only includes fields that actually exist in Google Sheets
     """
     
@@ -43,7 +45,6 @@ class DataLoader:
     def _init_google_sheets(self):
         """Initialize Google Sheets client"""
         if not GSPREAD_AVAILABLE:
-            logger.warning("Google Sheets integration not available")
             return
             
         try:
@@ -51,10 +52,7 @@ class DataLoader:
             spreadsheet_id = getattr(settings, 'GOOGLE_SHEET_ID', None)
             use_google_sheets = getattr(settings, 'USE_GOOGLE_SHEETS', False)
             
-            logger.info(f"Google Sheets config: enabled={use_google_sheets}")
-            
             if not use_google_sheets:
-                logger.info("Google Sheets disabled in settings")
                 return
             
             if credentials_path and Path(credentials_path).exists():
@@ -63,18 +61,16 @@ class DataLoader:
                 
                 creds = Credentials.from_service_account_file(credentials_path, scopes=scope)
                 self.sheets_client = gspread.authorize(creds)
-                logger.info("Google Sheets client initialized")
                 
             elif spreadsheet_id:
                 self.sheets_client = gspread.service_account()
-                logger.info("Google Sheets client initialized with default credentials")
             else:
-                logger.warning("Google Sheets not configured properly")
                 return
                 
             if spreadsheet_id:
                 self.spreadsheet = self.sheets_client.open_by_key(spreadsheet_id)
-                logger.info(f"Connected to Google Sheets: {self.spreadsheet.title}")
+                # Single clean status message
+                print(f"📊 Connected to Google Sheets: {self.spreadsheet.title}")
             else:
                 logger.error("No Google Sheet ID provided")
                 
@@ -90,10 +86,7 @@ class DataLoader:
         try:
             # Check cache first
             if self._is_cache_valid():
-                logger.debug("Returning cached call data")
                 return self.calls_cache
-            
-            logger.info("Loading all call data...")
             
             all_calls = []
             
@@ -101,18 +94,18 @@ class DataLoader:
             if self.sheets_client and self.spreadsheet:
                 try:
                     all_calls = await self._load_from_google_sheets()
-                    logger.info(f"Loaded {len(all_calls)} calls from Google Sheets")
+                    if all_calls:
+                        print(f"📈 Loaded {len(all_calls)} calls from Google Sheets")
                 except Exception as e:
-                    logger.warning(f"Failed to load from Google Sheets: {str(e)}")
                     all_calls = []
             
             # Priority 2: Local files
             if not all_calls:
                 all_calls = await self._load_from_local_files()
-                logger.info(f"Loaded {len(all_calls)} calls from local files")
+                if all_calls:
+                    print(f"📂 Loaded {len(all_calls)} calls from local files")
                 
             if not all_calls:
-                logger.error("No call data found from any source")
                 return []
             
             # Process calls for coaching (only include existing fields)
@@ -122,7 +115,6 @@ class DataLoader:
             self.calls_cache = processed_calls
             self.cache_timestamp = datetime.now()
             
-            logger.info(f"Loaded {len(processed_calls)} calls for coaching library")
             return processed_calls
             
         except Exception as e:
@@ -135,15 +127,11 @@ class DataLoader:
         
         try:
             worksheets = self.spreadsheet.worksheets()
-            logger.info(f"Found {len(worksheets)} worksheets")
             
             for worksheet in worksheets:
                 try:
                     worksheet_name = worksheet.title
-                    logger.info(f"Processing worksheet: {worksheet_name}")
-                    
                     records = worksheet.get_all_records()
-                    logger.info(f"Found {len(records)} records in worksheet {worksheet_name}")
                     
                     for record in records:
                         if not any(record.values()):
@@ -245,7 +233,6 @@ class DataLoader:
     
     async def _load_from_local_files(self) -> List[Dict]:
         """Load calls from local files"""
-        logger.info("Loading from local files as fallback...")
         all_calls = []
         
         # Try CSV files first (matching the uploaded format)
@@ -254,7 +241,6 @@ class DataLoader:
             try:
                 import pandas as pd
                 for csv_file in csv_files:
-                    logger.info(f"Loading from CSV: {csv_file}")
                     df = pd.read_csv(csv_file)
                     calls = df.to_dict('records')
                     
@@ -374,7 +360,6 @@ class DataLoader:
         """Force refresh cache"""
         self.calls_cache = None
         self.cache_timestamp = None
-        logger.info("Cache cleared")
 
     # Dashboard support methods - simplified for cleaned data
     async def load_dashboard_data(self) -> Dict[str, Any]:
