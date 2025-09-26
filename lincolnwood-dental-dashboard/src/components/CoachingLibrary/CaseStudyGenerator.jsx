@@ -67,31 +67,41 @@ const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
       const title = caseStudyTitle || generateDefaultTitle();
       const targetEmployee = employeeName || getUniqueEmployees()[0] || 'Team Member';
 
+      // FIXED: Ensure we're sending the correct field names that match the API expectations
+      const caseStudyRequest = {
+        calls: selectedCalls,
+        analysis_type: analysisType,  // FIXED: Make sure this field is included
+        target_employee: targetEmployee,  // FIXED: Make sure this field is included
+        title: title
+      };
+
+      console.log('Sending case study request:', caseStudyRequest);
+
       // Step 1: Generate case study analysis
       setGenerationStatus('Generating coaching insights...');
-      const caseStudyData = await coachingLibraryAPI.generateCaseStudy({
-        calls: selectedCalls,
-        analysisType,
-        targetEmployee,
-        title
-      });
+      const caseStudyData = await coachingLibraryAPI.generateCaseStudy(caseStudyRequest);
 
-      // Step 2: Generate PDF - FIXED VERSION
+      // Step 2: Generate PDF
       setGenerationStatus('Creating PDF training material...');
       
       try {
+        // FIXED: Make sure we're sending the correct field names for PDF generation
+        const pdfRequest = {
+          case_study_data: caseStudyData,
+          title: title,
+          target_employee: targetEmployee,  // FIXED: Use consistent field name
+          analysis_type: analysisType  // FIXED: Use consistent field name
+        };
+
+        console.log('Sending PDF generation request:', pdfRequest);
+
         // Make the API request
         const response = await fetch('http://localhost:8000/api/coaching/generate-pdf', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            case_study_data: caseStudyData,
-            title,
-            target_employee: targetEmployee,
-            analysis_type: analysisType
-          })
+          body: JSON.stringify(pdfRequest)
         });
 
         if (!response.ok) {
@@ -288,7 +298,7 @@ const CaseStudyGenerator = ({ selectedCalls, onSuccess }) => {
         </div>
       )}
 
-      {/* Selected Calls Summary - FIXED to handle unique keys */}
+      {/* Selected Calls Summary */}
       <div className="mb-6 p-4 bg-slate-50 rounded-lg">
         <div className="text-sm font-medium text-slate-700 mb-2">
           Selected Calls Summary
