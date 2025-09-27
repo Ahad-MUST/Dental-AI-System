@@ -33,11 +33,6 @@ class StatsManager:
                 'satisfaction_detected': 0
             },
             'tagging_stats': {},
-            'coaching_stats': {
-                'coaching_candidates': 0,
-                'excellent_calls': 0,
-                'high_value_calls': 0
-            },
             'speaker_assignment_stats': {
                 'llm_based_assignments': 0,
                 'rule_based_fallbacks': 0,
@@ -89,20 +84,6 @@ class StatsManager:
         except Exception as e:
             logger.warning(f"Failed to update tagging stats: {str(e)}")
         
-        # Update coaching stats
-        try:
-            coaching_analysis = results.get("coaching_analysis", {})
-            if coaching_analysis.get("is_coaching_candidate", False):
-                self.stats['coaching_stats']['coaching_candidates'] += 1
-                
-                coaching_value = coaching_analysis.get("coaching_value", "none")
-                if coaching_value == "excellent":
-                    self.stats['coaching_stats']['excellent_calls'] += 1
-                elif coaching_value in ["high", "excellent"]:
-                    self.stats['coaching_stats']['high_value_calls'] += 1
-        except Exception as e:
-            logger.warning(f"Failed to update coaching stats: {str(e)}")
-        
         # Update speaker assignment stats
         try:
             if results.get("speaker_role_assignment") == "llm_based":
@@ -151,11 +132,11 @@ class StatsManager:
     def display_enhanced_final_stats(self):
         """Display enhanced final processing statistics"""
         print("\n" + "="*80)
-        print("ENHANCED DENTAL CALL ANALYSIS - FINAL REPORT")
+        print("DENTAL CALL ANALYSIS - FINAL REPORT")
         print("="*80)
         
         # Processing summary
-        print(f"\n📊 PROCESSING SUMMARY:")
+        print(f"\nProcessing Summary:")
         print(f"   Total calls processed: {self.stats['total_processed']}")
         print(f"   Successful: {self.stats['successful']}")
         print(f"   Failed: {self.stats['failed']}")
@@ -165,66 +146,59 @@ class StatsManager:
         
         # Employee list summary
         employees = self.employee_service.get_employees()
-        print(f"\n👥 EMPLOYEE LIST MANAGEMENT:")
+        print(f"\nEmployee List Management:")
         print(f"   Configured employees: {len(employees)}")
         print(f"   Employee names: {', '.join(employees)}")
         
         # Opportunity analysis
-        print(f"\n💯 OPPORTUNITY ANALYSIS:")
+        print(f"\nOpportunity Analysis:")
         print(f"   High-value missed opportunities: {self.stats['high_opportunities']}")
         if self.stats['successful'] > 0:
             opportunity_rate = self.get_opportunity_rate()
             print(f"   Missed opportunity rate: {opportunity_rate:.1f}%")
         
         # Sentiment analysis
-        print(f"\n😊 SENTIMENT ANALYSIS:")
+        print(f"\nSentiment Analysis:")
         for sentiment, count in self.stats['sentiment_stats'].items():
             if count > 0:
                 print(f"   {sentiment.title()}: {count}")
         
         # Emotion analysis
-        print(f"\n💭 EMOTION ANALYSIS:")
+        print(f"\nEmotion Analysis:")
         for emotion, count in self.stats['emotion_stats'].items():
             if count > 0:
                 print(f"   {emotion.replace('_', ' ').title()}: {count}")
         
         # Call tagging
         if self.stats['tagging_stats']:
-            print(f"\n🏷️  CALL TAGGING:")
+            print(f"\nCall Tagging:")
             for tag, count in self.stats['tagging_stats'].items():
                 if count > 0:
                     print(f"   {tag.replace('_', ' ').title()}: {count}")
         
-        # Coaching analysis
-        print(f"\n🎓 COACHING ANALYSIS:")
-        print(f"   Coaching candidates: {self.stats['coaching_stats']['coaching_candidates']}")
-        print(f"   Excellent calls: {self.stats['coaching_stats']['excellent_calls']}")
-        print(f"   High-value calls: {self.stats['coaching_stats']['high_value_calls']}")
-        
         # Speaker assignment stats
-        print(f"\n🔣️  SPEAKER ASSIGNMENT:")
+        print(f"\nSpeaker Assignment:")
         print(f"   LLM-based assignments: {self.stats['speaker_assignment_stats']['llm_based_assignments']}")
         print(f"   Rule-based fallbacks: {self.stats['speaker_assignment_stats']['rule_based_fallbacks']}")
         print(f"   Three+ speaker calls: {self.stats['speaker_assignment_stats']['three_speaker_calls']}")
         
         # Export information
         if settings.USE_GOOGLE_SHEETS:
-            print("\n📈 Results exported to Google Sheets for dashboard viewing")
+            print("\nResults exported to Google Sheets for dashboard viewing")
         
-        print("\n💯 Coaching candidates and excellent examples are now flagged in Google Sheets.")
-        print("🏷️  All calls have been automatically categorized for better organization.")
-        print("🔣️  Speaker roles are now intelligently assigned using LLM analysis.")
-        print("👥 Representative names are extracted from predefined employee list.")
+        print("\nAll calls have been automatically categorized for better organization.")
+        print("Speaker roles are now intelligently assigned using LLM analysis.")
+        print("Representative names are extracted from predefined employee list.")
         
         print(f"\nMode: {'API' if settings.USE_API_MODE else 'Local Directory'}")
-        print(f"Enhanced Features: Tagging ✅ | Coaching Analysis ✅ | Emotion Detection ✅ | Smart Speaker Assignment ✅ | Employee List ✅")
+        print(f"Enhanced Features: Tagging ✅ | Emotion Detection ✅ | Smart Speaker Assignment ✅ | Employee List ✅")
         print(f"Processed files tracked in: {self.file_queue_service.processed_files_db}")
         print(f"Employee list stored in: {self.employee_service.employees_file}")
         print("="*80)
     
     def print_summary_stats(self):
         """Print quick summary stats during processing"""
-        print(f"\n📊 Current Stats: Processed: {self.stats['total_processed']} | "
+        print(f"\nCurrent Stats: Processed: {self.stats['total_processed']} | "
               f"Success: {self.stats['successful']} | "
               f"Failed: {self.stats['failed']} | "
               f"High Opportunities: {self.stats['high_opportunities']}")
@@ -248,11 +222,6 @@ class StatsManager:
                 'satisfaction_detected': 0
             },
             'tagging_stats': {},
-            'coaching_stats': {
-                'coaching_candidates': 0,
-                'excellent_calls': 0,
-                'high_value_calls': 0
-            },
             'speaker_assignment_stats': {
                 'llm_based_assignments': 0,
                 'rule_based_fallbacks': 0,
@@ -283,7 +252,6 @@ class StatsManager:
             'sentiment_analysis': self.stats['sentiment_stats'].copy(),
             'emotion_analysis': self.stats['emotion_stats'].copy(),
             'call_tagging': self.stats['tagging_stats'].copy(),
-            'coaching_analysis': self.stats['coaching_stats'].copy(),
             'speaker_assignment': self.stats['speaker_assignment_stats'].copy(),
             'system_info': {
                 'mode': 'API' if settings.USE_API_MODE else 'Local Directory',

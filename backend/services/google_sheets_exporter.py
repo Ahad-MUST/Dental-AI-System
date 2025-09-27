@@ -1,433 +1,372 @@
 """
-Google Sheets export service - SIMPLIFIED VERSION with only 2 new columns
-Call_Tag and Coaching_Candidate (Yes/No)
+Google Sheets Export Service - UPDATED
+Exports call analysis results to Google Sheets with automatic worksheet management
 """
-import logging
-from pathlib import Path
-from datetime import datetime
-from typing import Dict, List
 import json
+import logging
+from datetime import datetime
+from typing import Dict, List, Optional
+from pathlib import Path
 
-from config.settings import settings
-from services.email_alert_service import EmailAlertService
-
-# Google Sheets imports
+# Google Sheets API imports
 try:
     import gspread
     from google.oauth2.service_account import Credentials
-    GOOGLE_SHEETS_AVAILABLE = True
+    GSPREAD_AVAILABLE = True
 except ImportError:
-    GOOGLE_SHEETS_AVAILABLE = False
+    GSPREAD_AVAILABLE = False
+    gspread = None
+
+from config.settings import settings
 
 logger = logging.getLogger(__name__)
 
 class GoogleSheetsExporter:
-    """Export call analysis results to Google Sheets with simplified 2 new columns: Call_Tag and Coaching_Candidate"""
+    """Enhanced Google Sheets exporter with automatic worksheet management"""
     
     def __init__(self):
-        self.output_dir = settings.OUTPUT_DIR
-        self.sheet_id = settings.GOOGLE_SHEET_ID
-        self.credentials_file = settings.GOOGLE_CREDENTIALS_FILE
-        self.use_google_sheets = settings.USE_GOOGLE_SHEETS
         self.client = None
-        self.worksheet = None
-        self.email_alert_service = EmailAlertService()
-        
-        # Store LLM analyzer reference for tagging
+        self.spreadsheet = None
         self.llm_analyzer = None
         
-        # PREDEFINED CALL CATEGORIES - No new categories per call
-        self.predefined_categories = [
-            "new_patient",
-            "emergency", 
-            "insurance",
-            "appointment_booking",
-            "appointment_confirm",
-            "appointment_cancel",
-            "general_inquiry",
-            "cleaning",
-            "cosmetic",
-            "major_treatment",
-            "billing"
+        # Standard column order with call tagging but WITHOUT coaching
+        self.standard_columns = [
+            'Call_File_Name',
+            'Analysis_Date', 
+            'Analysis_Time',
+            'Full_Transcript_With_Timestamps',
+            'Call_Summary',
+            'Representative_Name',
+            'Representative_Score',
+            'High_Value_Missed_Opportunity',
+            'Patient_Sentiment',
+            'Staff_Sentiment', 
+            'Overall_Sentiment',
+            'Sentiment_Confidence',
+            'Sentiment_Summary',
+            'Patient_Primary_Emotion',
+            'Patient_Emotion_Confidence',
+            'Patient_Emotion_Intensity',
+            'Staff_Primary_Emotion',
+            'Staff_Emotion_Confidence',
+            'Emotion_Flags',
+            'Call_Emotional_Health',
+            'Emotional_Alignment',
+            'Escalation_Pattern',
+            'Call_Tag'  # Tagging column remains
         ]
-        
+    
     async def initialize(self, llm_analyzer=None):
         """Initialize Google Sheets connection"""
-        
-        # Store LLM analyzer reference
         self.llm_analyzer = llm_analyzer
         
-        if not self.use_google_sheets:
-            logger.info("Google Sheets disabled, using CSV fallback")
+        if not settings.USE_GOOGLE_SHEETS:
+            logger.info("Google Sheets export disabled in settings")
             return
-            
-        if not GOOGLE_SHEETS_AVAILABLE:
-            logger.warning("Google Sheets libraries not installed. Run: pip install gspread google-auth")
-            self.use_google_sheets = False
+        
+        if not GSPREAD_AVAILABLE:
+            logger.error("Google Sheets libraries not available. Install gspread and google-auth.")
             return
-            
+        
         try:
-            # Load credentials
-            if not self.credentials_file.exists():
-                logger.error(f"Google credentials file not found: {self.credentials_file}")
-                self.use_google_sheets = False
+            # Setup credentials
+            credentials_file = Path(settings.GOOGLE_CREDENTIALS_FILE)
+            if not credentials_file.exists():
+                logger.error(f"Google credentials file not found: {credentials_file}")
                 return
-                
-            # Authenticate with Google Sheets
+            
+            # Define required scopes
             scope = [
-                "https://www.googleapis.com/auth/spreadsheets",
-                "https://www.googleapis.com/auth/drive"
+                'https://spreadsheets.google.com/feeds',
+                'https://www.googleapis.com/auth/spreadsheets',
+                'https://www.googleapis.com/auth/drive'
             ]
             
-            credentials = Credentials.from_service_account_file(
-                self.credentials_file, scopes=scope
-            )
+            # Authenticate and create client
+            creds = Credentials.from_service_account_file(str(credentials_file), scopes=scope)
+            self.client = gspread.authorize(creds)
             
-            self.client = gspread.authorize(credentials)
-            
-            # Open the spreadsheet
-            if not self.sheet_id:
-                logger.error("Google Sheet ID not provided in .env file")
-                self.use_google_sheets = False
+            # Connect to spreadsheet
+            if settings.GOOGLE_SHEET_ID:
+                self.spreadsheet = self.client.open_by_key(settings.GOOGLE_SHEET_ID)
+                logger.info(f"Connected to Google Sheets: {self.spreadsheet.title}")
+            else:
+                logger.error("No Google Sheet ID provided in settings")
                 return
-                
-            spreadsheet = self.client.open_by_key(self.sheet_id)
-            self.worksheet = spreadsheet.sheet1  # Use first sheet
             
-            # Initialize headers with simplified columns
-            await self._ensure_simplified_headers_exist()
-            
-            logger.info("Google Sheets connection established successfully")
+            # Ensure master sheet exists with proper headers
+            await self._ensure_master_sheet()
             
         except Exception as e:
             logger.error(f"Failed to initialize Google Sheets: {str(e)}")
-            logger.info("Falling back to CSV export")
-            self.use_google_sheets = False
+            self.client = None
+            self.spreadsheet = None
     
-    async def _ensure_simplified_headers_exist(self):
-        """Ensure the sheet has headers with ONLY 2 new columns: Call_Tag and Coaching_Candidate"""
-        
+    async def _ensure_master_sheet(self):
+        """Ensure master sheet exists with proper column headers"""
         try:
-            # Check if headers already exist
-            existing_values = self.worksheet.row_values(1)
+            master_sheet_name = "Master_Analysis_Data"
             
-            # SIMPLIFIED headers - keeping existing + only 2 new columns
-            expected_headers = [
-                "Call_File_Name",                    # A
-                "Analysis_Date",                     # B
-                "Analysis_Time",                     # C
-                "Full_Transcript_With_Timestamps",   # D
-                "Call_Summary",                      # E
-                "Representative_Name",               # F
-                "Representative_Score",              # G
-                "High_Value_Missed_Opportunity",     # H
-                "Patient_Sentiment",                 # I - Existing sentiment
-                "Staff_Sentiment",                   # J - Existing sentiment
-                "Overall_Sentiment",                 # K - Existing sentiment
-                "Sentiment_Confidence",              # L - Existing sentiment
-                "Sentiment_Summary",                 # M - Existing sentiment
-                "Patient_Primary_Emotion",           # N - Existing emotion
-                "Patient_Emotion_Confidence",        # O - Existing emotion
-                "Patient_Emotion_Intensity",         # P - Existing emotion
-                "Staff_Primary_Emotion",             # Q - Existing emotion
-                "Staff_Emotion_Confidence",          # R - Existing emotion
-                "Emotion_Flags",                     # S - Existing emotion
-                "Call_Emotional_Health",             # T - Existing emotion
-                "Emotional_Alignment",               # U - Existing emotion
-                "Escalation_Pattern",                # V - Existing emotion
-                "Call_Tag",                          # W - NEW: Predefined call category
-                "Coaching_Candidate"                 # X - NEW: Yes/No for coaching
-            ]
+            # Check if master sheet exists
+            try:
+                master_sheet = self.spreadsheet.worksheet(master_sheet_name)
+                logger.info(f"Master sheet '{master_sheet_name}' found")
+            except gspread.exceptions.WorksheetNotFound:
+                # Create master sheet
+                logger.info(f"Creating master sheet: {master_sheet_name}")
+                master_sheet = self.spreadsheet.add_worksheet(
+                    title=master_sheet_name, 
+                    rows=1000, 
+                    cols=len(self.standard_columns)
+                )
             
-            # Update headers if needed (W and X columns only)
-            if not existing_values or len(existing_values) < len(expected_headers):
-                # Set headers in first row (A1 to X1)
-                self.worksheet.update('A1:X1', [expected_headers])
-                logger.info("Google Sheet headers updated with simplified Call_Tag and Coaching_Candidate columns")
+            # Update headers if needed
+            existing_headers = master_sheet.row_values(1) if master_sheet.row_count > 0 else []
+            
+            if existing_headers != self.standard_columns:
+                logger.info("Updating master sheet headers")
+                master_sheet.update('1:1', [self.standard_columns])
                 
+                # Format header row
+                master_sheet.format('1:1', {
+                    'backgroundColor': {'red': 0.2, 'green': 0.4, 'blue': 0.8},
+                    'textFormat': {'foregroundColor': {'red': 1, 'green': 1, 'blue': 1}, 'bold': True}
+                })
+            
         except Exception as e:
-            logger.error(f"Failed to set Google Sheet headers: {str(e)}")
+            logger.error(f"Error setting up master sheet: {str(e)}")
     
     async def export_analysis_result(self, analysis_result: Dict) -> str:
-        """Export analysis result to Google Sheets with simplified 2 new columns"""
+        """Export a single analysis result to Google Sheets"""
         
-        # Initialize transcript path for detailed export
-        audio_file = analysis_result.get("audio_file", "unknown.wav")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        transcript_filename = f"transcript_{Path(audio_file).stem}_{timestamp}.txt"
-        transcript_path = self.output_dir / transcript_filename
+        if not self.client or not self.spreadsheet:
+            return "Google Sheets not available - saved locally only"
         
         try:
-            if self.use_google_sheets and self.worksheet:
-                logger.info("Exporting to Google Sheets with simplified tagging and coaching...")
-                
-                # Prepare simplified row data
-                row_data = await self._prepare_simplified_row_data(analysis_result)
-                
-                # Append to Google Sheets
-                await self._append_simplified_to_google_sheet(row_data)
-                
-                # Check for high-value missed opportunities and send email
-                high_value_missed = analysis_result.get("opportunity_analysis", {}).get("high_value_missed", False)
-                
-                if high_value_missed and self.email_alert_service.is_configured():
-                    try:
-                        email_success = await self.email_alert_service.send_high_opportunity_alert(analysis_result)
-                        if email_success:
-                            logger.info("HIGH-VALUE OPPORTUNITY EMAIL ALERT SENT!")
-                        else:
-                            logger.error("EMAIL ALERT FAILED TO SEND!")
-                    except Exception as email_error:
-                        logger.error(f"EMAIL ALERT ERROR: {str(email_error)}")
-                else:
-                    logger.info(f"No high-value opportunity - email alert not needed")
-                
-                # Export detailed transcript
-                await self._export_detailed_transcript(analysis_result, transcript_path, high_value_missed)
-                
-                logger.info(f"Simplified analysis exported to Google Sheets with transcript: {transcript_path}")
-                return "Google Sheets"
-            else:
-                # Fallback to CSV
-                return await self._fallback_csv_export(analysis_result, transcript_path, high_value_missed)
-                
+            # Prepare data for export
+            call_data = self._prepare_call_data(analysis_result)
+            
+            # Export to master sheet
+            master_result = await self._export_to_master_sheet(call_data)
+            
+            # Export to monthly worksheet 
+            monthly_result = await self._export_to_monthly_worksheet(call_data)
+            
+            return f"Exported to Google Sheets: {master_result}, {monthly_result}"
+            
         except Exception as e:
             logger.error(f"Google Sheets export failed: {str(e)}")
-            # Fallback to CSV
-            return await self._fallback_csv_export(analysis_result, transcript_path, high_value_missed)
+            return f"Export failed: {str(e)}"
     
-    async def _prepare_simplified_row_data(self, result: Dict) -> List:
-        """Prepare row data with ONLY 2 new columns: Call_Tag and Coaching_Candidate"""
-        
-        # Extract key information
-        transcription = result.get("transcription", {})
-        performance = result.get("performance_analysis", {})
-        call_summary = result.get("call_summary", {})
-        opportunity_analysis = result.get("opportunity_analysis", {})
-        representative_name = result.get("representative_name", "Unknown")
-        combined_transcript = result.get("combined_transcript", {})
-        sentiment_analysis = result.get("sentiment_analysis", {})
-        emotion_analysis = result.get("emotion_analysis", {})
-        call_tag_analysis = result.get("call_tag_analysis", {})
-        coaching_analysis = result.get("coaching_analysis", {})
-        
-        # Create timestamped transcript
-        timestamped_transcript = self._create_timestamped_transcript(combined_transcript)
-        
-        # Extract sentiment data
-        patient_sentiment = sentiment_analysis.get("patient_sentiment", {})
-        staff_sentiment = sentiment_analysis.get("staff_sentiment", {})
-        overall_sentiment = sentiment_analysis.get("overall_sentiment", {})
-        sentiment_summary = sentiment_analysis.get("sentiment_summary", "No sentiment analysis available")
-        
-        # Extract emotion data
-        patient_emotions = emotion_analysis.get("patient_emotions", {})
-        staff_emotions = emotion_analysis.get("staff_emotions", {})
-        call_dynamics = emotion_analysis.get("call_dynamics", {})
-        emotion_flags = emotion_analysis.get("emotion_flags", [])
-        
-        # Get primary emotions
-        patient_primary_emotion = patient_emotions.get("primary_emotion", {})
-        staff_primary_emotion = staff_emotions.get("primary_emotion", {})
-        
-        # Get emotional health and alignment
-        emotional_health = call_dynamics.get("call_emotional_health", {})
-        emotional_alignment = call_dynamics.get("emotional_alignment", {})
-        escalation_pattern = call_dynamics.get("escalation_pattern", {})
-        
-        # Get call tag from predefined categories
-        raw_call_tag = call_tag_analysis.get("primary_tag", "general_inquiry")
-        call_tag = raw_call_tag if raw_call_tag in self.predefined_categories else "general_inquiry"
-        
-        # Get coaching candidate (Yes/No)
-        is_coaching_candidate = coaching_analysis.get("is_coaching_candidate", False)
-        coaching_candidate = "Yes" if is_coaching_candidate else "No"
-        
-        # Prepare simplified row data (24 columns total - existing 22 + 2 new)
-        row_data = [
-            result.get("audio_file", "unknown.wav"),                                    # A
-            datetime.now().strftime("%m/%d/%Y"),                                        # B
-            datetime.now().strftime("%H:%M:%S"),                                        # C
-            timestamped_transcript,                                                     # D
-            call_summary.get("call_summary", "Summary unavailable"),                   # E
-            representative_name,                                                        # F
-            round(performance.get("overall_score", 0.0), 2),                          # G
-            opportunity_analysis.get("high_value_missed", False),                      # H
-            patient_sentiment.get("sentiment_label", "unknown"),                       # I
-            staff_sentiment.get("sentiment_label", "unknown"),                         # J
-            overall_sentiment.get("sentiment_label", "unknown"),                       # K
-            round(overall_sentiment.get("confidence", 0.0), 3),                       # L
-            sentiment_summary,                                                          # M
-            patient_primary_emotion.get("emotion", "unknown"),                         # N
-            round(patient_primary_emotion.get("confidence", 0.0), 3),                 # O
-            patient_emotions.get("intensity", "unknown"),                              # P
-            staff_primary_emotion.get("emotion", "unknown"),                           # Q
-            round(staff_primary_emotion.get("confidence", 0.0), 3),                   # R
-            ", ".join(emotion_flags) if emotion_flags else "None",                     # S
-            emotional_health.get("health_level", "unknown"),                           # T
-            emotional_alignment.get("alignment_score", "unknown"),                     # U
-            escalation_pattern.get("pattern_detected", "None"),                        # V
-            # SIMPLIFIED NEW COLUMNS (only 2):
-            call_tag,                                                                   # W - Call Tag (predefined only)
-            coaching_candidate                                                          # X - Coaching Candidate (Yes/No)
-        ]
-        
-        return row_data
-    
-    def _create_timestamped_transcript(self, combined_transcript: Dict) -> str:
-        """Create a timestamped transcript for the sheet"""
-        
-        segments = combined_transcript.get("segments", [])
-        if not segments:
-            return "No timestamped transcript available"
-        
-        transcript_lines = []
-        
-        for segment in segments:
-            start_time = segment.get("start_time", 0)
-            speaker = segment.get("speaker", "UNKNOWN")
-            text = segment.get("text", "").strip()
-            
-            if text:  # Only include segments with actual text
-                # Format time as MM:SS
-                start_formatted = f"{int(start_time//60):02d}:{int(start_time%60):02d}"
-                transcript_lines.append(f"[{start_formatted}] {speaker}: {text}")
-        
-        return "\n".join(transcript_lines)
-    
-    async def _append_simplified_to_google_sheet(self, row_data: List):
-        """Append row to Google Sheet with simplified columns (24 columns total)"""
+    def _prepare_call_data(self, analysis_result: Dict) -> Dict:
+        """Prepare analysis data for Google Sheets export - WITHOUT coaching columns"""
         
         try:
+            # Extract basic information
+            audio_file = analysis_result.get("audio_file", "")
+            file_name = Path(audio_file).name if audio_file else "Unknown"
+            
+            transcription = analysis_result.get("transcription", {})
+            call_summary = analysis_result.get("call_summary", {})
+            sentiment_analysis = analysis_result.get("sentiment_analysis", {})
+            emotion_analysis = analysis_result.get("emotion_analysis", {})
+            performance_analysis = analysis_result.get("performance_analysis", {})
+            opportunity_analysis = analysis_result.get("opportunity_analysis", {})
+            call_tag_analysis = analysis_result.get("call_tag_analysis", {})
+            
+            # Get current timestamp
+            now = datetime.now()
+            
+            # Prepare row data according to standard columns (without coaching)
+            call_data = {
+                'Call_File_Name': file_name,
+                'Analysis_Date': now.strftime('%m/%d/%Y'),
+                'Analysis_Time': now.strftime('%H:%M:%S'),
+                'Full_Transcript_With_Timestamps': self._format_transcript_with_timestamps(analysis_result.get("combined_transcript", {})),
+                'Call_Summary': call_summary.get("call_summary", ""),
+                'Representative_Name': analysis_result.get("representative_name", "Unknown"),
+                'Representative_Score': performance_analysis.get("representative_score", 0),
+                'High_Value_Missed_Opportunity': opportunity_analysis.get("high_value_missed", False),
+                
+                # Sentiment data
+                'Patient_Sentiment': sentiment_analysis.get("patient_sentiment", {}).get("sentiment_label", ""),
+                'Staff_Sentiment': sentiment_analysis.get("staff_sentiment", {}).get("sentiment_label", ""),
+                'Overall_Sentiment': sentiment_analysis.get("overall_sentiment", {}).get("sentiment_label", ""),
+                'Sentiment_Confidence': sentiment_analysis.get("overall_sentiment", {}).get("confidence", 0),
+                'Sentiment_Summary': sentiment_analysis.get("sentiment_summary", ""),
+                
+                # Emotion data
+                'Patient_Primary_Emotion': emotion_analysis.get("patient_emotions", {}).get("primary_emotion", ""),
+                'Patient_Emotion_Confidence': emotion_analysis.get("patient_emotions", {}).get("confidence", 0),
+                'Patient_Emotion_Intensity': emotion_analysis.get("patient_emotions", {}).get("intensity", ""),
+                'Staff_Primary_Emotion': emotion_analysis.get("staff_emotions", {}).get("primary_emotion", ""),
+                'Staff_Emotion_Confidence': emotion_analysis.get("staff_emotions", {}).get("confidence", 0),
+                'Emotion_Flags': ", ".join(emotion_analysis.get("emotion_flags", [])),
+                'Call_Emotional_Health': emotion_analysis.get("emotional_health_score", ""),
+                'Emotional_Alignment': emotion_analysis.get("emotional_alignment", ""),
+                'Escalation_Pattern': emotion_analysis.get("escalation_pattern", ""),
+                
+                # Call tagging
+                'Call_Tag': call_tag_analysis.get("primary_tag", "general_inquiry")
+            }
+            
+            return call_data
+            
+        except Exception as e:
+            logger.error(f"Error preparing call data: {str(e)}")
+            return {}
+    
+    def _format_transcript_with_timestamps(self, combined_transcript: Dict) -> str:
+        """Format transcript with timestamps for Google Sheets"""
+        
+        try:
+            segments = combined_transcript.get("segments", [])
+            if not segments:
+                return "No transcript available"
+            
+            formatted_lines = []
+            for segment in segments:
+                start_time = segment.get("start_time", 0)
+                speaker = segment.get("speaker", "UNKNOWN")
+                text = segment.get("text", "").strip()
+                
+                if text:
+                    # Format: [MM:SS] SPEAKER: text
+                    minutes = int(start_time // 60)
+                    seconds = int(start_time % 60)
+                    timestamp = f"[{minutes:02d}:{seconds:02d}]"
+                    formatted_lines.append(f"{timestamp} {speaker}: {text}")
+            
+            return "\n".join(formatted_lines)
+            
+        except Exception as e:
+            logger.warning(f"Error formatting transcript: {str(e)}")
+            return "Transcript formatting error"
+    
+    async def _export_to_master_sheet(self, call_data: Dict) -> str:
+        """Export data to the master analysis sheet"""
+        
+        try:
+            master_sheet = self.spreadsheet.worksheet("Master_Analysis_Data")
+            
+            # Prepare row values in correct column order
+            row_values = []
+            for column in self.standard_columns:
+                value = call_data.get(column, "")
+                
+                # Handle boolean values
+                if isinstance(value, bool):
+                    value = "TRUE" if value else "FALSE"
+                # Handle numeric values
+                elif isinstance(value, (int, float)):
+                    value = str(value)
+                else:
+                    value = str(value) if value is not None else ""
+                
+                row_values.append(value)
+            
             # Find next empty row
-            values = self.worksheet.get_all_values()
-            next_row = len(values) + 1
+            next_row = len(master_sheet.get_all_values()) + 1
             
-            # Append the row (A to X columns - 24 columns)
-            range_name = f"A{next_row}:X{next_row}"
-            self.worksheet.update(range_name, [row_data])
+            # Append the data
+            range_name = f"A{next_row}:{chr(ord('A') + len(self.standard_columns) - 1)}{next_row}"
+            master_sheet.update(range_name, [row_values])
             
-            logger.info(f"Added simplified row {next_row} to Google Sheet")
+            return f"Master sheet row {next_row}"
             
         except Exception as e:
-            logger.error(f"Failed to append simplified row to Google Sheet: {str(e)}")
-            raise
+            logger.error(f"Error exporting to master sheet: {str(e)}")
+            return "Master export failed"
     
-    async def _export_detailed_transcript(self, result: Dict, transcript_path: Path, high_value_missed: bool):
-        """Export detailed transcript (unchanged from existing implementation)"""
+    async def _export_to_monthly_worksheet(self, call_data: Dict) -> str:
+        """Export data to monthly worksheet for organization"""
         
         try:
-            # Create output directory if it doesn't exist
-            transcript_path.parent.mkdir(parents=True, exist_ok=True)
+            # Generate worksheet name based on current month
+            now = datetime.now()
+            worksheet_name = now.strftime("%Y_%m_%B")  # e.g., "2024_03_March"
             
-            transcription = result.get("transcription", {})
-            performance = result.get("performance_analysis", {})
-            call_summary = result.get("call_summary", {})
-            opportunity_analysis = result.get("opportunity_analysis", {})
-            representative_name = result.get("representative_name", "Unknown")
-            combined_transcript = result.get("combined_transcript", {})
-            sentiment_analysis = result.get("sentiment_analysis", {})
-            emotion_analysis = result.get("emotion_analysis", {})
+            # Get or create monthly worksheet
+            try:
+                monthly_sheet = self.spreadsheet.worksheet(worksheet_name)
+            except gspread.exceptions.WorksheetNotFound:
+                # Create new monthly worksheet
+                monthly_sheet = self.spreadsheet.add_worksheet(
+                    title=worksheet_name, 
+                    rows=500, 
+                    cols=len(self.standard_columns)
+                )
+                
+                # Add headers
+                monthly_sheet.update('1:1', [self.standard_columns])
+                monthly_sheet.format('1:1', {
+                    'backgroundColor': {'red': 0.2, 'green': 0.4, 'blue': 0.8},
+                    'textFormat': {'foregroundColor': {'red': 1, 'green': 1, 'blue': 1}, 'bold': True}
+                })
             
-            # Extract sentiment and emotion data
-            patient_sentiment = sentiment_analysis.get("patient_sentiment", {})
-            staff_sentiment = sentiment_analysis.get("staff_sentiment", {})
-            overall_sentiment = sentiment_analysis.get("overall_sentiment", {})
-            
-            patient_emotions = emotion_analysis.get("patient_emotions", {})
-            staff_emotions = emotion_analysis.get("staff_emotions", {})
-            call_dynamics = emotion_analysis.get("call_dynamics", {})
-            emotion_flags = emotion_analysis.get("emotion_flags", [])
-            
-            # Write comprehensive transcript file
-            with open(transcript_path, 'w', encoding='utf-8') as f:
-                f.write("DENTAL CALL ANALYSIS REPORT\n")
-                f.write("=" * 70 + "\n\n")
+            # Prepare row values
+            row_values = []
+            for column in self.standard_columns:
+                value = call_data.get(column, "")
                 
-                # Basic call information
-                f.write("CALL INFORMATION:\n")
-                f.write("-" * 20 + "\n")
-                f.write(f"File: {result.get('audio_file', 'unknown.wav')}\n")
-                f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write(f"Duration: {transcription.get('duration', 0):.1f} seconds\n")
-                f.write(f"Speakers: {result.get('speaker_count', 0)}\n")
-                f.write(f"Representative: {representative_name}\n\n")
-                
-                # Performance summary
-                f.write("PERFORMANCE SUMMARY:\n")
-                f.write("-" * 25 + "\n")
-                f.write(f"Overall Score: {performance.get('overall_score', 0):.2f}/100\n")
-                f.write(f"Call Summary: {call_summary.get('call_summary', 'N/A')}\n")
-                f.write(f"High-Value Missed Opportunity: {'YES' if high_value_missed else 'NO'}\n\n")
-                
-                # Sentiment analysis summary
-                f.write("SENTIMENT ANALYSIS SUMMARY:\n")
-                f.write("-" * 35 + "\n")
-                f.write(f"Patient Sentiment: {patient_sentiment.get('sentiment_label', 'unknown')} ")
-                f.write(f"(confidence: {patient_sentiment.get('confidence', 0):.3f})\n")
-                f.write(f"Staff Sentiment: {staff_sentiment.get('sentiment_label', 'unknown')} ")
-                f.write(f"(confidence: {staff_sentiment.get('confidence', 0):.3f})\n")
-                f.write(f"Overall Sentiment: {overall_sentiment.get('sentiment_label', 'unknown')} ")
-                f.write(f"(confidence: {overall_sentiment.get('confidence', 0):.3f})\n")
-                f.write(f"Summary: {sentiment_analysis.get('sentiment_summary', 'No summary available')}\n\n")
-                
-                # Write timestamped transcript
-                f.write("TIMESTAMPED TRANSCRIPT:\n")
-                f.write("-" * 25 + "\n")
-                
-                segments = combined_transcript.get("segments", [])
-                if segments:
-                    for segment in segments:
-                        start_time = segment.get("start_time", 0)
-                        end_time = segment.get("end_time", 0)
-                        speaker = segment.get("speaker", "UNKNOWN")
-                        text = segment.get("text", "").strip()
-                        
-                        if text:  # Only write segments with actual text
-                            # Format time as MM:SS
-                            start_formatted = f"{int(start_time//60):02d}:{int(start_time%60):02d}"
-                            end_formatted = f"{int(end_time//60):02d}:{int(end_time%60):02d}"
-                            
-                            f.write(f"[{start_formatted}-{end_formatted}] {speaker}: {text}\n")
+                if isinstance(value, bool):
+                    value = "TRUE" if value else "FALSE"
+                elif isinstance(value, (int, float)):
+                    value = str(value)
                 else:
-                    f.write("No timestamped segments available\n")
+                    value = str(value) if value is not None else ""
                 
-                f.write(f"\n" + "=" * 70 + "\n")
-                f.write("End of Analysis Report")
+                row_values.append(value)
             
-            return str(transcript_path)
+            # Find next empty row
+            next_row = len(monthly_sheet.get_all_values()) + 1
+            
+            # Append the data
+            range_name = f"A{next_row}:{chr(ord('A') + len(self.standard_columns) - 1)}{next_row}"
+            monthly_sheet.update(range_name, [row_values])
+            
+            return f"{worksheet_name} row {next_row}"
             
         except Exception as e:
-            logger.error(f"Transcript export failed: {str(e)}")
-            return ""
+            logger.error(f"Error exporting to monthly worksheet: {str(e)}")
+            return "Monthly export failed"
     
-    async def _fallback_csv_export(self, analysis_result: Dict, transcript_path: str, high_value_missed: bool) -> str:
-        """Fallback to CSV export when Google Sheets is unavailable"""
+    def is_available(self) -> bool:
+        """Check if Google Sheets export is available"""
+        return self.client is not None and self.spreadsheet is not None
+    
+    async def get_export_status(self) -> Dict:
+        """Get current export status and statistics"""
+        
+        if not self.is_available():
+            return {
+                "available": False,
+                "error": "Google Sheets not configured or not available"
+            }
         
         try:
-            from services.csv_exporter import CSVExporter
+            # Get master sheet statistics
+            master_sheet = self.spreadsheet.worksheet("Master_Analysis_Data")
+            total_rows = len(master_sheet.get_all_values())
             
-            csv_exporter = CSVExporter()
-            await csv_exporter.initialize()
+            # Get list of monthly worksheets
+            all_worksheets = self.spreadsheet.worksheets()
+            monthly_sheets = [ws.title for ws in all_worksheets if "_" in ws.title and ws.title != "Master_Analysis_Data"]
             
-            # Export to CSV
-            csv_path = await csv_exporter.export_analysis_result(analysis_result)
-            
-            # Send email alert even in CSV fallback mode
-            if high_value_missed and self.email_alert_service.is_configured():
-                logger.info("High-value opportunity detected - sending email alert...")
-                email_sent = await self.email_alert_service.send_high_opportunity_alert(analysis_result)
-                if email_sent:
-                    logger.info("Email alert sent successfully")
-                else:
-                    logger.warning("Email alert failed to send")
-            
-            # Export detailed transcript
-            await self._export_detailed_transcript(analysis_result, transcript_path, high_value_missed)
-            
-            logger.info(f"Fallback CSV export completed: {csv_path}")
-            return f"CSV: {csv_path}"
+            return {
+                "available": True,
+                "spreadsheet_title": self.spreadsheet.title,
+                "spreadsheet_url": self.spreadsheet.url,
+                "total_records": max(0, total_rows - 1),  # Subtract header row
+                "monthly_worksheets": len(monthly_sheets),
+                "monthly_sheets": monthly_sheets,
+                "columns_count": len(self.standard_columns),
+                "last_updated": datetime.now().isoformat()
+            }
             
         except Exception as e:
-            logger.error(f"Fallback CSV export failed: {str(e)}")
-            return "Export failed"
+            logger.error(f"Error getting export status: {str(e)}")
+            return {
+                "available": False,
+                "error": f"Status check failed: {str(e)}"
+            }

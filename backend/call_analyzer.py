@@ -26,7 +26,6 @@ class CallAnalyzer:
         
         # Enhanced services
         self.call_tagging_service = services_dict['call_tagging_service']
-        self.coaching_analyzer = services_dict['coaching_analyzer']
         self.speaker_role_service = services_dict['speaker_role_service']
         self.employee_service = services_dict['employee_service']
         
@@ -125,26 +124,10 @@ class CallAnalyzer:
                         'tag_explanations': {}
                     }
             
-            # Step 13: Coaching analysis
-            logger.info("Performing coaching analysis...")
-            coaching_analysis = {}
-            if self.coaching_analyzer:
-                try:
-                    coaching_analysis = await self.coaching_analyzer.analyze_coaching_potential(
-                        patient_text, staff_text, performance_analysis, sentiment_analysis
-                    )
-                except Exception as e:
-                    logger.warning(f"Coaching analysis failed: {str(e)}")
-                    coaching_analysis = {
-                        'is_coaching_candidate': False,
-                        'coaching_value': 'none',
-                        'coaching_reasons': []
-                    }
-            
             # Calculate processing time
             processing_time = time.time() - start_time
             
-            # Step 14: Compile comprehensive analysis result with preprocessing info
+            # Step 13: Compile comprehensive analysis result with preprocessing info
             final_results = {
                 "audio_file": str(audio_file),
                 "preprocessed_audio_file": preprocessed_audio_path,
@@ -157,7 +140,6 @@ class CallAnalyzer:
                 "opportunity_analysis": opportunity_analysis,
                 "combined_transcript": combined_transcript,
                 "call_tag_analysis": call_tag_analysis,
-                "coaching_analysis": coaching_analysis,
                 "diarization_result": diarization_result,
                 
                 # Analysis metadata
@@ -166,7 +148,6 @@ class CallAnalyzer:
                 "llm_used": self.llm_analyzer.is_initialized,
                 "sentiment_enabled": self.sentiment_service.is_initialized,
                 "tagging_enabled": self.call_tagging_service is not None,
-                "coaching_enabled": self.coaching_analyzer is not None,
                 "speaker_role_assignment": "llm_based",
                 "employee_list_used": self.employee_service.get_employees(),
                 "employee_count": len(self.employee_service.get_employees()),
@@ -178,7 +159,7 @@ class CallAnalyzer:
                 "diarization_quality": self.diarization_service.get_diarization_quality_score(diarization_result) if hasattr(self.diarization_service, 'get_diarization_quality_score') else None
             }
             
-            # Step 15: Export enhanced results to Google Sheets
+            # Step 14: Export enhanced results to Google Sheets
             logger.info("Exporting enhanced results...")
             export_result = await self.google_sheets_exporter.export_analysis_result(final_results)
             
@@ -186,14 +167,12 @@ class CallAnalyzer:
             overall_sentiment = sentiment_analysis.get("overall_sentiment", {})
             emotion_flags = sentiment_analysis.get("emotion_analysis", {}).get("emotion_flags", [])
             call_tag = call_tag_analysis.get("primary_tag", "unknown")
-            is_coaching = coaching_analysis.get("is_coaching_candidate", False)
             
             logger.info(f"Enhanced analysis completed in {processing_time:.1f}s - {export_result}")
             logger.info(f"Representative: {representative_name} (from employee list)")
             logger.info(f"Overall sentiment: {overall_sentiment.get('sentiment_label', 'unknown')} "
                        f"(confidence: {overall_sentiment.get('confidence', 0):.3f})")
             logger.info(f"Call tag: {call_tag}")
-            logger.info(f"Coaching candidate: {'Yes' if is_coaching else 'No'}")
             logger.info(f"Preprocessing: Applied centrally before analysis")
             
             if emotion_flags:
