@@ -26,6 +26,7 @@ from services.file_queue_service import FileQueueService
 from services.speaker_role_assignment_service import SpeakerRoleAssignmentService
 from services.coaching_analyzer import CoachingAnalyzer
 from services.employee_list_service import EmployeeListService
+from services.call_categorization_service import CallCategorizationService  # NEW
 
 # Import new modular components
 from call_analyzer import CallAnalyzer
@@ -52,7 +53,8 @@ class DentalCallAnalyzer:
         self.call_tagging_service = None  # Will be initialized with LLM analyzer
         self.coaching_analyzer = CoachingAnalyzer()
         self.speaker_role_service = None  # Will be initialized with LLM analyzer
-        
+        self.call_categorization_service = None  # NEW: Will be initialized for patient type/booking tracking
+
         # NEW: Employee list service
         self.employee_service = EmployeeListService()
         
@@ -90,7 +92,12 @@ class DentalCallAnalyzer:
             else:
                 logger.warning("LLM analyzer not available - speaker role assignment will use rule-based fallback")
                 self.speaker_role_service = SpeakerRoleAssignmentService(None)
-            
+
+            # NEW: Initialize call categorization service (patient type, booking status, etc.)
+            self.call_categorization_service = CallCategorizationService()
+            await self.call_categorization_service.initialize()
+            logger.info("Call categorization service initialized (patient type, booking tracking)")
+
             # Initialize other services
             await self.transcription_service.load_model()
             await self.diarization_service.load_model()
@@ -111,7 +118,8 @@ class DentalCallAnalyzer:
                 'call_tagging_service': self.call_tagging_service,
                 'coaching_analyzer': self.coaching_analyzer,
                 'speaker_role_service': self.speaker_role_service,
-                'employee_service': self.employee_service
+                'employee_service': self.employee_service,
+                'call_categorization_service': self.call_categorization_service  # NEW
             }
             
             self.call_analyzer = CallAnalyzer(services_dict)

@@ -29,18 +29,35 @@ class GoogleSheetsExporter:
         self.spreadsheet = None
         self.llm_analyzer = None
         
-        # Standard column order with call tagging but WITHOUT coaching
+        # Standard column order with NEW client requirements for Google Ads tracking
         self.standard_columns = [
             'Call_File_Name',
-            'Analysis_Date', 
+            'Analysis_Date',
             'Analysis_Time',
+
+            # NEW: Patient Categorization & Conversion Tracking
+            'Patient_Type',  # new_patient | existing_patient
+            'Appointment_Booked',  # TRUE | FALSE
+            'Conversion_Status',  # booked | not_booked (for Google Ads)
+
+            # NEW: For New Patients
+            'Script_Followed',  # TRUE | FALSE | (blank for existing patients)
+
+            # NEW: For Existing Patients
+            'Call_Concern_Type',  # issue | question | concern | query | (blank for new patients)
+            'Issue_Resolved',  # TRUE | FALSE | (blank for new patients)
+
+            # NEW: Detailed Analysis
+            'Detailed_Analysis',  # Brutally honest coaching analysis
+
+            # Existing columns
             'Full_Transcript_With_Timestamps',
             'Call_Summary',
             'Representative_Name',
             'Representative_Score',
             'High_Value_Missed_Opportunity',
             'Patient_Sentiment',
-            'Staff_Sentiment', 
+            'Staff_Sentiment',
             'Overall_Sentiment',
             'Sentiment_Confidence',
             'Sentiment_Summary',
@@ -53,7 +70,7 @@ class GoogleSheetsExporter:
             'Call_Emotional_Health',
             'Emotional_Alignment',
             'Escalation_Pattern',
-            'Call_Tag'  # Tagging column remains
+            'Call_Tag'
         ]
     
     async def initialize(self, llm_analyzer=None):
@@ -159,13 +176,13 @@ class GoogleSheetsExporter:
             return f"Export failed: {str(e)}"
     
     def _prepare_call_data(self, analysis_result: Dict) -> Dict:
-        """Prepare analysis data for Google Sheets export - WITHOUT coaching columns"""
-        
+        """Prepare analysis data for Google Sheets export - WITH NEW client requirements"""
+
         try:
             # Extract basic information
             audio_file = analysis_result.get("audio_file", "")
             file_name = Path(audio_file).name if audio_file else "Unknown"
-            
+
             transcription = analysis_result.get("transcription", {})
             call_summary = analysis_result.get("call_summary", {})
             sentiment_analysis = analysis_result.get("sentiment_analysis", {})
@@ -173,28 +190,46 @@ class GoogleSheetsExporter:
             performance_analysis = analysis_result.get("performance_analysis", {})
             opportunity_analysis = analysis_result.get("opportunity_analysis", {})
             call_tag_analysis = analysis_result.get("call_tag_analysis", {})
-            
+            call_categorization = analysis_result.get("call_categorization", {})  # NEW
+
             # Get current timestamp
             now = datetime.now()
-            
-            # Prepare row data according to standard columns (without coaching)
+
+            # Prepare row data according to standard columns (WITH new client requirements)
             call_data = {
                 'Call_File_Name': file_name,
                 'Analysis_Date': now.strftime('%m/%d/%Y'),
                 'Analysis_Time': now.strftime('%H:%M:%S'),
+
+                # NEW: Patient Categorization & Conversion Tracking
+                'Patient_Type': call_categorization.get("patient_type", "existing_patient"),
+                'Appointment_Booked': call_categorization.get("appointment_booked", False),
+                'Conversion_Status': call_categorization.get("conversion_status", "not_booked"),
+
+                # NEW: For New Patients
+                'Script_Followed': call_categorization.get("script_followed"),  # Can be None
+
+                # NEW: For Existing Patients
+                'Call_Concern_Type': call_categorization.get("call_concern_type"),  # Can be None
+                'Issue_Resolved': call_categorization.get("issue_resolved"),  # Can be None
+
+                # NEW: Detailed Analysis
+                'Detailed_Analysis': call_categorization.get("detailed_analysis", ""),
+
+                # Existing columns
                 'Full_Transcript_With_Timestamps': self._format_transcript_with_timestamps(analysis_result.get("combined_transcript", {})),
                 'Call_Summary': call_summary.get("call_summary", ""),
                 'Representative_Name': analysis_result.get("representative_name", "Unknown"),
                 'Representative_Score': performance_analysis.get("representative_score", 0),
                 'High_Value_Missed_Opportunity': opportunity_analysis.get("high_value_missed", False),
-                
+
                 # Sentiment data
                 'Patient_Sentiment': sentiment_analysis.get("patient_sentiment", {}).get("sentiment_label", ""),
                 'Staff_Sentiment': sentiment_analysis.get("staff_sentiment", {}).get("sentiment_label", ""),
                 'Overall_Sentiment': sentiment_analysis.get("overall_sentiment", {}).get("sentiment_label", ""),
                 'Sentiment_Confidence': sentiment_analysis.get("overall_sentiment", {}).get("confidence", 0),
                 'Sentiment_Summary': sentiment_analysis.get("sentiment_summary", ""),
-                
+
                 # Emotion data
                 'Patient_Primary_Emotion': emotion_analysis.get("patient_emotions", {}).get("primary_emotion", ""),
                 'Patient_Emotion_Confidence': emotion_analysis.get("patient_emotions", {}).get("confidence", 0),
@@ -205,13 +240,13 @@ class GoogleSheetsExporter:
                 'Call_Emotional_Health': emotion_analysis.get("emotional_health_score", ""),
                 'Emotional_Alignment': emotion_analysis.get("emotional_alignment", ""),
                 'Escalation_Pattern': emotion_analysis.get("escalation_pattern", ""),
-                
+
                 # Call tagging
                 'Call_Tag': call_tag_analysis.get("primary_tag", "general_inquiry")
             }
-            
+
             return call_data
-            
+
         except Exception as e:
             logger.error(f"Error preparing call data: {str(e)}")
             return {}
@@ -253,17 +288,20 @@ class GoogleSheetsExporter:
             row_values = []
             for column in self.standard_columns:
                 value = call_data.get(column, "")
-                
+
+                # Handle None values (leave blank for null fields)
+                if value is None:
+                    row_values.append("")
                 # Handle boolean values
-                if isinstance(value, bool):
-                    value = "TRUE" if value else "FALSE"
+                elif isinstance(value, bool):
+                    row_values.append("TRUE" if value else "FALSE")
                 # Handle numeric values
                 elif isinstance(value, (int, float)):
-                    value = str(value)
+                    row_values.append(str(value))
+                # Handle strings
                 else:
-                    value = str(value) if value is not None else ""
-                
-                row_values.append(value)
+                    row_values.append(str(value) if value else "")
+
             
             # Find next empty row
             next_row = len(master_sheet.get_all_values()) + 1
@@ -308,15 +346,19 @@ class GoogleSheetsExporter:
             row_values = []
             for column in self.standard_columns:
                 value = call_data.get(column, "")
-                
-                if isinstance(value, bool):
-                    value = "TRUE" if value else "FALSE"
+
+                # Handle None values (leave blank for null fields)
+                if value is None:
+                    row_values.append("")
+                # Handle boolean values
+                elif isinstance(value, bool):
+                    row_values.append("TRUE" if value else "FALSE")
+                # Handle numeric values
                 elif isinstance(value, (int, float)):
-                    value = str(value)
+                    row_values.append(str(value))
+                # Handle strings
                 else:
-                    value = str(value) if value is not None else ""
-                
-                row_values.append(value)
+                    row_values.append(str(value) if value else "")
             
             # Find next empty row
             next_row = len(monthly_sheet.get_all_values()) + 1

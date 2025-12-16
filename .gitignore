@@ -89,3 +89,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Pretrained AI models (SpeechBrain, etc.)
+backend/pretrained_models/
+backend/Temp_files/
+backend/temp_incoming_calls/
