@@ -1,9 +1,8 @@
 """
-Improved LLM-based Sentiment Analysis and Emotion Detection Service using Qwen 7B
+Improved LLM-based Sentiment Analysis and Emotion Detection Service using OpenAI GPT-4
 Enhanced with dynamic confidence scoring based on actual analysis factors
 """
 import logging
-import aiohttp
 import asyncio
 import json
 import re
@@ -11,108 +10,59 @@ from typing import Dict, List, Optional
 from concurrent.futures import ThreadPoolExecutor
 from config.settings import settings
 from prompts.llm_sentiment_analysis_prompts import LLMSentimentAnalysisPrompts
+from services.openai_service import get_openai_service
 
 logger = logging.getLogger(__name__)
 
 class LLMSentimentAnalysisService:
-    """LLM-based sentiment analysis and emotion detection using Qwen 7B with intelligent chunking"""
-    
+    """LLM-based sentiment analysis and emotion detection using OpenAI GPT-4 with intelligent chunking"""
+
     def __init__(self):
-        self.ollama_url = settings.OLLAMA_URL
-        self.model_name = settings.LLM_MODEL_NAME
-        self.session = None
+        self.openai_service = None
         self.is_initialized = False
         self.max_single_analysis_length = 1500  # Characters - analyze without chunking
         self.max_chunk_length = 2000  # Characters per chunk for chunking
-        
+
         # Initialize prompts from separate file
         self.prompts = LLMSentimentAnalysisPrompts()
 
     async def initialize(self) -> None:
-        """Initialize LLM sentiment analysis service"""
+        """Initialize LLM sentiment analysis service with OpenAI"""
         if self.is_initialized:
             return
-            
+
         try:
-            logger.info("Initializing LLM-based sentiment analysis service...")
-            
-            # Create HTTP session
-            self.session = aiohttp.ClientSession()
-            
-            # Check Ollama connection
-            await self._check_ollama_connection()
-            
-            # Verify model availability
-            await self._verify_model()
-            
+            logger.info("Initializing LLM-based sentiment analysis service with OpenAI...")
+
+            # Get shared OpenAI service
+            self.openai_service = await get_openai_service()
+
             self.is_initialized = True
-            logger.info(f"LLM sentiment analysis service ready with model: {self.model_name}")
-            
+            logger.info("LLM sentiment analysis service ready with OpenAI")
+
         except Exception as e:
             logger.error(f"LLM sentiment analysis initialization failed: {str(e)}")
-            if self.session:
-                await self.session.close()
-                self.session = None
+            self.openai_service = None
             raise
 
-    async def _check_ollama_connection(self):
-        """Check if Ollama server is running"""
-        try:
-            async with self.session.get(f"{self.ollama_url}/api/tags", timeout=5) as response:
-                if response.status != 200:
-                    raise Exception(f"Ollama server not responding (status: {response.status})")
-        except Exception as e:
-            raise Exception(f"Cannot connect to Ollama at {self.ollama_url}: {str(e)}")
-
-    async def _verify_model(self):
-        """Verify model is available"""
-        try:
-            async with self.session.get(f"{self.ollama_url}/api/tags") as response:
-                if response.status == 200:
-                    data = await response.json()
-                    available_models = [model['name'] for model in data.get('models', [])]
-                    
-                    if self.model_name not in available_models:
-                        logger.warning(f"Model {self.model_name} not found. Available models: {available_models}")
-                        raise Exception(f"Model {self.model_name} not available")
-        except Exception as e:
-            raise Exception(f"Error verifying model: {str(e)}")
-
     async def _generate_llm_response(self, prompt: str, max_tokens: int = 1000) -> str:
-        """Generate LLM response with improved error handling"""
+        """Generate LLM response using OpenAI with improved error handling"""
         try:
-            if not self.is_initialized or not self.session:
+            if not self.is_initialized or not self.openai_service:
                 return ""
-            
-            request_data = {
-                "model": self.model_name,
-                "prompt": prompt,
-                "stream": False,
-                "options": {
-                    "temperature": 0.3,  # Slightly higher for more varied confidence scores
-                    "top_p": 0.9,
-                    "num_predict": max_tokens,
-                    "repeat_penalty": 1.1,
-                    "stop": ["Human:", "Assistant:", "\n\n\n"]
-                }
-            }
-            
-            async with self.session.post(
-                f"{self.ollama_url}/api/generate",
-                json=request_data,
-                timeout=aiohttp.ClientTimeout(total=60)
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    result = data.get("response", "").strip()
-                    logger.debug(f"LLM Response length: {len(result)} chars")
-                    return result
-                else:
-                    logger.error(f"Ollama API error: {response.status}")
-                    return ""
-                    
+
+            result = await self.openai_service.generate_response(
+                prompt=prompt,
+                max_tokens=max_tokens,
+                temperature=0.3,  # Slightly higher for more varied confidence scores
+                system_message="You are an expert sentiment analyst for dental office calls. Provide accurate, nuanced analysis of emotions and sentiment."
+            )
+
+            logger.debug(f"LLM Response length: {len(result)} chars")
+            return result
+
         except Exception as e:
-            logger.error(f"LLM generation error: {str(e)}")
+            logger.error(f"OpenAI LLM generation error in sentiment analysis: {str(e)}")
             return ""
 
     def _should_use_chunking(self, combined_text: str) -> bool:
@@ -822,8 +772,7 @@ class LLMSentimentAnalysisService:
 
     async def cleanup(self):
         """Cleanup resources"""
-        if self.session:
-            await self.session.close()
-            self.session = None
+        # OpenAI service is shared, no need to close it here
+        self.openai_service = None
         self.is_initialized = False
         logger.info("LLM sentiment analysis service cleaned up")
