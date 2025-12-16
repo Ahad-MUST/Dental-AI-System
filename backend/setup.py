@@ -98,15 +98,16 @@ except Exception as e:
     if not env_file.exists():
         print("\n⚙️ Creating .env configuration file...")
         with open('.env', 'w') as f:
-            f.write("""# Ollama Configuration
-OLLAMA_URL=http://localhost:11434
-LLM_MODEL_NAME=qwen2.5:7b-instruct
+            f.write("""# OpenAI Configuration (REQUIRED)
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_MODEL=gpt-4-turbo
+OPENAI_TEMPERATURE=0.1
 
-# Whisper Configuration  
+# Whisper Configuration
 WHISPER_MODEL=base
 WHISPER_DEVICE=auto
 
-# SpeechBrain Configuration (Updated from PyAnnote)
+# SpeechBrain Configuration
 # No special tokens needed for SpeechBrain - models download automatically
 SPEECHBRAIN_DEVICE=auto
 
@@ -142,8 +143,12 @@ USE_API_MODE=false
 API_ENDPOINT=https://your-api-endpoint.com/audio-files
 API_KEY=your_api_key_here
 API_POLLING_INTERVAL=300
+
+# Audio Processing
+AUDIO_CROP_START_SECONDS=3
 """)
         print("✅ Created .env file")
+        print("⚠️ IMPORTANT: Add your OpenAI API key to .env file before running!")
         print("ℹ️ SpeechBrain models will download automatically (no token required)")
     
     # Create test script for emotion detection
