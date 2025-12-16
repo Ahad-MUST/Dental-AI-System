@@ -23,12 +23,15 @@ class CallAnalyzer:
         self.performance_scorer = services_dict['performance_scorer']
         self.opportunity_detector = services_dict['opportunity_detector']
         self.google_sheets_exporter = services_dict['google_sheets_exporter']
-        
+
         # Enhanced services
         self.call_tagging_service = services_dict['call_tagging_service']
         self.speaker_role_service = services_dict['speaker_role_service']
         self.employee_service = services_dict['employee_service']
-        
+
+        # NEW: Call categorization service (for patient type, booking status, etc.)
+        self.call_categorization_service = services_dict.get('call_categorization_service')
+
         # NEW: Centralized audio preprocessor
         self.audio_preprocessor = AudioPreprocessor()
     
@@ -123,11 +126,30 @@ class CallAnalyzer:
                         'all_tags': [],
                         'tag_explanations': {}
                     }
-            
+
+            # Step 13: NEW - Call categorization for client requirements
+            logger.info("Performing call categorization (patient type, booking status, etc.)...")
+            call_categorization = {}
+            if self.call_categorization_service:
+                try:
+                    call_categorization = await self.call_categorization_service.categorize_call(
+                        patient_text, staff_text, call_summary.get("call_summary", "")
+                    )
+                    logger.info(f"Categorized as: {call_categorization.get('patient_type', 'unknown')} - "
+                               f"Booked: {call_categorization.get('appointment_booked', False)}")
+                except Exception as e:
+                    logger.warning(f"Call categorization failed: {str(e)}")
+                    call_categorization = {
+                        'patient_type': 'existing_patient',
+                        'appointment_booked': False,
+                        'conversion_status': 'not_booked',
+                        'categorization_confidence': 0.0
+                    }
+
             # Calculate processing time
             processing_time = time.time() - start_time
             
-            # Step 13: Compile comprehensive analysis result with preprocessing info
+            # Step 14: Compile comprehensive analysis result with preprocessing info and categorization
             final_results = {
                 "audio_file": str(audio_file),
                 "preprocessed_audio_file": preprocessed_audio_path,
@@ -140,6 +162,7 @@ class CallAnalyzer:
                 "opportunity_analysis": opportunity_analysis,
                 "combined_transcript": combined_transcript,
                 "call_tag_analysis": call_tag_analysis,
+                "call_categorization": call_categorization,  # NEW: Client requirements
                 "diarization_result": diarization_result,
                 
                 # Analysis metadata
