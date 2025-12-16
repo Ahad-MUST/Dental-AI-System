@@ -9,6 +9,7 @@ import PerformanceSection from './dashboard/PerformanceSection';
 import Analytics from './dashboard/Analytics';
 import Footer from './dashboard/Footer';
 import EmployeeManagement from './EmployeeManagement';
+import PatientCategorization from './dashboard/PatientCategorization';
 import { BarChart3, Users, GraduationCap } from 'lucide-react';
 
 // Import the new Coaching Library component
@@ -137,6 +138,11 @@ const Dashboard = () => {
             {/* Hero Analytics Section - UNCHANGED */}
             <div className="pb-2">
               <Analytics data={data} />
+            </div>
+
+            {/* NEW: Patient Categorization & Conversion Tracking */}
+            <div className="pb-2">
+              <PatientCategorization data={data} />
             </div>
 
             {/* Main Dashboard Grid - SWAPPED SENTIMENT AND TOP PERFORMERS */}
