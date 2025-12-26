@@ -79,38 +79,38 @@ class CallAnalyzer:
             # Log the results of speaker assignment
             logger.info(f"Speaker role assignment completed - Patient: {len(patient_text)} chars, Staff: {len(staff_text)} chars")
             
-            # Step 7: Generate call summary using LLM
-            logger.info("Generating call summary...")
+            # Step 7: Generate call summary using ChatGPT
+            logger.info("Generating call summary using ChatGPT...")
             call_summary = await self.llm_analyzer.analyze_call_summary(
                 transcription_result["full_transcript"]
             )
-            
-            # Step 8: Extract representative name using LLM WITH EMPLOYEE LIST
-            logger.info("Extracting representative name from employee list...")
+
+            # Step 8: Extract representative name using ChatGPT WITH EMPLOYEE LIST
+            logger.info("Extracting representative name from employee list using ChatGPT...")
             representative_name = await self.llm_analyzer.extract_representative_name(
                 transcription_result["full_transcript"]
             )
-            
-            # Step 9: LLM-based sentiment analysis
-            logger.info("Analyzing sentiment and emotions using LLM...")
+
+            # Step 9: ChatGPT-based sentiment analysis
+            logger.info("Analyzing sentiment and emotions using ChatGPT...")
             sentiment_analysis = await self.sentiment_service.analyze_call_segments_sentiment(
                 patient_text, staff_text
             )
             
-            # Step 10: Score call performance
-            logger.info("Scoring performance...")
+            # Step 10: Score call performance with ChatGPT
+            logger.info("Scoring performance using ChatGPT...")
             performance_analysis = await self.performance_scorer.score_call_performance(
                 combined_transcript, patient_text, staff_text
             )
-            
-            # Step 11: Detect missed opportunities
-            logger.info("Detecting opportunities...")
+
+            # Step 11: Detect missed opportunities with ChatGPT
+            logger.info("Detecting opportunities using ChatGPT...")
             opportunity_analysis = await self.opportunity_detector.detect_opportunities(
                 patient_text, staff_text, call_summary, {}
             )
-            
-            # Step 12: Call tagging analysis
-            logger.info("Performing call tagging analysis...")
+
+            # Step 12: Call tagging analysis with ChatGPT
+            logger.info("Performing call tagging analysis using ChatGPT...")
             call_tag_analysis = {}
             if self.call_tagging_service:
                 try:
@@ -127,8 +127,8 @@ class CallAnalyzer:
                         'tag_explanations': {}
                     }
 
-            # Step 13: NEW - Call categorization for client requirements
-            logger.info("Performing call categorization (patient type, booking status, etc.)...")
+            # Step 13: NEW - Call categorization for client requirements using ChatGPT
+            logger.info("Performing call categorization (patient type, booking status, etc.) using ChatGPT...")
             call_categorization = {}
             if self.call_categorization_service:
                 try:

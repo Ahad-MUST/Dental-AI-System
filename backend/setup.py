@@ -98,13 +98,13 @@ except Exception as e:
     if not env_file.exists():
         print("\n⚙️ Creating .env configuration file...")
         with open('.env', 'w') as f:
-            f.write("""# OpenAI Configuration (REQUIRED)
+            f.write("""# OpenAI Configuration (ChatGPT)
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_MODEL=gpt-4-turbo
 OPENAI_TEMPERATURE=0.1
 
 # Whisper Configuration
-WHISPER_MODEL=base
+WHISPER_MODEL=large
 WHISPER_DEVICE=auto
 
 # SpeechBrain Configuration
@@ -197,12 +197,12 @@ if __name__ == "__main__":
     print("✅ No HuggingFace token dependency")
     
     print(f"\n📊 Your analysis pipeline now includes:")
-    print("• Transcription + SpeechBrain Speaker Diarization")
-    print("• LLM-based Analysis + Performance Scoring")
-    print("• Sentiment Analysis")
+    print("• OpenAI Whisper Transcription + SpeechBrain Speaker Diarization")
+    print("• ChatGPT (GPT-4) Analysis + Performance Scoring")
+    print("• ChatGPT Sentiment Analysis")
     print("• 🆕 Emotion Detection (pain, anxiety, satisfaction, etc.)")
     print("• 🆕 Professional Tone Analysis")
-    print("• Opportunity Detection + Email Alerts")
+    print("• ChatGPT Opportunity Detection + Email Alerts")
     print("• Google Sheets Export + Detailed Reports")
     
     print(f"\n🔄 MIGRATION FROM PYANNOTE:")

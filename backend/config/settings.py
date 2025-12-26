@@ -18,17 +18,13 @@ class Settings:
     OUTPUT_DIR = BASE_DIR / os.getenv("OUTPUT_DIR", "outputs")
     LOGS_DIR = BASE_DIR / "logs"
     
-    # OpenAI Configuration
+    # OpenAI Configuration (ChatGPT)
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4-turbo")
     OPENAI_TEMPERATURE = float(os.getenv("OPENAI_TEMPERATURE", "0.1"))
-
-    # Legacy Ollama/LLM Configuration (deprecated)
-    OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-    LLM_MODEL_NAME = os.getenv("LLM_MODEL_NAME", "qwen2.5:7b-instruct")
     
     # Whisper Configuration
-    WHISPER_MODEL = os.getenv("WHISPER_MODEL", "base")
+    WHISPER_MODEL = os.getenv("WHISPER_MODEL", "large")
     WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "auto")
 
     # Audio Processing Settings

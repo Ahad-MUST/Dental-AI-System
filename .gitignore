@@ -94,3 +94,11 @@ __pycache__/
 backend/pretrained_models/
 backend/Temp_files/
 backend/temp_incoming_calls/
+__pycache__/
+*.pyc
+.claude/
+backend/audio_files/
+backend/logs/
+
+nul
+backend/nul

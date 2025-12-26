@@ -37,13 +37,13 @@ class TranscriptionService:
             return
             
         try:
-            logger.info(f"Loading Whisper model: {settings.WHISPER_MODEL}")
+            logger.info(f"Loading OpenAI Whisper {settings.WHISPER_MODEL} model on {self.device}...")
             loop = asyncio.get_event_loop()
             self.model = await loop.run_in_executor(
                 self.executor,
                 lambda: whisper.load_model(settings.WHISPER_MODEL, device=self.device)
             )
-            logger.info("Whisper model loaded successfully")
+            logger.info(f"✓ OpenAI Whisper {settings.WHISPER_MODEL} model loaded successfully")
             
         except Exception as e:
             logger.error(f"Failed to load Whisper model: {str(e)}")
@@ -64,7 +64,7 @@ class TranscriptionService:
             if self.model is None:
                 await self.load_model()
             
-            logger.info(f"Transcribing preprocessed audio: {Path(preprocessed_audio_path).name}")
+            logger.info(f"Transcribing with Whisper {settings.WHISPER_MODEL}: {Path(preprocessed_audio_path).name}")
             
             # Run transcription in thread pool
             loop = asyncio.get_event_loop()

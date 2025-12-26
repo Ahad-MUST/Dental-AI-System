@@ -27,8 +27,13 @@ class CallTaggingService:
         self.predefined_categories = {
             'new_patient': {
                 'keywords': ['new patient', 'first time', 'never been', 'looking for dentist', 'need dentist', 'new to area'],
-                'patterns': [r'tooth.{0,10}hurt', r'in.{0,10}pain', r'really.{0,10}hurt', r'severe.{0,10}pain'],
+                'patterns': [r'first.{0,10}time', r'new.{0,10}patient', r'never.{0,10}been'],
                 'priority': 100
+            },
+            'emergency': {
+                'keywords': ['emergency', 'urgent', 'pain', 'hurt', 'swelling', 'bleeding', 'broken tooth', 'tooth fell out', 'severe pain', 'asap', 'right away', 'today'],
+                'patterns': [r'tooth.{0,10}hurt', r'in.{0,10}pain', r'really.{0,10}hurt', r'severe.{0,10}pain', r'emergency', r'urgent', r'need.{0,10}see.{0,10}today'],
+                'priority': 110
             },
             'insurance': {
                 'keywords': ['insurance', 'coverage', 'benefits', 'network', 'accept', 'medicaid', 'ppo', 'delta dental', 'aetna', 'cigna', 'verification'],
@@ -514,7 +519,7 @@ Respond with ONLY this JSON:
         """Convert tag to user-friendly display name"""
         display_names = {
             'new_patient': 'New Patient',
-            'emergency': 'Emergency',
+            'emergency': 'Emergency Call',
             'insurance': 'Insurance Inquiry',
             'appointment_booking': 'Appointment Booking',
             'appointment_confirm': 'Appointment Confirmation',
@@ -525,7 +530,7 @@ Respond with ONLY this JSON:
             'major_treatment': 'Major Treatment',
             'billing': 'Billing Question'
         }
-        
+
         return display_names.get(tag, tag.replace('_', ' ').title())
     
     def get_available_tags(self) -> List[str]:

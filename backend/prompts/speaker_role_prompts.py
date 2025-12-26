@@ -14,7 +14,7 @@ TRANSCRIPT WITH SPEAKERS:
 IMPORTANT CONTEXT:
 - This is a dental office phone call
 - There may be multiple speakers due to diarization splitting one person's speech
-- One or more speakers represent dental office staff (receptionist, assistant, dentist)  
+- One or more speakers represent dental office staff (receptionist, assistant, dentist)
 - One or more speakers represent patients (calling for appointments, inquiries, etc.)
 - There may be automated voice saying "This call may be recorded" - identify separately
 - The speaker labels (SPEAKER_00, etc.) may be wrong - analyze CONTENT only
@@ -43,31 +43,23 @@ AUTOMATED INDICATORS:
 - "This call may be recorded"
 - "For quality and training purposes"
 
-CRITICAL: Multiple speakers might be the SAME person (diarization errors). Group by ROLE, not just speaker ID.
+CRITICAL REQUIREMENTS:
+1. You MUST include at least ONE speaker in staff_speakers
+2. You MUST include at least ONE speaker in patient_speakers
+3. Staff and patient speakers MUST be different
+4. ALL speakers mentioned must exist in the transcript above (use exact speaker IDs like SPEAKER_00, SPEAKER_01, etc.)
+5. Multiple speakers might be the SAME person (diarization errors) - group by ROLE not just speaker ID
 
-Respond with ONLY this JSON:
+Respond with ONLY valid JSON, no other text:
 {{
-    "staff_speakers": ["SPEAKER_XX", "SPEAKER_YY"],
-    "patient_speakers": ["SPEAKER_XX", "SPEAKER_YY"], 
-    "automated_speakers": ["SPEAKER_XX or null"],
-    "confidence": [0.1-1.0 based on how clear the role indicators are],
-    "reasoning": "Explain why you grouped speakers this way based on CONTENT analysis",
-    "role_evidence": {{
-        "SPEAKER_00": {{"role": "staff/patient/automated", "evidence": ["specific phrases"]}},
-        "SPEAKER_01": {{"role": "staff/patient/automated", "evidence": ["specific phrases"]}},
-        "SPEAKER_02": {{"role": "staff/patient/automated", "evidence": ["specific phrases"]}},
-        "SPEAKER_03": {{"role": "staff/patient/automated", "evidence": ["specific phrases"]}}
-    }}
+    "staff_speakers": ["SPEAKER_00"],
+    "patient_speakers": ["SPEAKER_01"],
+    "automated_speakers": [],
+    "confidence": 0.8,
+    "reasoning": "SPEAKER_00 uses professional greetings and scheduling language (staff). SPEAKER_01 asks questions about appointment availability (patient)."
 }}
 
-CONFIDENCE GUIDELINES:
-- 0.9-1.0: Very clear role indicators for each speaker
-- 0.7-0.8: Clear indicators with minor ambiguity  
-- 0.5-0.6: Some speakers unclear
-- 0.3-0.4: Multiple speakers ambiguous
-- 0.1-0.2: Cannot determine roles reliably
-
-Focus on CONTENT patterns, not speaker frequency or volume.
+Example format - your response must be parseable JSON with these exact fields.
 """
 
     CHUNKED_ROLE_ANALYSIS_PROMPT = """

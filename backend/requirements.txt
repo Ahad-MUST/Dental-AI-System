@@ -7,7 +7,7 @@ openai-whisper>=20231117
 pyannote.audio>=3.1.0
 # Remove speechbrain dependencies that were causing issues
 
-# OpenAI API (replaces Ollama)
+# OpenAI API (ChatGPT)
 openai>=1.0.0
 
 # HTTP client for LLM API

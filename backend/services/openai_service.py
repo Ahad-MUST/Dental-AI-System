@@ -1,6 +1,6 @@
 """
-Shared OpenAI Service - Base service for all LLM operations
-Replaces Ollama with OpenAI GPT-4 API
+Shared OpenAI Service - Base service for all ChatGPT operations
+Uses OpenAI GPT-4 API for all language model tasks
 """
 import logging
 from typing import Dict, List, Optional
@@ -25,7 +25,7 @@ class OpenAIService:
             return
 
         try:
-            logger.info("Initializing OpenAI service...")
+            logger.info("Initializing ChatGPT (OpenAI GPT-4) service...")
 
             if not self.api_key:
                 raise Exception("OpenAI API key not found in settings")
@@ -37,7 +37,7 @@ class OpenAIService:
             await self._test_connection()
 
             self.is_initialized = True
-            logger.info(f"OpenAI service ready with model: {self.model_name}")
+            logger.info(f"✓ ChatGPT service ready - Using model: {self.model_name}")
 
         except Exception as e:
             logger.error(f"OpenAI service initialization failed: {str(e)}")
@@ -52,7 +52,7 @@ class OpenAIService:
                 messages=[{"role": "user", "content": "Test"}],
                 max_tokens=5
             )
-            logger.info("OpenAI API connection successful")
+            logger.info("✓ ChatGPT API connection successful")
         except Exception as e:
             raise Exception(f"Cannot connect to OpenAI API: {str(e)}")
 
@@ -146,7 +146,7 @@ class OpenAIService:
             await self.client.close()
             self.client = None
         self.is_initialized = False
-        logger.info("OpenAI service cleanup completed")
+        logger.info("ChatGPT service cleanup completed")
 
 # Global shared instance
 _openai_service = None
